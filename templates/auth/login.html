@@ -1,0 +1,83 @@
+{% extends 'auth/auth_base.html' %}
+
+{% block title%}Login{% endblock %}
+{% block content %}
+    <div class = "login-wrapper">
+        <div class = "left">
+            <div class="logo-block">
+            <img id="logoap"
+            src="https://play-lh.googleusercontent.com/jGpS2rPkSYw4O4gwAzM21OU5WhRzGSQLz0i02oRiWeN9VExr0uq1LOUD2dbCvwgV5Q=w600-h300-pc0xffffff-pd"
+            alt="Institute Logo">
+        <div class="brand-row">
+        <span class="dot"></span>
+        <span class="brand-text">NIT-ANP ERP</span>
+    </div>
+</div>
+
+        <h1>Academic Management System</h1>
+        <p>
+            Sign in to access attendance records, grades, assignments,
+            notifications, and academic resources through the centralized portal.
+        </p>
+    </div>
+    <div class = "right">
+        <h2>Welcome</h2>
+        <p>Let's login to your account</p>
+
+        <form method = "POST" action = "{% url 'login' %}">
+            {% csrf_token %}
+            <div class = "form-group">
+                <label for = "username">Username</label>
+                <input id = "username" name = "username"type = "text" placeholder = "Enter your Roll no / Employee ID">
+            </div>
+            
+            <div class="form-group password-group">
+                <label>Password</label>
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name = "password"
+                            placeholder="Enter your password"
+                            required
+                        >
+                        <span class="toggle-password" onclick="togglePassword()">👁</span>
+                    </div>
+            </div>
+
+            <div class = "options">
+
+                    <label for="remember">
+                        <input type="checkbox" id="remember" >Remember me
+                    </label>
+                    <a href = "{% url 'password' %}">Forgot Password?</a>
+            </div>
+            {% if error %}
+                <div class="error-message">
+                    {{ error }}
+                </div>
+            {% endif %}
+            <button type = "submit" class = "btn">Login</button>
+            
+        </form>
+        <div class="create">
+            Don’t have an account?
+            <a href="{% url 'register' %}">Create Account</a>
+        </div>
+    </div>
+    </div>
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            const toggleIcon = document.querySelector(".toggle-password");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.textContent = "🚫";
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.textContent = "👁";
+            }
+        }
+    </script>
+{% endblock %}

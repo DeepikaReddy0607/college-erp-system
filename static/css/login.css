@@ -1,0 +1,241 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body{
+    min-height: 100vh;
+    background-color: #e9edf3;
+    display : flex;
+    justify-content: center;
+    align-items: center;
+}
+.login-wrapper{
+    min-height : 520px;
+    width: 900px;
+    height: auto;
+    background: #fff;
+    border-radius: 18px;
+    display : flex;
+    overflow : hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+.left {
+    width: 45%;
+    background: #2f3e8f;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;  
+    padding: 40px;
+}
+
+.logo{
+    display : flex;
+    flex-direction: column;
+    align-items: left;
+    margin-bottom: 30px;
+    font-weight: 600;
+    font-size: 18px;
+}
+.logo .dot {
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+    border-radius: 50%;
+    margin-bottom: 8px;
+}
+
+.logo-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;   
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+
+.brand{
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 12px;
+}
+.logo span{
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    display: block;
+    margin-right: 10px;
+}
+.brand-row {
+    display: flex;
+    align-items: center;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.brand-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+#logoap{
+    width : 80%;
+    margin-bottom: 12px;
+    max-width:100%;
+    margin: 0 auto 12px auto;
+}
+.left h1{
+    font-size : 26px;
+    font-weight : 600;
+    line-height: 1.3;
+    margin-bottom: 14px;
+}
+.left p{
+    line-height: 1.6;
+    color: #d6dbff;
+    font-size: 16px;
+    font-weight:520;
+}
+
+.right {
+    width: 55%;
+    padding: 50px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.right h2{
+    font-size: 26px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 6px;
+
+}
+.right p {
+    font-size: 16px;
+    color: #6b7280;
+    margin-bottom: 26px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+label {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+     margin-bottom: 6px;
+    color: #111;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+input:focus {
+    outline: none;
+    border-color: #2f3e8f;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.options a {
+    text-decoration: none;
+    color: #2f3e8f;
+}
+
+.options a:hover {
+    text-decoration: underline;
+}
+ .btn {
+    width: 100%;
+    padding: 11px;
+    background: #2f3e8f;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #25327a;
+}
+
+.btn:focus{
+    outline : 2px solid #2f3e8f;
+    outline-offset : 2px;
+}
+.create {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.create a {
+    color: #2f3e8f;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.create a:hover {
+    text-decoration: underline;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 40px; 
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 16px;
+    color: #6c757d;
+}
+
+.toggle-password:hover {
+    color: #2f3e8f;
+}
+.error-message {
+    margin-top: 10px;
+    margin-bottom: 12px;
+    padding: 10px;
+    background-color: #fff4f4;
+    color: #b00020;
+    border: 1px solid #f5c2c7;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+}

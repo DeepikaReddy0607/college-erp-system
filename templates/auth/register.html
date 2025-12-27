@@ -1,0 +1,86 @@
+{% extends 'auth/auth_base.html' %}
+{% load static %}
+{% block title %}Register{% endblock %}
+{% block extra_css %}
+<link rel = "stylesheet" href = "{% static 'css/register.css' %}">
+{% endblock %}
+{% block content %}
+        <div class = "reg-wrapper">
+            
+             <div class="left">
+                <h2>Create Account</h2>
+                <p>
+                    Select your role and enter your official details.
+                    Account access will be granted after verification.
+                </p>
+                <form method = "POST" action = "{% url 'register' %}">
+                    {% csrf_token %}
+                    <div class = "form-group">
+                        <label>Register As</label>
+                        <label><input type = "radio" name = "role" value = "Student">Student</label>
+                        <label><input type = "radio" name = "role" value = "Faculty">Faculty</label>
+                    </div>
+                    <div class = "form-group">
+                        <label for = "fullname">Full Name</label>
+                        <input type = "text" id = "fullname" name = "fullname" placeholder = "Enter your name" required>
+                    </div>
+
+                    <div class = "form-group">
+                        <label for = "username">Username</label>
+                        <input type = "text" placeholder = "Roll no / Faculty ID" name = "username" id = "username" required>
+                    </div>
+
+                    <div class = "form-group">
+                        <label for = "email">Institute E-Mail</label>
+                        <input type = "email" placeholder = "Mail-ID" name = "email" id = "email"required>
+                    </div>
+
+                    <div class = "student-fields" style="display: none">
+                        <div class = "form-group">
+                            <label for = "year">Current year</label>
+                            <select name = "year" id = "year" >
+                                <option value="">Select</option>
+                                <option value = "1">1st year</option>
+                                <option value = "2">2nd year</option>
+                                <option value = "3">3rd year</option>
+                                <option value = "4">4th year</option>
+                            </select>
+                        </div>
+                        <div class = "form-group">
+                            <label for = "section">
+                               Section
+                            </label>
+                            <select id = "section" name = "section">
+                                <option value = "">Select</option>
+                                <option value = "A">A</option>
+                                <option value = "B">B</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type = "submit" class = "btn">Request Account</button>
+                </form>
+                <div class="create">
+                    Already have an account?
+                    <a href="{% url 'login' %}">Login</a>
+                </div>
+                </div>
+                 <div class = "right">
+                 <img src = "{% static 'images/school-management-software.png' %} ">
+        </div>
+            </div>
+        
+        <script>
+            const roleInputs = document.querySelectorAll('input[name="role"]');
+            const studentFields = document.querySelector(".student-fields");
+
+            roleInputs.forEach(input => {
+            input.addEventListener("change", () => {
+                if (input.value === "Student") {
+                    studentFields.style.display = "block";
+                } else {
+                    studentFields.style.display = "none";
+                }
+            });
+        });
+    </script>
+{% endblock %}

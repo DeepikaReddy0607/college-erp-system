@@ -1,0 +1,130 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Comfortaa', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #e9edf3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.reg-wrapper {
+    width: 900px;
+    min-height: 520px;
+    background: #ffffff;
+    border-radius: 18px;
+    display: flex;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+.left {
+    width: 55%;
+    padding: 60px 70px;
+    background: #2f3e8f;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.left h2 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.left p {
+    font-size: 14px;
+    color: #d6dbff;
+    margin-bottom: 28px;
+    line-height: 1.6;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #e6e9ff;
+}
+
+input[type="text"],
+input[type="email"],
+select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+}
+
+.form-group input[type="radio"] {
+    margin-right: 6px;
+    accent-color: #ffffff;
+}
+
+.btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: #ffffff;
+    color: #2f3e8f;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #e9ecff;
+}
+
+.create {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #e6e9ff;
+}
+
+.create a {
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.create a:hover {
+    text-decoration: underline;
+}
+
+.right {
+    width: 45%;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #d3dcf9;
+}
+
+.right img {
+    width: 80%;
+    max-width: 360px;
+    height: auto;
+}

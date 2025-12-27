@@ -1,0 +1,58 @@
+{% extends 'auth/auth_base.html' %}
+{% load static %}
+{% block title %}OTP Authentication{% endblock %}
+{% block extra_css %}
+<link rel = "stylesheet" href = "{% static 'css/otp.css' %}">
+{% endblock %}
+{% block content %}
+        <div class = "otp-container">
+            <img 
+            src="https://play-lh.googleusercontent.com/jGpS2rPkSYw4O4gwAzM21OU5WhRzGSQLz0i02oRiWeN9VExr0uq1LOUD2dbCvwgV5Q=w600-h300-pc0xffffff-pd"
+            alt="Institute Logo"
+            class="logo"
+            >
+            <h2>Email Verification</h2>
+            <p class="info-text">
+            A One-Time Password (OTP) has been sent to your institute email ID.
+            </p>
+            <form method="POST" class = "otp-form" action = "/otp/verify/">
+                {% csrf_token %}
+                <div class = "otp-inputs">
+                     <input maxlength="1" name = "otp1" type = "text" inputmode="numeric" class = "otp-input"autofocus>
+                     <input maxlength="1" name = "otp2" type = "text" inputmode="numeric" class = "otp-input">
+                     <input maxlength="1" name = "otp3" type = "text" inputmode="numeric" class = "otp-input">
+                     <input maxlength="1" name = "otp4" type = "text" inputmode="numeric" class = "otp-input">
+                </div>
+                <p class = "error">
+
+                </p>
+                <button type = "submit" class = "btn">Verify OTP</button>
+            </form>
+            <p class="resend-text">
+                Didn’t receive the OTP?
+                <a href="#">Resend OTP</a>
+            </p>
+            <p class="note">
+                OTP is valid for 5 minutes.
+            </p>
+        </div>
+        <script>
+            const otpInputs = document.querySelectorAll('.otp-input');
+            otpInputs.forEach((input, index) => {
+                input.addEventListener('input', () => {
+                    input.value = input.value.replace(/[^0-9]/g, '');
+
+                    if(input.value && index < otpInputs.length - 1){
+                        otpInputs[index + 1].focus();
+                    }
+                });
+                
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !input.value && index > 0) {
+                        otpInputs[index - 1].focus();
+                    }
+                });
+            });
+
+        </script>
+{% endblock %}

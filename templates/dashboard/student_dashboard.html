@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard {% endblock %}
+{% block content %}
+<header class="topbar">
+    <div class="topbar-left">
+        <h1 class="portal-title">ERP Portal</h1>
+    </div>
+    <div class="topbar-right">
+        <span class="user-name">Welcome, Student</span>
+        <a href="{% url 'login' %}" class="logout-btn">Logout</a>
+    </div>
+</header>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <ul class="nav-list">
+            <li class="active">Dashboard</li>
+            <li>Attendance</li>
+            <li>Grades</li>
+            <li>Classes</li>
+            <li>Timetable</li>
+            <li>Assignments</li>
+            <li>Doubts Forum</li>
+            <li>Notifications</li>
+            <li>Holidays</li>
+            <li>Events & Workshops</li>
+            <li>Profile</li>
+        </ul>
+    </aside>
+
+    <main class="content">
+
+        <section class="card">
+            <h2>Attendance Summary</h2>
+            <p>Overall Attendance: <strong>86%</strong></p>
+
+            <div class="progress-bar">
+                <div class="progress" style="width: 86%;"></div>
+            </div>
+
+            <p class="status safe">Status: Safe</p>
+
+            <ul class="subject-attendance">
+                <li>Data Structures – 90%</li>
+                <li>Operating Systems – 82%</li>
+                <li>DBMS – 88%</li>
+            </ul>
+        </section>
+
+        <div class="grid">
+
+            <section class="card">
+                <h2>Upcoming Classes (Today)</h2>
+                <ul class="list">
+                    <li>
+                        <strong>09:00 – 10:00</strong><br>
+                        Data Structures<br>
+                        Faculty: Dr. Rao | Room: 204
+                    </li>
+                    <li>
+                        <strong>10:15 – 11:15</strong><br>
+                        Operating Systems<br>
+                        Online Class
+                    </li>
+                    <li>
+                        <strong>02:00 – 03:00</strong><br>
+                        DBMS Lab<br>
+                        Lab Block – L2
+                    </li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>Pending Assignments</h2>
+                <ul class="list">
+                    <li>
+                        DBMS – Assignment 3<br>
+                        Due Date: 18 Sep
+                    </li>
+                    <li>
+                        Operating Systems – Lab Report<br>
+                        Due Date: 20 Sep
+                    </li>
+                </ul>
+            </section>
+
+        </div>
+
+        <div class="grid">
+
+            <section class="card">
+                <h2>Recent Notifications</h2>
+                <ul class="list">
+                    <li>Mid-semester exams start from 25 Sep</li>
+                    <li>DBMS assignment deadline extended</li>
+                    <li>CSEA meeting scheduled on Friday</li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>Upcoming Events & Workshops</h2>
+                <ul class="list">
+                    <li>
+                        CSEA Hackathon<br>
+                        Date: 22 Sep
+                    </li>
+                    <li>
+                        Coding Club – Web Development Workshop<br>
+                        Date: 28 Sep
+                    </li>
+                </ul>
+            </section>
+
+        </div>
+
+    </main>
+</div>
+{% endblock %}
