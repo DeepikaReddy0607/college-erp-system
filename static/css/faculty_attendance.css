@@ -1,0 +1,287 @@
+.attendance-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-top: 40px;
+}
+
+.course-grid {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+.attendance-header {
+    margin-bottom: 24px;
+}
+
+.attendance-header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.attendance-header p {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.attendance-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-end;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    margin-bottom: 28px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.control-group label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.control-group input,
+.control-group select {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+.control-group input:focus,
+.control-group select:focus {
+    outline: none;
+    border-color: #2f3e8f;
+}
+
+.btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+}
+
+.btn.primary {
+    background: #2f3e8f;
+    color: #ffffff;
+}
+
+.btn.primary:hover {
+    background: #25327a;
+}
+
+/* Table */
+.attendance-table-wrapper {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.attendance-table thead {
+    background: #f3f4f6;
+}
+
+.attendance-table th {
+    padding: 14px;
+    font-size: 14px;
+    text-align: left;
+    color: #374151;
+}
+
+.attendance-table td {
+    padding: 14px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 14px;
+}
+
+.attendance-table tr:hover {
+    background: #f9fafb;
+}
+
+.attendance-table input[type="radio"] {
+    transform: scale(1.1);
+    cursor: pointer;
+}
+.page-heading {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #1f2937;
+}
+
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.course-card {
+    width: 360px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px 26px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+    transition: all 0.25s ease;
+}
+
+.course-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+}
+
+.course-card h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1f2937;
+}
+
+.course-card p {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 16px;
+}
+/* ===== ATTENDANCE HISTORY ===== */
+
+.filter-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+.attendance-table th,
+.attendance-table td {
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.attendance-table thead {
+    background: #eef2ff;
+}
+
+.attendance-table th {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.attendance-table tbody tr {
+    border-top: 1px solid #e5e7eb;
+}
+
+.attendance-table tr.editable {
+    background: #f8fafc;
+}
+
+.attendance-table tr.locked {
+    opacity: 0.65;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge.editable {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge.locked {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.btn.small {
+    padding: 6px 14px;
+    font-size: 13px;
+}
+
+.btn.disabled {
+    background: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.hint {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.course-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.course-actions .btn.primary {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    background: #2f3e8f;
+    color: #ffffff;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.course-actions .btn.primary:hover {
+    background: #25327a;
+}
+
+.course-actions .link {
+    font-size: 13px;
+    font-weight: 500;
+    color: #2f3e8f;
+    text-decoration: none;
+    padding: 18px;
+}
+
+.course-actions .link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .attendance-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .course-grid {
+        justify-content: center;
+    }
+
+    .course-card {
+        width: 100%;
+        max-width: 420px;
+    }
+}

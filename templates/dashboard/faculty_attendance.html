@@ -1,0 +1,99 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Attendance{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_attendance.css' %}">
+{% endblock %}
+
+{% block sidebar %}
+<div class="attendance-page mark">
+
+<aside class="sidebar">
+    <ul class="nav-list">
+        <li><a href="{% url 'faculty_dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'faculty_courses' %}">My Courses</a></li>
+        <li class="active"><a href="{% url 'faculty_attendance' %}" class="active">Attendance</a></li>
+        <li><a href="#">Assignments</a></li>
+        <li><a href="#">Internals</a></li>
+        <li><a href="#">Doubts</a></li>
+        <li><a href="#">Timetable</a></li>
+        <li><a href="#">Profile</a></li>
+    </ul>
+</aside>
+{% endblock %}
+
+{% block content %}
+<div class="attendance-container">
+
+    <!-- Header -->
+    <div class="attendance-header">
+        <h2>CS2051 – Database Management Systems</h2>
+        <p>II Year • II Semester • CSE • Section A</p>
+    </div>
+
+    <!-- Controls -->
+    <div class="attendance-controls">
+        <div class="control-group">
+            <label>Date</label>
+            <input type="date">
+        </div>
+
+        <div class="control-group">
+            <label>Class Type</label>
+            <select>
+                <option>Theory Hour</option>
+                <option>Extra Class</option>
+                <option>Lab (3 Hours)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Hour</label>
+            <select>
+                <option>Hour 1</option>
+                <option>Hour 2</option>
+                <option>Hour 3</option>
+            </select>
+        </div>
+
+        <button class="btn primary">Save Attendance</button>
+    </div>
+
+    <!-- Attendance Table -->
+    <div class="attendance-table-wrapper">
+        <table class="attendance-table">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Student Name</th>
+                    <th>Present</th>
+                    <th>Absent</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>424170</td>
+                    <td>Deepika Reddy</td>
+                    <td><input type="radio" name="s1" checked></td>
+                    <td><input type="radio" name="s1"></td>
+                </tr>
+                <tr>
+                    <td>424171</td>
+                    <td>Rahul Kumar</td>
+                    <td><input type="radio" name="s2" checked></td>
+                    <td><input type="radio" name="s2"></td>
+                </tr>
+                <tr>
+                    <td>424172</td>
+                    <td>Anjali Sharma</td>
+                    <td><input type="radio" name="s3"></td>
+                    <td><input type="radio" name="s3" checked></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+{% endblock %}

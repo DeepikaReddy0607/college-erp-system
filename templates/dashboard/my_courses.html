@@ -1,0 +1,68 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}My Courses{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_courses.css' %}">
+{% endblock %}
+
+{% block sidebar %}
+<aside class="sidebar">
+    <ul class="nav-list">
+        <li><a href="{% url 'faculty_dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'faculty_courses' %}" class="active">My Courses</a></li>
+        <li><a href="{% url 'faculty_attendance' %}">Attendance</a></li>
+        <li><a href="#">Assignments</a></li>
+        <li><a href="#">Internals</a></li>
+        <li><a href="#">Doubts</a></li>
+        <li><a href="#">Timetable</a></li>
+        <li><a href="#">Profile</a></li>
+    </ul>
+</aside>
+{% endblock %}
+
+{% block content %}
+<div class="courses-wrapper">
+
+    <div class="course-card">
+        <div class="course-header">
+            <h3>CS2051 – Database Management Systems</h3>
+            <span class="badge theory">Theory</span>
+        </div>
+
+        <div class="course-meta">
+            <span>II Year • II Sem</span>
+            <span>CSE • Section A</span>
+            <span>Credits: 3</span>
+        </div>
+
+        <div class="course-actions">
+            <a href="#" class="btn primary">Attendance</a>
+            <a href="#" class="btn">Assignments</a>
+            <a href="#" class="btn">Internals</a>
+            <a href="#" class="btn outline">Students</a>
+        </div>
+    </div>
+
+    <div class="course-card">
+        <div class="course-header">
+            <h3>CS2052 – DBMS Lab</h3>
+            <span class="badge lab">Lab</span>
+        </div>
+
+        <div class="course-meta">
+            <span>II Year • II Sem</span>
+            <span>CSE • Section B</span>
+            <span>Credits: 1</span>
+        </div>
+
+        <div class="course-actions">
+            <a href="#" class="btn primary">Attendance</a>
+            <a href="#" class="btn">Assignments</a>
+            <a href="#" class="btn outline">Students</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

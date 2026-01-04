@@ -1,0 +1,62 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Attendance{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_attendance.css' %}">
+{% endblock %}
+
+{% block sidebar %}
+<aside class="sidebar">
+    <ul class="nav-list">
+        <li><a href="{% url 'faculty_dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'faculty_courses' %}">My Courses</a></li>
+        <li class="active"><a href="#" class="active">Attendance</a></li>
+        <li><a href="#">Assignments</a></li>
+        <li><a href="#">Internals</a></li>
+        <li><a href="#">Doubts</a></li>
+        <li><a href="#">Timetable</a></li>
+        <li><a href ="#">Profile</a></li>
+    </ul>
+</aside>
+{% endblock %}
+
+{% block content %}
+<div class="attendance-page landing">
+
+    <div class="attendance-container">
+
+        <h2 class="page-heading">Select Course to Mark Attendance</h2>
+
+        <div class="course-grid">
+
+            {% for offering in offerings %}
+            <div class="course-card">
+                <h3>{{ offering.course.course_code }} – {{ offering.course.course_title }}</h3>
+                <p>
+                    Year {{ offering.semester.year }} •
+                    Sem {{ offering.semester.semester }} •
+                    {{ offering.course.department.name }}
+                </p>
+
+                <div class="course-actions">
+                    <a href="{% url 'mark_attendance' offering.id %}"
+                    class="btn primary">
+                        Mark Attendance
+                    </a>
+
+                    <a href="{% url 'attendance_history' offering.id %}"
+                    class="btn outline">
+                        View History
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <p>No active course offerings assigned.</p>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

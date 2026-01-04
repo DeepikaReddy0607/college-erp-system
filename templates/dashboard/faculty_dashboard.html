@@ -1,0 +1,51 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Faculty Dashboard{% endblock %}
+{% block page_title %}Faculty Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_dashboard.css' %}">
+{% endblock %}
+
+{% block sidebar %}
+<aside class="sidebar">
+        <ul class="nav-list">
+            <li><a href="{% url 'faculty_dashboard' %}" class = "active">Dashboard</a></li>
+            <li><a href="{% url 'faculty_courses' %}">My Courses</a></li>
+            <li><a href="{% url 'faculty_attendance' %}">Attendance</a></li>
+            <li><a href="#">Assignments</a></li>
+            <li><a href="#">Internals</a></li>
+            <li><a href="#">Doubts</a></li>
+            <li><a href="#">Timetable</a></li>
+            <li><a href="#">Profile</a></li>
+        </ul>
+    </aside>
+{% endblock %}
+
+{% block content %}
+<div class="stats-wrapper">
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-title">Courses Handling</div>
+            <div class="stat-value">4</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Today’s Classes</div>
+            <div class="stat-value">3</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Pending Attendance</div>
+            <div class="stat-value">2</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Active Assignments</div>
+            <div class="stat-value">5</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

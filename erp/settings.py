@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'academics',
+    'attendance',
 ]
 
 MIDDLEWARE = [
@@ -121,3 +122,6 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 TEMPLATES[0]['DIRS'] = [BASE_DIR / "templates"]
 AUTH_USER_MODEL = 'accounts.User'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/dashboard/"
+LOGOUT_REDIRECT_URL = "/login/"

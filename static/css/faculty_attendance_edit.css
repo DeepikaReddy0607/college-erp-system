@@ -1,0 +1,90 @@
+.attendance-edit-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.header-card {
+    background: #ffffff;
+    padding: 20px 24px;
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+}
+
+.header-card h2 {
+    font-size: 20px;
+    margin-bottom: 6px;
+}
+
+.header-card p {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.warning-box {
+    background: #fff7ed;
+    color: #92400e;
+    border-left: 5px solid #f59e0b;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.edit-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+.edit-table th,
+.edit-table td {
+    padding: 14px 18px;
+    font-size: 14px;
+}
+
+.edit-table thead {
+    background: #eef2ff;
+}
+
+.edit-table th {
+    font-weight: 600;
+}
+
+.edit-table tbody tr {
+    border-top: 1px solid #e5e7eb;
+}
+
+.edit-table tr.edited {
+    background: #fef3c7;
+}
+
+.toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+}
+
+.toggle input {
+    width: 18px;
+    height: 18px;
+}
+
+.toggle.present span {
+    color: #166534;
+}
+
+.toggle.absent span {
+    color: #991b1b;
+}
+
+.action-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 20px;
+}

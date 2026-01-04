@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from accounts.models import Department
 
 class Course(models.Model):
     CATEGORY_CHOICES = [
@@ -52,6 +53,10 @@ class AcademicYear(models.Model):
     def __str__(self):
         return f"{self.start_year}-{str(self.end_year)[-2:]}"
 
+    def clean(self):
+        if self.end_year != self.start_year + 1:
+            raise ValidationError("End year must be start year + 1")
+
 class Semester(models.Model):
     academic_year = models.ForeignKey(
         AcademicYear,
@@ -77,13 +82,23 @@ class CourseOffering(models.Model):
     academic_year = models.ForeignKey(AcademicYear, on_delete=models.CASCADE)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
 
+    department = models.ForeignKey("accounts.Department", on_delete=models.CASCADE)
+    year = models.PositiveIntegerField()
+    section = models.CharField(max_length=1)
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ("course", "academic_year", "semester")
+        unique_together = (
+            "course",
+            "academic_year",
+            "semester",
+            "department",
+            "year",
+            "section",
+        )
 
     def __str__(self):
-        return f"{self.course} | {self.academic_year} | Sem {self.semester.semester}"
+        return f"{self.course} | {self.academic_year} | Y{self.year} {self.section}"
 
 class FacultyAssignment(models.Model):
     faculty = models.ForeignKey(
@@ -92,7 +107,7 @@ class FacultyAssignment(models.Model):
         limit_choices_to={"role": "FACULTY"}
     )
     offering = models.ForeignKey(CourseOffering, on_delete=models.CASCADE)
-
+    is_active = models.BooleanField(default=True)
     class Meta:
         unique_together = ("faculty", "offering")
 
@@ -108,7 +123,8 @@ class Enrollment(models.Model):
     offering = models.ForeignKey(CourseOffering, on_delete=models.CASCADE)
 
     is_repeat = models.BooleanField(default=False)
-
+    is_active = models.BooleanField(default=True)
+    
     class Meta:
         unique_together = ("student", "offering")
 

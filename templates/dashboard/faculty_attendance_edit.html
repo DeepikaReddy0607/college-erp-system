@@ -1,0 +1,91 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Edit Attendance{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_attendance_edit.css' %}">
+{% endblock %}
+
+{% block sidebar %}
+<aside class="sidebar">
+    <ul class="nav-list">
+        <li><a href="{% url 'faculty_dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'faculty_courses' %}">My Courses</a></li>
+        <li><a href="{% url 'faculty_attendance' %}" class="active">Attendance</a></li>
+        <li><a href="#">Assignments</a></li>
+        <li><a href="#">Internals</a></li>
+        <li><a href="#">Doubts</a></li>
+        <li><a href="#">Timetable</a></li>
+        <li><a href="#">Profile</a></li>
+    </ul>
+</aside>
+{% endblock %}
+
+{% block content %}
+<div class="attendance-edit-container">
+
+    <div class="header-card">
+        <h2>
+            {{ session.course_offering.course.course_code }} –
+            {{ session.course_offering.course.course_title }}
+        </h2>
+        <p>
+            <strong>Date:</strong> {{ session.date }} |
+            <strong>Time:</strong> {{ session.start_time }} – {{ session.end_time }}
+        </p>
+    </div>
+
+    <div class="warning-box">
+        ⚠️ You are editing attendance. All changes will be logged.
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <table class="edit-table">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.student.username }}</td>
+                    <td>{{ record.student.get_full_name }}</td>
+                    <td>
+                        <label>
+                            <input type="radio"
+                                   name="status_{{ record.student.id }}"
+                                   value="present"
+                                   {% if record.status == "present" %}checked{% endif %}>
+                            Present
+                        </label>
+
+                        <label>
+                            <input type="radio"
+                                   name="status_{{ record.student.id }}"
+                                   value="absent"
+                                   {% if record.status == "absent" %}checked{% endif %}>
+                            Absent
+                        </label>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="action-bar">
+            <a href="{% url 'attendance_history' session.course_offering.id %}" class="btn outline">
+                Cancel
+            </a>
+            <button type="submit" class="btn primary">Save Changes</button>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

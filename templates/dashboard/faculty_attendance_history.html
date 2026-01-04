@@ -1,0 +1,102 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Attendance History{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_attendance_history.css' %}">
+{% endblock %}
+
+{% block sidebar %}
+<aside class="sidebar">
+    <ul class="nav-list">
+        <li><a href="{% url 'accounts:faculty_dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'accounts:faculty_courses' %}">My Courses</a></li>
+        <li class="active"><a href="#">Attendance</a></li>
+        <li><a href="#">Assignments</a></li>
+        <li><a href="#">Internals</a></li>
+        <li><a href="#">Doubts</a></li>
+        <li><a href="#">Timetable</a></li>
+        <li><a href="#">Profile</a></li>
+    </ul>
+</aside>
+{% endblock %}
+
+{% block content %}
+<div class="attendance-container">
+
+    <div class="header-row">
+        <h2>
+            Attendance History — {{ offering.course.course_code }}
+        </h2>
+
+        <!-- CSV EXPORT -->
+        <a href="{% url 'attendance:export_attendance_csv' offering.id %}"
+           class="btn export-btn">
+            ⬇ Export CSV
+        </a>
+    </div>
+
+    <table class="attendance-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Session Status</th>
+                <th>Edit Window</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for session in sessions %}
+            <tr class="{% if session.is_editable %}row-editable{% else %}row-locked{% endif %}">
+                <td>{{ session.date }}</td>
+                <td>{{ session.start_time }} – {{ session.end_time }}</td>
+
+                <td>
+                    {% if session.status == "open" %}
+                        <span class="badge badge-open">Open</span>
+                    {% else %}
+                        <span class="badge badge-locked">Locked</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if session.is_editable %}
+                        <span class="badge badge-editable">Editable</span>
+                    {% else %}
+                        <span class="badge badge-expired">Expired</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if session.is_editable %}
+                        <a href="{% url 'attendance:edit_attendance' session.id %}"
+                           class="btn btn-small">
+                            Edit
+                        </a>
+                    {% else %}
+                        <span class="btn btn-small btn-disabled">
+                            Locked
+                        </span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="empty">
+                    No attendance sessions found.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="hint">
+        Attendance can be edited only within the configured edit window.
+        All modifications are logged for audit.
+    </p>
+
+</div>
+{% endblock %}

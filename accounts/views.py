@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import get_user_model, login, authenticate
+from django.contrib.auth import get_user_model, login, authenticate, logout
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from django.views.decorators.http import require_POST
@@ -12,6 +12,9 @@ def home_view(request):
     return redirect("login")
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect_by_role(request.user)
+    
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -22,16 +25,21 @@ def login_view(request):
             return render(request, "auth/login.html", {
                 "error": "Invalid credentials"
             })
+        
+        if not user.is_active:
+            return render(request, "auth/login.html",{
+                "error": "Account not activated"
+            })
         login(request, user)
-
-        if user.role == "STUDENT":
-            return redirect("dashboard")
-        elif user.role == "FACULTY":
-            return redirect("faculty_dashboard")
-        else:
-            return redirect("/admin/")
-
+        return redirect_by_role(user)
     return render(request, "auth/login.html")
+
+def redirect_by_role(user):
+    if user.role == "FACULTY":
+        return redirect("faculty_dashboard")
+    elif user.role == "STUDENT":
+        return redirect("dashboard")
+    return redirect("/admin/")
 
 def register_view(request):
     if request.method == "POST":
@@ -87,6 +95,7 @@ def register_view(request):
             recipient_list=[email],
         )
         request.session["email"] = email
+        request.session["otp_purpose"] = "register"
 
         return redirect("otp")
 
@@ -94,16 +103,18 @@ def register_view(request):
 
 
 def otp_view(request):
-    if "email" not in request.session:
-        return redirect("register")
+    if "email" not in request.session and "reset_email" not in request.session:
+        return redirect("login")
     return render(request, "auth/otp.html")
 
 
 @require_POST
 def otp_verify_view(request):
-    email = request.session.get("email")
-    if not email:
-        return redirect("register")
+    email = request.session.get("email") or request.session.get("reset_email")
+    purpose = request.session.get("otp_purpose")
+
+    if not email or not purpose:
+        return redirect("login")
 
     otp_entered = (
         request.POST.get("otp1", "") +
@@ -113,7 +124,7 @@ def otp_verify_view(request):
     )
 
     try:
-        otp_record = OTPVerification.objects.get(
+        otp = OTPVerification.objects.get(
             email=email,
             otp=otp_entered,
             is_used=False
@@ -121,19 +132,20 @@ def otp_verify_view(request):
     except OTPVerification.DoesNotExist:
         return render(request, "auth/otp.html", {"error": "Invalid OTP"})
 
-    user = User.objects.get(email=email)
-    user.is_active = True
-    user.is_verified = True
-    user.save()
+    otp.is_used = True
+    otp.save()
 
-    otp_record.is_used = True
-    otp_record.save()
+    if purpose == "register":
+        return redirect("password")
 
-    return redirect("password")
+    if purpose == "reset":
+        return redirect("password")
+
+    return redirect("login")
 
 
 def set_password_view(request):
-    email = request.session.get("email")
+    email = request.session.get("email") or request.session.get("reset_email")
 
     if not email:
         return redirect("register")
@@ -153,7 +165,9 @@ def set_password_view(request):
         user.save()
 
         login(request, user)
-        request.session.flush()
+        request.session.pop("email", None)
+        request.session.pop("reset_email", None)
+        request.session.pop("otp_purpose", None)
 
         if user.role == "STUDENT":
             return redirect("dashboard")
@@ -167,3 +181,57 @@ def set_password_view(request):
 @login_required
 def dashboard_view(request):
     return render(request, 'dashboard/student_dashboard.html')
+
+@login_required
+def faculty_dashboard_view(request):
+    if request.user.role != "FACULTY":
+        return redirect("dashboard")
+    return render(request, "dashboard/faculty_dashboard.html")
+
+@login_required
+def faculty_courses_view(request):
+    return render(request, "dashboard/my_courses.html")
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+@login_required
+def faculty_attendance_mark_view(request):
+    return render(request, 'dashboard/faculty_attendance.html')
+
+@login_required
+def faculty_attendance_history_view(request):
+    return render(request, 'dashboard/faculty_attendance_history.html')
+
+@login_required
+def faculty_attendance_edit_view(request):
+    return render(request, "dashboard/faculty_attendance_edit.html")
+
+def forgot_password_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return render(request, "auth/forgot_password.html", {
+                "error": "No account found with this email"
+            })
+
+        otp = get_random_string(length=4, allowed_chars="0123456789")
+        OTPVerification.objects.filter(email=email).update(is_used=True)
+        OTPVerification.objects.create(email=email, otp=otp)
+
+        send_mail(
+            subject="ERP Password Reset OTP",
+            message=f"Your OTP is {otp}",
+            from_email="noreply@erp.com",
+            recipient_list=[email],
+        )
+
+        request.session["reset_email"] = email
+        request.session["otp_purpose"] = "reset"
+        return redirect("otp")  
+
+    return render(request, "auth/forgot_password.html")
