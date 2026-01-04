@@ -2,7 +2,9 @@
 {% load static %}
 
 {% block title %}Submit Assignment{% endblock %}
-
+{% block extra_css%}
+<link rel = "stylesheet" href = "{% static 'css/assignment_list.css' %}">
+{% endblock %}
 {% block student_content %}
 <style>#assignments-active{
     background: #2f3e8f;
@@ -12,12 +14,14 @@
 
     <div class="student-card" style="max-width:600px;">
         <h2>{{ assignment.title }}</h2>
-        <p><strong>Course:</strong> {{ assignment.subject.course_code }}</p>
-        <p><strong>Due:</strong> {{ assignment.due_date|date:"d M Y, h:i A" }}</p>
+        <div class="assignment-meta">
+            <div><strong>Course:</strong> {{ assignment.subject.course_code }}</div>
+            <div><strong>Due:</strong> {{ assignment.due_date|date:"d M Y, h:i A" }}</div>
+        </div>
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="form-group">
+            <div class="form-group file-input">
                 <label>Upload File (PDF / ZIP)</label>
                 <input type="file" name="file" required>
             </div>

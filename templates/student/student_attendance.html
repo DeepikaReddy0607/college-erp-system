@@ -1,0 +1,50 @@
+{% extends "student/stu_base.html" %}
+
+{% load static %}
+
+{% block title %}My Attendance{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/student_attendance.css' %}">
+{% endblock %}
+
+{% block content %}
+<style>
+#attendance-active{
+    background: #2f3e8f;
+    color: #ffffff;}
+</style>
+<div class="attendance-container">
+
+    <h2>My Attendance</h2>
+
+    <table class="attendance-table">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Present</th>
+                <th>Total</th>
+                <th>Percentage</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for row in summary %}
+            <tr class="{{ row.status|lower }}">
+                <td>{{ row.course_code }}</td>
+                <td>{{ row.present }}</td>
+                <td>{{ row.total }}</td>
+                <td>{{ row.percentage }}%</td>
+                <td>{{ row.status }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No attendance data available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

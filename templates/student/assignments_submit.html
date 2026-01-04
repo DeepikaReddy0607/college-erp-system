@@ -2,7 +2,9 @@
 {% load static %}
 
 {% block title %}Submit Assignment{% endblock %}
-
+{% block extra_css%}
+<link rel = "stylesheet" href = "{% static 'css/assignment_list.css' %}">
+{% endblock %}
 {% block student_content %}
 <style>#assignments-active{
     background: #2f3e8f;

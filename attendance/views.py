@@ -154,7 +154,7 @@ def student_attendance_view(request):
 
     return render(
         request,
-        "attendance/student_attendance.html",
+        "student/student_attendance.html",
         {"summary": summary}
     )
 @faculty_required
