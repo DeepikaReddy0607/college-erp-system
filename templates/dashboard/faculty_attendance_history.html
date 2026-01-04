@@ -10,10 +10,10 @@
 {% block sidebar %}
 <aside class="sidebar">
     <ul class="nav-list">
-        <li><a href="{% url 'accounts:faculty_dashboard' %}">Dashboard</a></li>
-        <li><a href="{% url 'accounts:faculty_courses' %}">My Courses</a></li>
-        <li class="active"><a href="#">Attendance</a></li>
-        <li><a href="#">Assignments</a></li>
+        <li><a href="{% url 'faculty_dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'faculty_courses' %}">My Courses</a></li>
+        <li><a href="{% url 'faculty_attendance' %}" class="active">Attendance</a></li>
+        <li><a href="{% url 'faculty_assignments'%}">Assignments</a></li>
         <li><a href="#">Internals</a></li>
         <li><a href="#">Doubts</a></li>
         <li><a href="#">Timetable</a></li>
@@ -30,7 +30,6 @@
             Attendance History — {{ offering.course.course_code }}
         </h2>
 
-        <!-- CSV EXPORT -->
         <a href="{% url 'attendance:export_attendance_csv' offering.id %}"
            class="btn export-btn">
             ⬇ Export CSV

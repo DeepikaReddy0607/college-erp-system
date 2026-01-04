@@ -1,0 +1,80 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Assignments{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_assignments.css' %}">
+{% endblock %}
+
+{% block sidebar %}
+<aside class="sidebar">
+        <ul class="nav-list">
+            <li><a href="{% url 'faculty_dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'faculty_courses' %}">My Courses</a></li>
+            <li><a href="{% url 'faculty_attendance' %}">Attendance</a></li>
+            <li><a href="{% url 'faculty_assignments'%}" class = "active">Assignments</a></li>
+            <li><a href="#">Internals</a></li>
+            <li><a href="#">Doubts</a></li>
+            <li><a href="#">Timetable</a></li>
+            <li><a href="#">Profile</a></li>
+        </ul>
+    </aside>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+
+    <div class="page-header">
+        <h2>Assignments</h2>
+        <a href="{% url 'create_assignment' %}" class="btn-primary">
+            + Create Assignment
+        </a>
+    </div>
+
+    <div class="card">
+        {% if assignments %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Title</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in assignments %}
+                <tr>
+                    <td>{{ assignment.subject.course_code }}<br>
+                    <small>{{ assignment.subject.course_name }}</small>
+                    </td>
+                    <td>{{ assignment.title }}</td>
+                    <td>{{ assignment.due_date|date:"d M Y, h:i A" }}</td>
+                    <td>
+                        {% if assignment.is_active %}
+                            <span class="status active">Active</span>
+                        {% else %}
+                            <span class="status closed">Closed</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a
+                            href="{% url 'assignment_submissions' assignment.id %}"
+                            class="btn-secondary"
+                        >
+                            View Submissions
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="empty-text">No assignments created yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

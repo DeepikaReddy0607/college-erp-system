@@ -15,5 +15,5 @@ urlpatterns = [
     path("faculty/courses/", views.faculty_courses_view, name="faculty_courses"),
     path("logout/", views.logout_view, name="logout"),
     path("forgot-password/", views.forgot_password_view, name="forgot_password"),
-
+    path("student/dashboard/", views.student_dashboard_view, name="student_dashboard"),
 ]

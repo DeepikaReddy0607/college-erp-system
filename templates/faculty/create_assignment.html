@@ -1,0 +1,56 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Create Assignment{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_assignments.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+
+    <div class="page-header">
+        <h2>Create Assignment</h2>
+    </div>
+
+    <div class="card form-card">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Subject</label>
+                {{ form.subject }}
+            </div>
+
+            <div class="form-group">
+                <label>Title</label>
+                {{ form.title }}
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                {{ form.description }}
+            </div>
+
+            <div class="form-group">
+                <label>Due Date</label>
+                {{ form.due_date }}
+            </div>
+
+            <div class="form-group">
+                <label>Attachment (PDF / ZIP)</label>
+                {{ form.attachment }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Create</button>
+                <a href="{% url 'faculty_assignments' %}" class="btn-secondary">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Student Portal{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block sidebar %}
+<aside class="sidebar">
+    <ul class="nav-list">
+        <li><a href="{% url 'student_dashboard' %}" id = "dashboard-active">Dashboard</a></li>
+        <li><a href="#">Attendance</a></li>
+        <li><a href="#">Grades</a></li>
+        <li><a href="#">Classes</a></li>
+        <li><a href="#">Timetable</a></li>
+        <li><a href="{% url 'student_assignments' %}" id = "assignments-active">Assignments</a></li>
+        <li><a href="#">Doubts Forum</a></li>
+        <li><a href="#">Notifications</a></li>
+        <li><a href="#">Holidays</a></li>
+        <li><a href="#">Events & Workshops</a></li>
+        <li><a href="#">Profile</a></li>
+    </ul>
+</aside>
+{% endblock %}
+
+{% block content %}
+<div class="student-page">
+    {% block student_content %}{% endblock %}
+</div>
+{% endblock %}

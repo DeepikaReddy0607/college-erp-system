@@ -179,10 +179,6 @@ def set_password_view(request):
     return render(request, "auth/password.html")
 
 @login_required
-def dashboard_view(request):
-    return render(request, 'dashboard/student_dashboard.html')
-
-@login_required
 def faculty_dashboard_view(request):
     if request.user.role != "FACULTY":
         return redirect("dashboard")
@@ -235,3 +231,23 @@ def forgot_password_view(request):
         return redirect("otp")  
 
     return render(request, "auth/forgot_password.html")
+
+@login_required
+def student_dashboard_view(request):
+    if request.user.role != "STUDENT":
+        return redirect("dashboard")
+    return render(request, "student/dashboard.html")
+
+
+@login_required
+def dashboard_view(request):
+    """
+    Central dashboard router
+    """
+    if request.user.role == "STUDENT":
+        return redirect("student_dashboard")
+    elif request.user.role == "FACULTY":
+        return redirect("faculty_dashboard")
+    elif request.user.role == "ADMIN":
+        return redirect("admin_dashboard")
+    return redirect("login")

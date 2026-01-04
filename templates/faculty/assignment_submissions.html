@@ -1,0 +1,122 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_assignments.css' %}">
+{% endblock %}
+
+{% block sidebar %}
+<aside class="sidebar">
+    <ul class="nav-list">
+        <li><a href="{% url 'faculty_dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'faculty_courses' %}">My Courses</a></li>
+        <li><a href="{% url 'faculty_attendance' %}">Attendance</a></li>
+        <li><a href="{% url 'faculty_assignments' %}" class="active">Assignments</a></li>
+        <li><a href="#">Internals</a></li>
+        <li><a href="#">Doubts</a></li>
+        <li><a href="#">Timetable</a></li>
+        <li><a href="#">Profile</a></li>
+    </ul>
+</aside>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h2>{{ assignment.title }} — Submissions</h2>
+    </div>
+
+    <!-- SUBMISSION COUNTERS -->
+    <div class="card">
+        <div style="display:flex; gap:40px;">
+            <div style="text-align:center;">
+                <span class="status active">{{ submitted_count }}</span>
+                <p style="margin-top:8px; font-size:13px;">Submitted</p>
+            </div>
+
+            <div style="text-align:center;">
+                <span class="status closed">{{ pending_count }}</span>
+                <p style="margin-top:8px; font-size:13px;">Pending</p>
+            </div>
+
+            <div style="text-align:center;">
+                <span class="status">{{ total_students }}</span>
+                <p style="margin-top:8px; font-size:13px;">Total Students</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUBMITTED STUDENTS -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Submitted Students</h3>
+        </div>
+
+        {% if submissions %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Submitted At</th>
+                    <th>File</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in submissions %}
+                <tr>
+                    <td>{{ sub.student.roll_no }}</td>
+                    <td>{{ sub.student.user.get_full_name }}</td>
+                    <td>{{ sub.submitted_at|date:"d M Y, h:i A" }}</td>
+                    <td>
+                        <a href="{{ sub.file.url }}" class="btn-secondary" target="_blank">
+                            Download
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            No submissions yet
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- NOT SUBMITTED STUDENTS -->
+    <div class="card not-submitted-card">
+        <div class="card-header">
+            <h3>Not Submitted Yet</h3>
+        </div>
+
+        {% if not_submitted %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Section</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enroll in not_submitted %}
+                <tr>
+                    <td>{{ enroll.student.studentprofile.roll_no }}</td>
+                    <td>{{ enroll.student.get_full_name }}</td>
+                    <td>{{ enroll.offering.section }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            All students have submitted 🎉
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

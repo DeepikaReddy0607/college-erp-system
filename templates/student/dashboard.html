@@ -1,0 +1,69 @@
+{% extends "student/stu_base.html" %}
+{% load static %}
+{% block title %}Student Dashboard{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/student_dashboard.css' %}">
+{% endblock %}
+
+{% block student_content %}
+<style>#dashboard-active{background: #2f3e8f;
+    color: #ffffff;}</style>
+<div class="student-card">
+    <h2>Attendance Summary</h2>
+    <p>Overall Attendance: <strong>86%</strong></p>
+
+    <div class="progress-bar">
+        <div class="progress" style="width: 86%;"></div>
+    </div>
+
+    <p class="status safe">Status: Safe</p>
+
+    <ul class="student-list">
+        <li>Data Structures – 90%</li>
+        <li>Operating Systems – 82%</li>
+        <li>DBMS – 88%</li>
+    </ul>
+</div>
+
+<div class="student-grid">
+
+    <div class="student-card">
+        <h2>Today’s Classes</h2>
+        <ul class="student-list">
+            <li>09:00 – Data Structures</li>
+            <li>10:15 – Operating Systems</li>
+            <li>14:00 – DBMS Lab</li>
+        </ul>
+    </div>
+
+    <div class="student-card">
+        <h2>Pending Assignments</h2>
+        <ul class="student-list">
+            <li>DBMS – Assignment 3</li>
+            <li>OS – Lab Report</li>
+        </ul>
+    </div>
+
+</div>
+
+<div class="student-grid">
+
+    <div class="student-card">
+        <h2>Notifications</h2>
+        <ul class="student-list">
+            <li>Mid-sem exams from 25 Sep</li>
+            <li>DBMS deadline extended</li>
+        </ul>
+    </div>
+
+    <div class="student-card">
+        <h2>Events</h2>
+        <ul class="student-list">
+            <li>CSEA Hackathon – 22 Sep</li>
+            <li>Web Dev Workshop – 28 Sep</li>
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}

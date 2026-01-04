@@ -1,0 +1,85 @@
+/* ===== Page Wrapper ===== */
+.student-page {
+    padding: 28px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ===== Headings ===== */
+.student-page h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #1f2937;
+}
+
+.student-page h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #1f2937;
+}
+
+/* ===== Cards ===== */
+.student-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    margin-bottom: 32px;
+    font-weight: 500;
+    font-size: large;
+}
+
+/* ===== Grid Layout ===== */
+.student-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+/* ===== Lists ===== */
+.student-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 12px;
+    color: #374151;
+}
+
+.student-list li {
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* ===== Progress Bar ===== */
+.progress-bar {
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 6px;
+    margin: 12px 0;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+    border-radius: 6px;
+}
+
+/* ===== Status Labels ===== */
+.status.safe {
+    display: inline-block;
+    margin-top: 6px;
+    color: #166534;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+    .student-grid {
+        grid-template-columns: 1fr;
+    }
+}
