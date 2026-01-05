@@ -68,7 +68,14 @@
                  <img src = "{% static 'images/school-management-software.png' %} ">
         </div>
             </div>
-        
+        {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
         <script>
             const roleInputs = document.querySelectorAll('input[name="role"]');
             const studentFields = document.querySelector(".student-fields");

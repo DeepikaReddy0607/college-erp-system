@@ -1,0 +1,145 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", system-ui, sans-serif;
+}
+
+body {
+    background-color: #eef1f6;
+    min-height: 100vh;
+    color: #1f2937;
+}
+
+.topbar {
+    height: 64px;
+    background: #2f3e8f;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.portal-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-role {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.logout-btn {
+    background: #ffffff;
+    color: #2f3e8f;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.logout-btn:hover {
+    background: #e5e7ff;
+}
+
+/* ===== Layout ===== */
+.layout {
+    display: flex;
+    min-height: calc(100vh - 64px);
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+    width: 240px;
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    padding: 16px 0;
+}
+
+/* ===== Navigation ===== */
+.nav-list {
+    list-style: none;
+}
+
+.nav-list li {
+    margin-bottom: 2px;
+}
+
+.nav-list a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 11px 20px;
+    color: #374151;
+    text-decoration: none;
+    font-size: 14.5px;
+    font-weight: 500;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* Hover */
+.nav-list a:hover {
+    background: #f1f5ff;
+    color: #2f3e8f;
+}
+
+.nav-list a.active {
+    background: #f1f5ff;
+    color: #2f3e8f;
+    font-weight: 600;
+}
+
+.nav-list a.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 4px;
+    background: #2f3e8f;
+    border-radius: 0 4px 4px 0;
+}
+
+.main-content {
+    flex: 1;
+    padding: 28px;
+    overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: 200px;
+    }
+}
+
+@media (max-width: 700px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+    }
+
+    .nav-list {
+        display: flex;
+        gap: 8px;
+    }
+
+    .nav-list li {
+        margin-bottom: 0;
+    }
+}

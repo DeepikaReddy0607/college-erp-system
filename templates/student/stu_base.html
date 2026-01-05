@@ -1,32 +1,57 @@
-{% extends "dashboard/base.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Student Portal{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/stu_base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
 
-{% block title %}Student Portal{% endblock %}
+<body>
+<header class="topbar">
+    <div class="topbar-left">
+        <h1 class="portal-title">NIT-ANP ERP</h1>
+    </div>
+    <div class="topbar-right">
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    </div>
+</header>
 
-{% block extra_css %}
+<div class="layout">
+    {% block sidebar %}
+    <aside class="sidebar">
+        <ul class="nav-list">
+            <li><a href="{% url 'student_dashboard' %}" id="dashboard-active">Dashboard</a></li>
+            <li><a href="{% url 'student_attendance' %}" id="attendance-active">Attendance</a></li>
+            <li><a href="#" id="grade-active">Grades</a></li>
+            <li><a href="#" id="timetable-active">Timetable</a></li>
+            <li><a href="{% url 'student_assignments' %}" id="assignments-active">Assignments</a></li>
+            <li><a href="#">Doubts Forum</a></li>
+            <li>
+                <a href="{% url 'student_notifications' %}" id="notifications-active"> 
+                Notifications
+                {% if unread_notifications_count %}
+                    <span class="badge">{{ unread_notifications_count }}</span>
+                {% endif %}
+                </a>
+            </li>
+            <li><a href="#">Holidays</a></li>
+            <li><a href="#">Events & Workshops</a></li>
+            <li><a href="#">Profile</a></li>
+        </ul>
+    </aside>
+    {% endblock %}
 
-{% endblock %}
+    <main class="main-content">
+        {% block content %}
+        <div class="student-page">
+            {% block student_content %}{% endblock %}
+        </div>
+        {% endblock %}
+    </main>
 
-{% block sidebar %}
-<aside class="sidebar">
-    <ul class="nav-list">
-        <li><a href="{% url 'student_dashboard' %}" id = "dashboard-active">Dashboard</a></li>
-        <li><a href="{% url 'student_attendance' %}" id = "attendance-active">Attendance</a></li>
-        <li><a href="#">Grades</a></li>
-        <li><a href="#">Classes</a></li>
-        <li><a href="#">Timetable</a></li>
-        <li><a href="{% url 'student_assignments' %}" id = "assignments-active">Assignments</a></li>
-        <li><a href="#">Doubts Forum</a></li>
-        <li><a href="#">Notifications</a></li>
-        <li><a href="#">Holidays</a></li>
-        <li><a href="#">Events & Workshops</a></li>
-        <li><a href="#">Profile</a></li>
-    </ul>
-</aside>
-{% endblock %}
-
-{% block content %}
-<div class="student-page">
-    {% block student_content %}{% endblock %}
 </div>
-{% endblock %}
+
+</body>
+</html>

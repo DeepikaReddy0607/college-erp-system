@@ -8,22 +8,12 @@
 <link rel="stylesheet" href="{% static 'css/faculty_dashboard.css' %}">
 {% endblock %}
 
-{% block sidebar %}
-<aside class="sidebar">
-        <ul class="nav-list">
-            <li><a href="{% url 'faculty_dashboard' %}" class = "active">Dashboard</a></li>
-            <li><a href="{% url 'faculty_courses' %}">My Courses</a></li>
-            <li><a href="{% url 'faculty_attendance' %}">Attendance</a></li>
-            <li><a href="#">Assignments</a></li>
-            <li><a href="#">Internals</a></li>
-            <li><a href="#">Doubts</a></li>
-            <li><a href="#">Timetable</a></li>
-            <li><a href="#">Profile</a></li>
-        </ul>
-    </aside>
-{% endblock %}
-
 {% block content %}
+<style>
+#dashboard-active{
+    background: #2f3e8f;
+    color: #ffffff;}
+</style>
 <div class="stats-wrapper">
     <div class="stats-grid">
 

@@ -1,0 +1,39 @@
+{% extends "faculty/faculty_base.html" %}
+
+{% block title %}Send Notification{% endblock %}
+
+{% block content %}
+<div class="faculty-page">
+
+    <h2>Send Notification</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label>Title</label>
+        <input type="text" name="title" required>
+
+        <label>Message</label>
+        <textarea name="message" rows="4" required></textarea>
+
+        <label>Notification Type</label>
+        <select name="notification_type">
+            <option value="INFO">Info</option>
+            <option value="WARNING">Warning</option>
+            <option value="CRITICAL">Critical</option>
+        </select>
+
+        <label>Send To</label>
+        <select name="recipient_type" required>
+            <option value="students">Students</option>
+
+            {% if is_hod %}
+            <option value="faculty">Faculty (My Department)</option>
+            {% endif %}
+        </select>
+
+        <button type="submit">Send Notification</button>
+    </form>
+
+</div>
+{% endblock %}

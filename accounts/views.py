@@ -5,7 +5,8 @@ from django.core.mail import send_mail
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .models import Department, StudentProfile, FacultyProfile, OTPVerification
-
+from django.contrib import messages
+from notifications.models import Notification, NotificationRecipient
 User = get_user_model()
 
 def home_view(request):
@@ -45,26 +46,32 @@ def register_view(request):
     if request.method == "POST":
         role = request.POST.get("role").upper()
         fullname = request.POST.get("fullname")
-        username = request.POST.get("username")
-        email = request.POST.get("email")
+        username = request.POST.get("username").strip()
+        email = request.POST.get("email").strip().lower()
         year = request.POST.get("year")
         sec = request.POST.get("section")
 
-        user, created = User.objects.get_or_create(
-            email=email,
-            defaults={
-                "username": username,
-                "first_name": fullname,
-                "role": role,
-                "is_active": False,
-                "is_verified": False,
-            }
-        )
-
-        if not created and user.is_verified:
+        if User.objects.filter(username=username).exists():
             return render(request, "auth/register.html", {
-                "error": "Email already registered. Please login."
+                "error": "Username already exists. Please choose another."
             })
+
+        user = User.objects.filter(email=email).first()
+        if user:
+            if user.is_verified:
+                return render(request, "auth/register.html", {
+                    "error": "Email already registered. Please login."
+                })
+        else:
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                first_name=fullname,
+                role=role,
+                is_active=False,
+                is_verified=False
+            )
+
         cse, _ = Department.objects.get_or_create(name="CSE")
 
         if role == "STUDENT":
@@ -84,7 +91,12 @@ def register_view(request):
                     "designation": "Faculty"
                 }
             )
-        OTPVerification.objects.filter(email=email, is_used=False).update(is_used=True)
+
+        OTPVerification.objects.filter(
+            email=email,
+            is_used=False
+        ).update(is_used=True)
+
         otp = get_random_string(length=4, allowed_chars="0123456789")
         OTPVerification.objects.create(email=email, otp=otp)
 
@@ -94,13 +106,13 @@ def register_view(request):
             from_email="noreply@erp.com",
             recipient_list=[email],
         )
+
         request.session["email"] = email
         request.session["otp_purpose"] = "register"
 
         return redirect("otp")
 
-    return render(request, 'auth/register.html')
-
+    return render(request, "auth/register.html")
 
 def otp_view(request):
     if "email" not in request.session and "reset_email" not in request.session:
@@ -234,10 +246,15 @@ def forgot_password_view(request):
 
 @login_required
 def student_dashboard_view(request):
-    if request.user.role != "STUDENT":
-        return redirect("dashboard")
-    return render(request, "student/dashboard.html")
+    unread_notifications_count = NotificationRecipient.objects.filter(
+        user=request.user,
+        is_read=False
+    ).count()
 
+    context = {
+        "unread_notifications_count": unread_notifications_count,
+    }
+    return render(request, "student/dashboard.html", context)
 
 @login_required
 def dashboard_view(request):

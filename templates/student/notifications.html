@@ -1,0 +1,112 @@
+{% extends "student/stu_base.html" %}
+{% load static %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/stu_notifications.css' %}">
+{% endblock %}
+
+{% block content %}
+<style>
+#notifications-active {
+    background: #2f3e8f;
+    color: #ffffff;
+}
+</style>
+
+<!-- CSRF token for AJAX -->
+<input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+
+<div class="student-page">
+
+    <div class="page-header">
+        <h2>Notifications</h2>
+        <p>Stay updated with academic and campus announcements</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="notification-filters">
+        <a href="?"><button>All</button></a>
+        <a href="?type=unread"><button>Unread</button></a>
+        <a href="?type=INFO"><button>Info</button></a>
+        <a href="?type=WARNING"><button>Warning</button></a>
+        <a href="?type=CRITICAL"><button>Critical</button></a>
+    </div>
+
+    <!-- Notifications -->
+    <div class="notification-list">
+        {% for n in notifications %}
+        <div class="notification-card
+            {% if not n.is_read %} unread {% endif %}
+            {% if n.notification.notification_type == 'CRITICAL' %} important {% endif %}
+        ">
+
+            <div class="notification-header">
+                <span class="tag {{ n.notification.notification_type|lower }}">
+                    {{ n.notification.notification_type }}
+                </span>
+
+                <span class="time">
+                    {{ n.notification.created_at|timesince }} ago
+                </span>
+            </div>
+
+            <h4>{{ n.notification.title }}</h4>
+            <p>{{ n.notification.message }}</p>
+
+            {% if n.notification.link %}
+                <a href="{{ n.notification.link }}" class="notif-link">
+                    View details
+                </a>
+            {% endif %}
+
+            {% if not n.is_read %}
+                <button
+                    class="mark-read-btn"
+                    onclick="markAsRead({{ n.id }}, this)">
+                    Mark as read
+                </button>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p>No notifications available.</p>
+        {% endfor %}
+    </div>
+
+</div>
+<script>
+function getCSRFToken() {
+    return document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute('content');
+}
+
+function markAsRead(notificationId, btn) {
+    fetch(`/notifications/ajax/read/${notificationId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCSRFToken(),
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const card = btn.closest(".notification-card");
+            card.classList.remove("unread");
+            btn.remove();
+
+            const badge = document.querySelector(".badge");
+            if (badge) {
+                if (data.unread_count > 0) {
+                    badge.textContent = data.unread_count;
+                } else {
+                    badge.remove();
+                }
+            }
+        }
+    });
+}
+</script>
+{% endblock %}

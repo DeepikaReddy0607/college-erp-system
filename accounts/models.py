@@ -34,6 +34,7 @@ class FacultyProfile(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     designation = models.CharField(max_length=100)
 
+    is_hod = models.BooleanField(default=False)
     def __str__(self):
         return self.user.username
 
