@@ -1,9 +1,14 @@
 {% extends "dashboard/base.html" %}
+{% load static custom_filters %}
 
-{% block title %}Upload Grades{% endblock %}
+{% load static %}
 
 {% block content %}
-<h2>Upload Grades – {{ subject.name }}</h2>
+<h2>
+    Submit Marks –
+    {{ offering.course.course_code }}
+    (Y{{ offering.year }}{{ offering.section }})
+</h2>
 
 <form method="post">
     {% csrf_token %}
@@ -13,33 +18,59 @@
             <tr>
                 <th>Roll No</th>
                 <th>Name</th>
-                <th>Grade</th>
+                <th>Total Marks</th>
+                <th>Status</th>
             </tr>
         </thead>
+
         <tbody>
             {% for student in students %}
+            {% with submission=submissions|get_item:student.id %}
             <tr>
                 <td>{{ student.username }}</td>
-                <td>{{ student.get_full_name }}</td>
+                <td>{{ student.get_full_name|default:"-" }}</td>
+
                 <td>
-                    <select name="grade_{{ student.id }}">
-                        <option value="">--</option>
-                        {% for g in "Ex A B C D P M F X".split %}
-                            <option value="{{ g }}"
-                                {% if grades_map.student.id and grades_map.student.id.grade == g %}
-                                selected
-                                {% endif %}
-                            >
-                                {{ g }}
-                            </option>
-                        {% endfor %}
-                    </select>
+                    {% if submission and submission.is_locked %}
+                        {{ submission.total_marks }}
+                    {% else %}
+                        <input
+                            type="number"
+                            name="marks_{{ student.id }}"
+                            step="0.01"
+                            value="{{ submission.total_marks|default_if_none:'' }}"
+                            style="width: 90px;"
+                        >
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if submission and submission.is_locked %}
+                        <span class="status locked">Locked</span>
+                    {% else %}
+                        <span class="status editable">Editable</span>
+                    {% endif %}
                 </td>
             </tr>
+            {% endwith %}
             {% endfor %}
         </tbody>
     </table>
 
-    <button type="submit">Save Grades</button>
+    <div style="margin-top: 20px;">
+        <button type="submit" class="btn-primary">
+            Save Marks
+        </button>
+
+        <button
+            type="submit"
+            name="final_submit"
+            value="1"
+            class="btn-danger"
+            onclick="return confirm('Once submitted, marks cannot be edited. Continue?');"
+        >
+            Final Submit & Lock
+        </button>
+    </div>
 </form>
 {% endblock %}

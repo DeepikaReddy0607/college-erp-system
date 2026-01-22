@@ -1,0 +1,39 @@
+{% extends "student/stu_base.html" %}
+{% load static %}
+{% block title %}My Timetable{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/timetable.css' %}">
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>My Timetable</h2>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Day</th>
+            <th>Time</th>
+            <th>Course</th>
+            <th>Room</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in timetable_entries %}
+        <tr>
+            <td>{{ entry.get_day_display }}</td>
+            <td>{{ entry.timeslot.start_time }} - {{ entry.timeslot.end_time }}</td>
+            <td>
+                {{ entry.offering.course.course_code }}<br>
+                <small>{{ entry.offering.course.course_title }}</small>
+            </td>
+            <td>{{ entry.room|default:"-" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Timetable not published yet</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

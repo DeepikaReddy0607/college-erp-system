@@ -1,0 +1,119 @@
+/* ===== EXAM SCHEDULE PAGE ===== */
+
+.student-page {
+    padding: 28px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* ===== TABLE ===== */
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.data-table thead {
+    background-color: #f1f5f9;
+}
+
+.data-table th {
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #111827;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: top;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Course title small text */
+.data-table small {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* ===== EMPTY STATE ===== */
+
+.data-table .empty-state {
+    text-align: center;
+    padding: 32px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+    .data-table {
+        font-size: 13px;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 10px 12px;
+    }
+
+    .page-header h2 {
+        font-size: 20px;
+    }
+}
+/* ===== EXAM TYPE BADGES ===== */
+
+.exam-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 6px;
+}
+
+/* MID / MINOR */
+.exam-badge.mid1,
+.exam-badge.mid2,
+.exam-badge.minor {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* END SEM */
+.exam-badge.end {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* SUPPLEMENTARY */
+.exam-badge.sup {
+    background-color: #fef3c7;
+    color: #92400e;
+}

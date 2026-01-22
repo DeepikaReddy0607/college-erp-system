@@ -1,0 +1,114 @@
+{% extends "dashboard/base.html" %}
+{% load static custom_filters %}
+
+{% block title %}Submit Marks{% endblock %}
+
+{% block content %}
+
+<h2>
+    Submit Marks – {{ offering.course.course_code }}
+    (Year {{ offering.year }} • Section {{ offering.section }})
+</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Roll No</th>
+                <th>Name</th>
+                <th>Minor 1</th>
+                <th>Minor 2</th>
+                <th>Mid</th>
+                <th>End</th>
+                <th>Total</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for student in students %}
+            {% with s=submissions|get_item:student.id %}
+            <tr>
+                <td>{{ student.username }}</td>
+                <td>{{ student.get_full_name|default:"-" }}</td>
+
+                <!-- Minor 1 -->
+                <td>
+                    {% if s and s.is_locked %}
+                        {{ s.minor1 }}
+                    {% else %}
+                        <input type="number" step="0.01"
+                            name="minor1_{{ student.id }}"
+                            value="{{ s.minor1|default:'' }}" required>
+                    {% endif %}
+                </td>
+
+                <!-- Minor 2 -->
+                <td>
+                    {% if s and s.is_locked %}
+                        {{ s.minor2 }}
+                    {% else %}
+                        <input type="number" step="0.01"
+                            name="minor2_{{ student.id }}"
+                            value="{{ s.minor2|default:'' }}" required>
+                    {% endif %}
+                </td>
+
+                <!-- Mid -->
+                <td>
+                    {% if s and s.is_locked %}
+                        {{ s.mid }}
+                    {% else %}
+                        <input type="number" step="0.01"
+                            name="mid_{{ student.id }}"
+                            value="{{ s.mid|default:'' }}" required>
+                    {% endif %}
+                </td>
+
+                <!-- End -->
+                <td>
+                    {% if s and s.is_locked %}
+                        {{ s.end }}
+                    {% else %}
+                        <input type="number" step="0.01"
+                            name="end_{{ student.id }}"
+                            value="{{ s.end|default:'' }}" required>
+                    {% endif %}
+                </td>
+
+                <!-- Total -->
+                <td>
+                    {% if s %}
+                        {{ s.total_marks }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+
+                <!-- Status -->
+                <td>
+                    {% if s and s.is_locked %}
+                        <span class="badge success">Locked</span>
+                    {% elif s %}
+                        <span class="badge warning">Draft</span>
+                    {% else %}
+                        <span class="badge neutral">Not Entered</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endwith %}
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+    <button type="submit" class="btn primary">Save Draft</button>
+    <button type="submit" name="final_submit" class="btn danger"
+            onclick="return confirm('Marks will be locked permanently. Continue?');">
+        Final Submit & Lock
+    </button>
+</form>
+
+{% endblock %}

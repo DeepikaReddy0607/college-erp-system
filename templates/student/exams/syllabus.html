@@ -1,0 +1,55 @@
+{% extends "student/stu_base.html" %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/exam_syllabus.css' %}">
+{% endblock %}
+
+{% block title %}Exam Syllabus{% endblock %}
+
+{% block student_content %}
+<div class="student-page">
+
+    <div class="page-header">
+        <h2>Exam Syllabus</h2>
+    </div>
+
+    {% for exam in exams %}
+        <div class="student-card">
+
+            <h3>
+                {{ exam.offering.course.course_code }} –
+                <span class="exam-badge {{ exam.exam_type.code|lower }}">
+    {{ exam.exam_type.name }}
+</span>
+
+            </h3>
+
+            {% if exam.syllabus %}
+                {% if exam.syllabus.syllabus_text %}
+                    <p>{{ exam.syllabus.syllabus_text|linebreaks }}</p>
+                {% endif %}
+
+                {% if exam.syllabus.syllabus_file %}
+                    <a
+                        href="{{ exam.syllabus.syllabus_file.url }}"
+                        class="btn-secondary"
+                        target="_blank"
+                    >
+                        Download Syllabus PDF
+                    </a>
+                {% endif %}
+            {% else %}
+                <p class="empty-state">
+                    Syllabus not uploaded yet.
+                </p>
+            {% endif %}
+
+        </div>
+    {% empty %}
+        <p class="empty-state">
+            No exams published yet.
+        </p>
+    {% endfor %}
+
+</div>
+{% endblock %}

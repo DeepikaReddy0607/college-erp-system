@@ -1,0 +1,56 @@
+{% extends "student/stu_base.html" %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/student_doubts.css' %}">
+{% endblock %}
+
+{% block title %}My Doubts{% endblock %}
+
+{% block student_content %}
+<div class="student-page">
+
+    <div class="page-header doubts-header">
+        <h2>My Doubts</h2>
+        <a href="{% url 'ask_doubt' %}" class="btn-primary">
+            + Ask Doubt
+        </a>
+    </div>
+
+    {% if doubts %}
+        {% for doubt in doubts %}
+            <div class="doubt-card">
+                <div class="doubt-header">
+                    <h4>{{ doubt.title }}</h4>
+
+                    {% if doubt.is_resolved %}
+                        <span class="status resolved">Resolved</span>
+                    {% else %}
+                        <span class="status open">Open</span>
+                    {% endif %}
+                </div>
+
+                <p class="doubt-desc">
+                    {{ doubt.description|truncatechars:140 }}
+                </p>
+
+                <div class="doubt-meta">
+                    <span>{{ doubt.course.course_code }}</span>
+                    <span>{{ doubt.created_at|date:"d M Y, h:i A" }}</span>
+                </div>
+
+                <a href="{% url 'doubt_detail' doubt.id %}" class="btn-secondary">
+                    View Discussion
+                </a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state-wrapper">
+            <p class="empty-state">
+                No doubts posted yet.<br>
+                <span>Ask your first doubt to get help from classmates or faculty.</span>
+            </p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

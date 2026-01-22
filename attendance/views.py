@@ -69,7 +69,7 @@ def mark_attendance(request, offering_id):
 
         return redirect("faculty_attendance_history", offering_id=offering.id)
 
-    return render(request, "attendance/mark_attendance.html", {
+    return render(request, "dashboard/faculty_attendance.html", {
         "offering": offering,
         "students": students,
         "today": timezone.now().date()

@@ -1,0 +1,104 @@
+/* ===== Timetable Page ===== */
+
+.page-header {
+    margin-bottom: 18px;
+}
+
+.page-header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Table wrapper */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Table head */
+.table thead {
+    background-color: #f3f4f6;
+}
+
+.table thead th {
+    text-align: left;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Table body */
+.table tbody td {
+    padding: 12px 14px;
+    font-size: 14px;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: top;
+}
+
+/* Zebra striping */
+.table tbody tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+/* Hover */
+.table tbody tr:hover {
+    background-color: #eef2ff;
+}
+
+/* Course title small text */
+.table small {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* Empty state */
+.table tbody tr td[colspan] {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #6b7280;
+}
+
+/* Responsive (mobile) */
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
+
+    .table,
+    .table tbody,
+    .table tr,
+    .table td {
+        display: block;
+        width: 100%;
+    }
+
+    .table tbody tr {
+        margin-bottom: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 8px;
+    }
+
+    .table tbody td {
+        border: none;
+        padding: 6px 8px;
+        font-size: 13px;
+    }
+
+    .table tbody td::before {
+        content: attr(data-label);
+        display: block;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 2px;
+    }
+}

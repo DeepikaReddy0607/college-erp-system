@@ -1,0 +1,232 @@
+/* ==================================================
+   STUDENT DOUBTS – LIST & DETAIL
+================================================== */
+
+.student-page {
+    padding: 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* ===== DOUBT LIST ===== */
+
+.student-page .doubt-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+.student-page .doubt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.student-page .doubt-header h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.student-page .doubt-desc {
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 10px;
+}
+
+.student-page .doubt-meta {
+    font-size: 12px;
+    color: #6b7280;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.student-page .status {
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.student-page .status.open {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.student-page .status.resolved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.student-page .answer-card {
+    background: #f9fafb;
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.student-page .answer-card.accepted {
+    border-left: 4px solid #22c55e;
+    background: #ecfdf5;
+}
+
+.student-page .empty-state {
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+.student-page .student-card {
+    max-width: 640px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 28px;
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+.student-page .student-card h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #1f2937;
+}
+
+.student-page .student-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.student-page .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.student-page .form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #374151;
+}
+
+.student-page .form-group input,
+.student-page .form-group select,
+.student-page .form-group textarea {
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+}
+
+.student-page .form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.student-page .form-group input:focus,
+.student-page .form-group select:focus,
+.student-page .form-group textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+}
+
+.student-page .form-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.student-page .btn-primary {
+    background-color: #2563eb;
+    color: #ffffff;
+    padding: 10px 22px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.student-page .btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.student-page .btn-secondary {
+    background-color: #e5e7eb;
+    color: #111827;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.student-page .btn-secondary:hover {
+    background-color: #d1d5db;
+}
+
+.student-page .error-msg {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+@media (max-width: 640px) {
+    .student-page .doubt-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .student-page .student-card {
+        padding: 22px;
+    }
+
+    .student-page .form-actions {
+        flex-direction: column;
+    }
+
+    .student-page .btn-primary,
+    .student-page .btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
+}
+/* ===== DOUBTS HEADER ===== */
+
+.student-page .doubts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+/* ===== EMPTY STATE FIX ===== */
+
+.student-page .empty-state-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 80px;
+}
+
+.student-page .empty-state {
+    text-align: center;
+    font-size: 15px;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+.student-page .empty-state span {
+    font-size: 13px;
+    color: #9ca3af;
+}

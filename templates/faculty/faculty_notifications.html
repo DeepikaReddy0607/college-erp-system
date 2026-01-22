@@ -1,0 +1,35 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block title %}My Notifications{% endblock %}
+
+{% block extra_css %}
+<link rel = "stylesheet" href="{% static 'css/notifications.css' %}">
+{% endblock %}
+{% block content %}
+<div class="faculty-page">
+
+    <h2>My Notifications</h2>
+
+    {% if notifications %}
+        <div class="notification-list">
+            {% for n in notifications %}
+                <div class="notification-card {% if not n.is_read %}unread{% endif %}">
+                    <div class="notification-header">
+                        <strong>{{ n.title }}</strong>
+                        <span class="type">{{ n.notification_type }}</span>
+                    </div>
+
+                    <p>{{ n.message }}</p>
+
+                    <small class="time">
+                        {{ n.created_at|date:"d M Y, H:i" }}
+                    </small>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No notifications yet.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

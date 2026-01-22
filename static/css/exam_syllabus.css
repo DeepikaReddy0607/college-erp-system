@@ -1,0 +1,112 @@
+/* ===== EXAM SYLLABUS PAGE ===== */
+
+.student-page {
+    padding: 28px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* ===== SYLLABUS CARD ===== */
+
+.student-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.student-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+/* ===== SYLLABUS TEXT ===== */
+
+.student-card p {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+
+/* ===== BUTTON ===== */
+
+.student-card .btn-secondary {
+    display: inline-block;
+    background-color: #e5e7eb;
+    color: #111827;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.student-card .btn-secondary:hover {
+    background-color: #d1d5db;
+}
+
+/* ===== EMPTY STATE ===== */
+
+.empty-state {
+    font-size: 14px;
+    color: #6b7280;
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 640px) {
+    .student-card {
+        padding: 18px;
+    }
+
+    .student-card h3 {
+        font-size: 16px;
+    }
+}
+
+/* ===== EXAM TYPE BADGES ===== */
+
+.exam-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 6px;
+}
+
+/* MID / MINOR */
+.exam-badge.mid1,
+.exam-badge.mid2,
+.exam-badge.minor {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* END SEM */
+.exam-badge.end {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* SUPPLEMENTARY */
+.exam-badge.sup {
+    background-color: #fef3c7;
+    color: #92400e;
+}

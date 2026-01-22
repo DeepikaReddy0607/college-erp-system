@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'assignments',
     'notifications',
     'grades',
+    'timetable',
+    'doubts',
+    'exams',
 ]
 
 MIDDLEWARE = [

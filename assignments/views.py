@@ -89,6 +89,9 @@ def assignment_submissions(request, assignment_id):
 
 @login_required
 def student_assignments(request):
+    if not hasattr(request.user, "studentprofile"):
+        return HttpResponseForbidden("Not a student account")
+    
     student = request.user.studentprofile
     enrollments = Enrollment.objects.filter(
         student=request.user,

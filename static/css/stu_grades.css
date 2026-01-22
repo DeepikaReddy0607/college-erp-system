@@ -1,0 +1,139 @@
+/* ===== Grades Page ===== */
+
+.page-header {
+    margin-bottom: 18px;
+}
+
+.page-header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Semester Select */
+form.mb-3 {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+form.mb-3 label {
+    font-weight: 500;
+    color: #374151;
+}
+
+form.mb-3 select {
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+form.mb-3 select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+}
+
+/* Grades Table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+}
+
+.table thead {
+    background-color: #f3f4f6;
+}
+
+.table thead th {
+    text-align: left;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table tbody td {
+    padding: 12px 14px;
+    font-size: 14px;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+.table tbody tr:hover {
+    background-color: #eef2ff;
+}
+
+/* Empty state */
+.table tbody td[colspan] {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #6b7280;
+}
+
+/* SGPA / CGPA Summary */
+.mt-4 {
+    margin-top: 24px;
+    padding: 16px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    border-left: 4px solid #2563eb;
+}
+
+.mt-4 p {
+    margin: 6px 0;
+    font-size: 15px;
+    color: #1f2937;
+}
+
+/* Highlight numbers */
+.mt-4 strong {
+    color: #111827;
+}
+
+/* Responsive (Mobile) */
+@media (max-width: 768px) {
+    form.mb-3 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .table thead {
+        display: none;
+    }
+
+    .table,
+    .table tbody,
+    .table tr,
+    .table td {
+        display: block;
+        width: 100%;
+    }
+
+    .table tbody tr {
+        margin-bottom: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 8px;
+    }
+
+    .table tbody td {
+        border: none;
+        padding: 6px 8px;
+        font-size: 13px;
+    }
+}

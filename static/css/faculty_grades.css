@@ -1,0 +1,102 @@
+/* ===== Faculty Internals / Grades Page ===== */
+
+.page-header {
+    margin-bottom: 20px;
+}
+
+.page-header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.page-header p {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* Card Grid */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+/* Card */
+.card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* Course Code */
+.card h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2563eb;
+    margin-bottom: 8px;
+}
+
+/* Course Info */
+.card p {
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 14px;
+}
+
+.card p small {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+/* Upload Button */
+.card .btn {
+    align-self: flex-start;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    text-decoration: none;
+    background-color: #2563eb;
+    color: #ffffff;
+    transition: background-color 0.2s ease;
+}
+
+.card .btn:hover {
+    background-color: #1d4ed8;
+}
+
+/* Empty State */
+.card-grid > p {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-style: italic;
+    color: #6b7280;
+    margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .page-header h2 {
+        font-size: 20px;
+    }
+
+    .card h4 {
+        font-size: 16px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+}

@@ -1,12 +1,12 @@
-/* ===== Page Layout ===== */
+/* ===== PAGE LAYOUT ===== */
 .student-page {
-    padding: 28px;
-    max-width: 1200px;
+    padding: 32px;
+    max-width: 1100px;
     margin: 0 auto;
 }
 
 .page-header {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .page-header h2 {
@@ -15,119 +15,51 @@
     color: #1f2937;
 }
 
-/* ===== Card ===== */
+/* ===== CARD ===== */
 .student-card {
+    max-width: 620px;
+    margin: 0 auto;
     background: #ffffff;
     border-radius: 14px;
-    padding: 24px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    padding: 28px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
 }
 
 .student-card h2 {
     font-size: 20px;
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     color: #1f2937;
 }
 
 .student-card p {
     font-size: 14px;
     color: #374151;
-    margin-bottom: 10px;
 }
 
-/* ===== Table ===== */
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 16px;
+/* ===== ASSIGNMENT META ===== */
+.assignment-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
-.data-table thead {
-    background-color: #f1f5f9;
-}
-
-.data-table th {
-    padding: 14px 16px;
-    text-align: left;
-    font-size: 13px;
-    font-weight: 600;
-    color: #334155;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.data-table td {
-    padding: 14px 16px;
+.assignment-meta div {
+    background: #f9fafb;
+    padding: 10px 14px;
+    border-radius: 8px;
     font-size: 14px;
+    color: #374151;
+}
+
+.assignment-meta strong {
     color: #111827;
-    border-bottom: 1px solid #e5e7eb;
 }
 
-.data-table tr:last-child td {
-    border-bottom: none;
-}
-
-.data-table tr:hover {
-    background-color: #f8fafc;
-}
-
-/* ===== Status Badges ===== */
-.status {
-    padding: 4px 12px;
-    border-radius: 14px;
-    font-size: 12px;
-    font-weight: 600;
-    display: inline-block;
-}
-
-.status.active {
-    background-color: #dcfce7;
-    color: #166534;
-}
-
-.status.closed {
-    background-color: #fee2e2;
-    color: #991b1b;
-}
-
-/* ===== Buttons ===== */
-.btn-primary {
-    background-color: #2563eb;
-    color: #ffffff;
-    padding: 6px 14px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 500;
-}
-
-.btn-secondary {
-    background-color: #e5e7eb;
-    color: #111827;
-    padding: 6px 14px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 13px;
-}
-
-.btn-primary:hover {
-    background-color: #1d4ed8;
-}
-
-.btn-secondary:hover {
-    background-color: #d1d5db;
-}
-
-/* ===== Empty State ===== */
-.empty-state {
-    text-align: center;
-    padding: 32px 0;
-    font-size: 14px;
-    color: #6b7280;
-}
-
+/* ===== FORM ===== */
 .form-group {
-    margin-top: 18px;
+    margin-top: 20px;
 }
 
 .form-group label {
@@ -138,151 +70,83 @@
     color: #1f2937;
 }
 
-/* File input */
-.form-group input[type="file"] {
-    display: block;
+/* File Upload Box */
+.file-input {
+    border: 2px dashed #c7d2fe;
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 10px;
+}
+
+.file-input input[type="file"] {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
     font-size: 14px;
-    background: #ffffff;
     cursor: pointer;
 }
+
+/* ===== ACTION BUTTONS ===== */
 .form-actions {
-    margin-top: 22px;
+    margin-top: 26px;
     display: flex;
     gap: 14px;
 }
 
+/* Primary Button */
 .btn-primary {
     background-color: #2563eb;
     color: #ffffff;
-    padding: 8px 18px;
-    border-radius: 6px;
+    padding: 10px 22px;
+    border-radius: 8px;
     border: none;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    text-decoration: none;
 }
 
 .btn-primary:hover {
     background-color: #1d4ed8;
 }
 
+/* Secondary Button */
 .btn-secondary {
     background-color: #e5e7eb;
     color: #111827;
-    padding: 8px 18px;
-    border-radius: 6px;
+    padding: 10px 22px;
+    border-radius: 8px;
     font-size: 14px;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .btn-secondary:hover {
     background-color: #d1d5db;
 }
 
-.student-page .student-card {
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 24px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-}
-
-.student-page .student-card h2 {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: #1f2937;
-}
-
-.student-page .student-card p {
+/* ===== EMPTY STATE ===== */
+.empty-state {
+    text-align: center;
+    padding: 36px 0;
     font-size: 14px;
-    color: #374151;
-    margin-bottom: 10px;
+    color: #6b7280;
 }
 
-.student-page .form-group {
-    margin-top: 18px;
-}
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+    .student-card {
+        padding: 22px;
+    }
 
-.student-page .form-group label {
-    display: block;
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 6px;
-    color: #1f2937;
-}
+    .assignment-meta {
+        grid-template-columns: 1fr;
+    }
 
-.student-page .form-group input[type="file"] {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 14px;
-    background: #ffffff;
-}
+    .form-actions {
+        flex-direction: column;
+    }
 
-.student-page .form-actions {
-    margin-top: 22px;
-    display: flex;
-    gap: 14px;
-    align-items: center;
-}
-
-.student-page .btn-primary {
-    background-color: #2563eb;
-    color: #ffffff;
-    padding: 10px 20px;
-    border-radius: 6px;
-    border: none;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.student-page .btn-primary:hover {
-    background-color: #1d4ed8;
-}
-
-.student-page .btn-secondary {
-    background-color: #e5e7eb;
-    color: #111827;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-size: 14px;
-    text-decoration: none;
-}
-
-.student-page .btn-secondary:hover {
-    background-color: #d1d5db;
-}
-
-.assignment-meta {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 18px;
-    font-size: 14px;
-}
-
-.assignment-meta div {
-    background: #f9fafb;
-    padding: 10px 12px;
-    border-radius: 8px;
-    color: #374151;
-}
-
-.assignment-meta strong {
-    color: #111827;
-}
-
-.file-input {
-    border: 1px dashed #cbd5f5;
-    background: #f8fafc;
-    padding: 14px;
-    border-radius: 8px;
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
 }

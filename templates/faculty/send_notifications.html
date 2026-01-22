@@ -1,7 +1,9 @@
-{% extends "faculty/faculty_base.html" %}
-
+{% extends "dashboard/base.html" %}
+{% load static %}
 {% block title %}Send Notification{% endblock %}
-
+{% block extra_css%}
+<link rel = "stylesheet" href="{% static 'css/notifications.css' %}">
+{% endblock %}
 {% block content %}
 <div class="faculty-page">
 

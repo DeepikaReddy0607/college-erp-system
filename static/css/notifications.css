@@ -1,0 +1,133 @@
+/* ===== Faculty Send Notification Page ===== */
+
+.faculty-page {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 24px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Page Title */
+.faculty-page h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Form Layout */
+.faculty-page form {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    row-gap: 14px;
+    column-gap: 20px;
+    align-items: center;
+}
+
+/* Labels */
+.faculty-page label {
+    font-weight: 500;
+    color: #374151;
+}
+
+/* Inputs, Selects, Textarea */
+.faculty-page input[type="text"],
+.faculty-page textarea,
+.faculty-page select {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    outline: none;
+}
+
+/* Textarea */
+.faculty-page textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+/* Focus state */
+.faculty-page input:focus,
+.faculty-page textarea:focus,
+.faculty-page select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+}
+
+/* Submit Button */
+.faculty-page button {
+    grid-column: 2 / -1;
+    margin-top: 12px;
+    width: fit-content;
+    padding: 10px 20px;
+    background-color: #2563eb;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Button Hover */
+.faculty-page button:hover {
+    background-color: #1d4ed8;
+}
+
+/* Responsive (Mobile Friendly) */
+@media (max-width: 640px) {
+    .faculty-page form {
+        grid-template-columns: 1fr;
+    }
+
+    .faculty-page label {
+        margin-bottom: -6px;
+    }
+
+    .faculty-page button {
+        grid-column: 1;
+    }
+}
+
+/* ===== Notifications Inbox ===== */
+
+.notification-list {
+    margin-top: 16px;
+}
+
+.notification-card {
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    background: #f9fafb;
+    border-left: 4px solid #2563eb;
+}
+
+.notification-card.unread {
+    background: #eef2ff;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.notification-header .type {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.notification-card p {
+    margin: 6px 0;
+    color: #374151;
+}
+
+.notification-card .time {
+    font-size: 12px;
+    color: #6b7280;
+}

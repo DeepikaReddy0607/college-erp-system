@@ -1,0 +1,52 @@
+{% extends "student/stu_base.html" %}
+
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/student_doubts.css' %}">
+{% endblock %}
+
+{% block title %}Doubt{% endblock %}
+
+{% block student_content %}
+<div class="student-page">
+
+    <div class="student-card">
+        <h3>{{ doubt.title }}</h3>
+        <p class="doubt-desc-full">{{ doubt.description }}</p>
+
+        <div class="doubt-meta">
+            <span>{{ doubt.course.course_code }}</span>
+            <span>{{ doubt.created_at|date:"d M Y, h:i A" }}</span>
+        </div>
+    </div>
+
+    <div class="student-card">
+        <h4>Replies</h4>
+
+        {% for ans in doubt.answers.all %}
+            <div class="answer-card {% if ans.is_accepted %}accepted{% endif %}">
+                <p><strong>{{ ans.author.username }}</strong></p>
+                <p>{{ ans.content }}</p>
+
+                {% if ans.is_accepted %}
+                    <span class="status resolved">Accepted</span>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p class="empty-state">No replies yet.</p>
+        {% endfor %}
+    </div>
+
+    {% if not doubt.is_resolved %}
+    <div class="student-card">
+        <form method="post">
+            {% csrf_token %}
+            <label>Your Reply</label>
+            <textarea name="content" required></textarea>
+            <button class="btn-primary">Post Reply</button>
+        </form>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

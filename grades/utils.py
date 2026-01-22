@@ -1,35 +1,46 @@
-
-from grades.models import StudentGrade
+from grades.models import FinalGrade
 
 
 def calculate_sgpa(student, semester):
-    records = StudentGrade.objects.filter(
+    grades = FinalGrade.objects.filter(
         student=student,
-        subject__semester=semester
-    ).select_related("subject")
+        is_frozen=True,
+        course_offering__semester=semester
+    ).select_related("course_offering__course")
 
-    total_points = 0
     total_credits = 0
+    weighted_sum = 0
 
-    for r in records:
-        total_points += r.grade_point * r.subject.credits
-        total_credits += r.subject.credits
+    for g in grades:
+        credits = g.course_offering.course.credits
+        if not credits:
+            continue
+        total_credits += credits
+        weighted_sum += credits * g.grade_point
 
-    return round(total_points / total_credits, 2) if total_credits else 0
+    if total_credits == 0:
+        return None
+
+    return round(weighted_sum / total_credits, 2)
+
 
 def calculate_cgpa(student):
-    records = StudentGrade.objects.select_related("subject").filter(student=student)
+    grades = FinalGrade.objects.filter(
+        student=student,
+        is_frozen=True
+    ).select_related("course_offering__course")
 
-    total_points = 0
     total_credits = 0
+    weighted_sum = 0
 
-    for r in records:
-        total_points += r.grade_point * r.subject.credits
-        total_credits += r.subject.credits
+    for g in grades:
+        credits = g.course_offering.course.credits
+        if not credits:
+            continue
+        total_credits += credits
+        weighted_sum += credits * g.grade_point
 
-    return round(total_points / total_credits, 2) if total_credits else 0
+    if total_credits == 0:
+        return None
 
-def can_upload_grades(user, subject):
-    if hasattr(user, "facultyprofile"):
-        return True  
-    return False
+    return round(weighted_sum / total_credits, 2)

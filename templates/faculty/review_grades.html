@@ -1,0 +1,76 @@
+{% extends "dashboard/base.html" %}
+{% load static custom_filters %}
+
+{% block content %}
+<h2>
+    Review Computed Grades –
+    {{ offering.course.course_code }}
+    (Y{{ offering.year }}{{ offering.section }})
+</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Roll No</th>
+                <th>Name</th>
+                <th>Computed Grade</th>
+                <th>Grade Point</th>
+                <th>Status</th>
+                <th>Approve</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for cg in computed_grades %}
+            {% with approval=approvals|get_item:cg.student.id %}
+            <tr>
+                <td>{{ cg.student.username }}</td>
+                <td>{{ cg.student.get_full_name|default:"-" }}</td>
+
+                <td>
+                    <strong>{{ cg.computed_grade }}</strong>
+                </td>
+
+                <td>
+                    {{ cg.grade_point }}
+                </td>
+
+                <td>
+                    {% if approval and approval.is_approved %}
+                        <span class="status approved">Approved</span>
+                    {% else %}
+                        <span class="status pending">Pending</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if approval and approval.is_approved %}
+                        ✔
+                    {% else %}
+                        <input
+                            type="checkbox"
+                            name="approve_{{ cg.student.id }}"
+                        >
+                    {% endif %}
+                </td>
+            </tr>
+            {% endwith %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="margin-top: 20px;">
+        <button type="submit" class="btn-primary">
+            Save Approvals
+        </button>
+    </div>
+</form>
+
+<p style="margin-top: 15px; color: #6b7280;">
+    Note: Grades shown above are computed by the Exam Section.
+    Approved grades can be published and frozen in the next step.
+</p>
+{% endblock %}

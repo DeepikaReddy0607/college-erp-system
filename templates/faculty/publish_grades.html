@@ -1,0 +1,74 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>
+    Publish & Freeze Grades –
+    {{ offering.course.course_code }}
+    (Y{{ offering.year }}{{ offering.section }})
+</h2>
+
+<div class="alert alert-warning" style="margin-bottom: 20px;">
+    <strong>Warning:</strong>
+    Once grades are published, they will be <strong>frozen permanently</strong>.
+    No edits or re-uploads will be possible.
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Roll No</th>
+                <th>Name</th>
+                <th>Final Grade</th>
+                <th>Grade Point</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for approval in approved_grades %}
+            <tr>
+                <td>{{ approval.student.username }}</td>
+                <td>{{ approval.student.get_full_name|default:"-" }}</td>
+                <td>
+                    {{ approval.gradecomputation.computed_grade }}
+                </td>
+                <td>
+                    {{ approval.gradecomputation.grade_point }}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align:center; color:#6b7280;">
+                    No approved grades available for publishing.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if approved_grades %}
+    <div style="margin-top: 25px;">
+        <label style="display:block; margin-bottom:10px;">
+            <input type="checkbox" required>
+            I confirm that all grades above are correct and approved.
+        </label>
+
+        <button
+            type="submit"
+            class="btn-danger"
+            onclick="return confirm('This action will permanently freeze all grades. Continue?');"
+        >
+            Publish & Freeze Grades
+        </button>
+    </div>
+    {% endif %}
+</form>
+
+<p style="margin-top: 15px; color: #6b7280;">
+    Published grades will immediately become visible to students
+    and will be used for SGPA/CGPA calculations.
+</p>
+{% endblock %}

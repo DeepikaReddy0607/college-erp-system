@@ -25,9 +25,9 @@
             <li><a href="{% url 'student_dashboard' %}" id="dashboard-active">Dashboard</a></li>
             <li><a href="{% url 'student_attendance' %}" id="attendance-active">Attendance</a></li>
             <li><a href="#" id="grade-active">Grades</a></li>
-            <li><a href="#" id="timetable-active">Timetable</a></li>
+            <li><a href="{% url 'student_timetable' %}" id="timetable-active">Timetable</a></li>
             <li><a href="{% url 'student_assignments' %}" id="assignments-active">Assignments</a></li>
-            <li><a href="#">Doubts Forum</a></li>
+            <li><a href="{% url 'student_doubts' %}">Doubts Forum</a></li>
             <li>
                 <a href="{% url 'student_notifications' %}" id="notifications-active"> 
                 Notifications
@@ -36,6 +36,7 @@
                 {% endif %}
                 </a>
             </li>
+            <li><a href="{% url 'student_exam_schedule' %}">Exams</a></li>
             <li><a href="#">Holidays</a></li>
             <li><a href="#">Events & Workshops</a></li>
             <li><a href="#">Profile</a></li>

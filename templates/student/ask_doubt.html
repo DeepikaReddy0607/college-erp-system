@@ -1,0 +1,43 @@
+{% extends "student/stu_base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/student_doubts.css' %}">
+{% endblock %}
+
+{% block title %}Ask Doubt{% endblock %}
+
+{% block student_content %}
+<div class="student-page">
+    <div class="student-card">
+
+        <h2>Ask a Doubt</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label>Course</label>
+            <select name="course" required>
+                {% for o in offerings %}
+                    <option value="{{ o.course.id }}">{{ o.course.course_code }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Doubt Type</label>
+            <select name="doubt_type">
+                <option value="SECTION">Ask Section</option>
+                <option value="FACULTY">Ask Faculty</option>
+            </select>
+
+            <label>Title</label>
+            <input type="text" name="title" required>
+
+            <label>Description</label>
+            <textarea name="description" required></textarea>
+
+            <button type="submit" class="btn-primary">Post Doubt</button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

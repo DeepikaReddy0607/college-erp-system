@@ -1,0 +1,42 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_grades.css' %}">
+{% endblock %}
+
+{% block title %}Internals / Grades{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Internals / Grade Upload</h2>
+    <p>Select a course to upload or update grades</p>
+</div>
+
+<div class="card-grid">
+    {% for assignment in assignments %}
+        <div class="card">
+            <h4>
+                {{ assignment.offering.course.course_code }}
+            </h4>
+
+            <p>
+                {{ assignment.offering.course.course_title }}<br>
+                <small>
+                    Year {{ assignment.offering.year }}
+                    {{ assignment.offering.section }}
+                </small>
+            </p>
+
+            <a
+                class="btn btn-primary"
+                href="{% url 'upload_grades' assignment.offering.course.id %}"
+            >
+                Upload Grades
+            </a>
+        </div>
+    {% empty %}
+        <p>No courses assigned yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

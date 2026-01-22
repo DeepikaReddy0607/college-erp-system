@@ -4,6 +4,8 @@ from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+
+from academics.models import FacultyAssignment
 from .models import Department, StudentProfile, FacultyProfile, OTPVerification
 from django.contrib import messages
 from notifications.models import Notification, NotificationRecipient
@@ -196,9 +198,44 @@ def faculty_dashboard_view(request):
         return redirect("dashboard")
     return render(request, "dashboard/faculty_dashboard.html")
 
+from academics.models import FacultyAssignment
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
 @login_required
 def faculty_courses_view(request):
-    return render(request, "dashboard/my_courses.html")
+    print("====================================")
+    print("LOGGED IN USER:", request.user)
+    print("LOGGED IN USER ID:", request.user.id)
+
+    all_assignments = FacultyAssignment.objects.all()
+    print("TOTAL FacultyAssignment COUNT:", all_assignments.count())
+
+    user_assignments = FacultyAssignment.objects.filter(
+        faculty=request.user
+    )
+    print("USER ASSIGNMENTS COUNT:", user_assignments.count())
+
+    for a in all_assignments:
+        print(
+            "ASSIGNMENT → faculty:",
+            a.faculty,
+            "faculty_id:",
+            a.faculty.id,
+            "| offering:",
+            a.offering
+        )
+
+    print("====================================")
+
+    return render(
+        request,
+        "dashboard/my_courses.html",
+        {
+            "assignments": user_assignments
+        }
+    )
+
 
 def logout_view(request):
     logout(request)

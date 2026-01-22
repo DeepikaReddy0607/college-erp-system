@@ -9,51 +9,62 @@
 
 {% block content %}
 <style>
-#course-active{
+#course-active {
     background: #2f3e8f;
     color: #ffffff;
-    }
+}
 </style>
+
 <div class="courses-wrapper">
 
+    {% for assignment in assignments %}
+    {% with offering=assignment.offering course=assignment.offering.course %}
     <div class="course-card">
+
         <div class="course-header">
-            <h3>CS2051 – Database Management Systems</h3>
-            <span class="badge theory">Theory</span>
+            <h3>
+                {{ course.course_code }} – {{ course.course_name }}
+            </h3>
+
+            {% if course.is_lab %}
+                <span class="badge lab">Lab</span>
+            {% else %}
+                <span class="badge theory">Theory</span>
+            {% endif %}
         </div>
 
         <div class="course-meta">
-            <span>II Year • II Sem</span>
-            <span>CSE • Section A</span>
-            <span>Credits: 3</span>
+            <span>
+                Year {{ offering.year }} • Sem {{ offering.semester }}
+            </span>
+            <span>
+                {{ offering.course.department }} • Section {{ offering.section }}
+            </span>
+            <span>
+                Credits: {{ course.credits }}
+            </span>
         </div>
 
         <div class="course-actions">
-            <a href="#" class="btn primary">Attendance</a>
-            <a href="#" class="btn">Assignments</a>
-            <a href="#" class="btn">Internals</a>
-            <a href="#" class="btn outline">Students</a>
+            <a href="{% url 'faculty_attendance' %}" class="btn primary">
+                Attendance
+            </a>
+
+            <a href="{% url 'faculty_assignments' %}" class="btn">
+                Assignments
+            </a>
+
+            <a href="{% url 'faculty_submit_marks' offering.id %}" class="btn">
+                Submit Marks
+            </a>
+
         </div>
+
     </div>
-
-    <div class="course-card">
-        <div class="course-header">
-            <h3>CS2052 – DBMS Lab</h3>
-            <span class="badge lab">Lab</span>
-        </div>
-
-        <div class="course-meta">
-            <span>II Year • II Sem</span>
-            <span>CSE • Section B</span>
-            <span>Credits: 1</span>
-        </div>
-
-        <div class="course-actions">
-            <a href="#" class="btn primary">Attendance</a>
-            <a href="#" class="btn">Assignments</a>
-            <a href="#" class="btn outline">Students</a>
-        </div>
-    </div>
+    {% endwith %}
+    {% empty %}
+    <p style="color:#6b7280;">No courses assigned.</p>
+    {% endfor %}
 
 </div>
 {% endblock %}

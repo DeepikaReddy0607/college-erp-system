@@ -54,7 +54,7 @@ def faculty_send_notification(request):
 
     return render(
         request,
-        "faculty/send_notification.html",
+        "faculty/send_notifications.html",
         {"is_hod": hod}
     )
 
@@ -135,6 +135,6 @@ def faculty_notifications(request):
 
     return render(
         request,
-        "faculty/notifications.html",
+        "faculty/faculty_notifications.html",
         {"notifications": notifications}
     )
