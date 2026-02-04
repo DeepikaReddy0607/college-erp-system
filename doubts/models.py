@@ -59,3 +59,19 @@ class DoubtAnswer(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+class AnswerUpvote(models.Model):
+    answer = models.ForeignKey(
+        DoubtAnswer,
+        on_delete=models.CASCADE,
+        related_name="upvotes"
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        unique_together = ("answer", "user")
+
+    def __str__(self):
+        return f"{self.user} upvored {self.answer.id}"

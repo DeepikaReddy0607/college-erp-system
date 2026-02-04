@@ -1,3 +1,4 @@
+<h1 style="color:red">DEBUG ASK DOUBT TEMPLATE</h1>
 {% extends "student/stu_base.html" %}
 {% load static %}
 
@@ -23,6 +24,15 @@
                 {% endfor %}
             </select>
 
+            <label>Offering</label>
+            <select name="offering" required>
+                {% for o in offerings %}
+                    <option value="{{ o.id }}">
+                        {{ o.course.course_code }} - {{ o.faculty.user.username }}
+                    </option>
+                {% endfor %}
+            </select>
+
             <label>Doubt Type</label>
             <select name="doubt_type">
                 <option value="SECTION">Ask Section</option>
@@ -37,7 +47,6 @@
 
             <button type="submit" class="btn-primary">Post Doubt</button>
         </form>
-
     </div>
 </div>
 {% endblock %}

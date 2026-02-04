@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 
 from notifications.utils import notify
-from .models import Doubt, DoubtAnswer
+from .models import AnswerUpvote, Doubt, DoubtAnswer
 from academics.models import CourseOffering, FacultyAssignment
 
 
@@ -51,6 +51,8 @@ def ask_doubt(request):
         doubt_type = request.POST.get("doubt_type")
         title = request.POST.get("title", "").strip()
         description = request.POST.get("description", "").strip()
+        print("POST KEYS:", request.POST.keys())
+        print("OFFERING VALUE:", request.POST.get("offering"))
 
         if not all([course, offering, doubt_type, title, description]):
             return render(
@@ -115,7 +117,6 @@ def doubt_detail(request, doubt_id):
     else:
         return HttpResponseForbidden("Not allowed")
 
-    # ===== POST ANSWER =====
     if request.method == "POST":
         if doubt.is_resolved:
             return HttpResponseForbidden("Doubt already resolved")
@@ -132,11 +133,11 @@ def doubt_detail(request, doubt_id):
                 message=f"New reply on your doubt: {doubt.title}"
             )
 
-        return redirect("doubt_detail", doubt_id=doubt.id)
+        return redirect("student_doubt_detail", doubt_id=doubt.id)
 
     return render(
         request,
-        "doubts/doubt_detail.html",
+        "faculty/doubt_detail.html",
         {"doubt": doubt}
     )
 
@@ -191,7 +192,9 @@ def faculty_doubts(request):
     )
 
     doubts = Doubt.objects.filter(
-        offering__in=[a.offering for a in assignments],
+        offering__course__in=assignments.values_list(
+            "offering__course", flat=True
+        ),
         doubt_type="FACULTY"
     ).order_by("-created_at")
 
@@ -200,3 +203,42 @@ def faculty_doubts(request):
         "faculty/doubts_list.html",
         {"doubts": doubts}
     )
+
+@login_required
+def toggle_upvote(request, answer_id):
+    answer = get_object_or_404(DoubtAnswer, id=answer_id)
+    doubt = answer.doubt
+    user = request.user
+
+    if hasattr(user, "studentprofile"):
+        sp = user.studentprofile
+        if(
+            doubt.offering.department != sp.department or
+            doubt.offering.year != sp.year or
+            doubt.offering.section != sp.section
+        ):
+            return HttpResponseForbidden("Not allowed")
+        
+        if doubt.doubt_type == "FACULTY" and doubt.author != user:
+            return HttpResponseForbidden("Not allowed")
+    
+    elif hasattr(user, "facultyprofile"):
+        if not FacultyAssignment.objects.filter(
+            faculty = user,
+            offering=doubt.offering,
+            is_active=True
+        ).exists():
+            return HttpResponseForbidden("Not allowed")
+    
+    else:
+        return HttpResponseForbidden("Not allowed")
+    
+    upvote, created = AnswerUpvote.objects.get_or_create(
+        answer=answer,
+        user=user
+    )
+
+    if not created:
+        upvote.delete()
+    
+    return redirect("doubt_detail", doubt_id=doubt.id)

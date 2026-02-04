@@ -1,0 +1,89 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_doubts.css' %}">
+{% endblock %}
+
+{% block title %}Faculty Doubt{% endblock %}
+
+{% block content %}
+<div class="faculty-page">
+
+    <div class="faculty-card">
+        <h3>{{ doubt.title }}</h3>
+
+        <p class="doubt-desc-full">
+            {{ doubt.description }}
+        </p>
+
+        <div class="doubt-meta">
+            <span><strong>Course:</strong> {{ doubt.course.course_code }}</span>
+            <span><strong>Asked by:</strong> {{ doubt.author.username }}</span>
+            <span>{{ doubt.created_at|date:"d M Y, h:i A" }}</span>
+        </div>
+
+        {% if doubt.is_resolved %}
+            <span class="status resolved">Resolved</span>
+        {% else %}
+            <span class="status open">Open</span>
+        {% endif %}
+    </div>
+
+    <div class="faculty-card">
+        <h4>Answers</h4>
+
+        {% for ans in doubt.answers.all %}
+            <div class="answer-card {% if ans.is_accepted %}accepted{% endif %}">
+
+                <div class="answer-header">
+                    <strong>{{ ans.author.username }}</strong>
+                    <span class="answer-time">
+                        {{ ans.created_at|date:"d M Y, h:i A" }}
+                    </span>
+                </div>
+
+                <p class="answer-content">
+                    {{ ans.content }}
+                </p>
+
+                <div class="answer-actions">
+
+                    <span class="upvote-count">
+                        👍 {{ ans.upvotes.count }}
+                    </span>
+
+                    {% if not doubt.is_resolved %}
+                        <form method="post" action="{% url 'accept_answer' ans.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="accept-btn">
+                                Mark as Correct
+                            </button>
+                        </form>
+                    {% endif %}
+
+                    {% if ans.is_accepted %}
+                        <span class="status resolved">Accepted</span>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% empty %}
+            <p class="empty-state">No answers yet.</p>
+        {% endfor %}
+    </div>
+
+    {% if not doubt.is_resolved %}
+    <div class="faculty-card">
+        <h4>Your Reply</h4>
+
+        <form method="post">
+            {% csrf_token %}
+            <textarea name="content" required placeholder="Write a clear and concise explanation..."></textarea>
+            <button class="btn-primary">Post Reply</button>
+        </form>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

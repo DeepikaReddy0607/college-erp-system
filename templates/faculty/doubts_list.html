@@ -1,0 +1,53 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_doubts.css' %}">
+{% endblock %}
+
+{% block title %}Faculty Doubts{% endblock %}
+
+{% block content %}
+<div class="faculty-page">
+
+    <div class="page-header">
+        <h2>Student Doubts</h2>
+        <p class="subtext">
+            Doubts raised by students for subjects you handle
+        </p>
+    </div>
+
+    {% for doubt in doubts %}
+        <a href="{% url 'faculty_doubt_detail' doubt.id %}" class="doubt-link">
+            <div class="faculty-card doubt-item">
+
+                <div class="doubt-header">
+                    <h4>{{ doubt.title }}</h4>
+
+                    {% if doubt.is_resolved %}
+                        <span class="status resolved">Resolved</span>
+                    {% else %}
+                        <span class="status open">Open</span>
+                    {% endif %}
+                </div>
+
+                <p class="doubt-preview">
+                    {{ doubt.description|truncatechars:120 }}
+                </p>
+
+                <div class="doubt-meta">
+                    <span><strong>Course:</strong> {{ doubt.course.course_code }}</span>
+                    <span><strong>Student:</strong> {{ doubt.author.username }}</span>
+                    <span>{{ doubt.created_at|date:"d M Y" }}</span>
+                </div>
+
+            </div>
+        </a>
+    {% empty %}
+        <div class="faculty-card empty-state">
+            No doubts available.
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}

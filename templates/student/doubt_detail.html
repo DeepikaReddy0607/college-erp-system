@@ -25,12 +25,40 @@
 
         {% for ans in doubt.answers.all %}
             <div class="answer-card {% if ans.is_accepted %}accepted{% endif %}">
-                <p><strong>{{ ans.author.username }}</strong></p>
-                <p>{{ ans.content }}</p>
 
-                {% if ans.is_accepted %}
-                    <span class="status resolved">Accepted</span>
-                {% endif %}
+                <div class="answer-header">
+                    <strong>{{ ans.author.username }}</strong>
+                    <span class="answer-time">
+                        {{ ans.created_at|date:"d M Y, h:i A" }}
+                    </span>
+                </div>
+
+                <p class="answer-content">{{ ans.content }}</p>
+
+                <div class="answer-actions">
+                    <form method="post" action="{% url 'toggle_upvote' ans.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="upvote-btn">
+                            👍 {{ ans.upvotes.count }}
+                        </button>
+                    </form>
+
+                    {% if not doubt.is_resolved %}
+                        {% if user == doubt.author or user.facultyprofile %}
+                            <form method="post" action="{% url 'accept_answer' ans.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="accept-btn">
+                                    Accept
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if ans.is_accepted %}
+                        <span class="status resolved">Accepted</span>
+                    {% endif %}
+
+                </div>
             </div>
         {% empty %}
             <p class="empty-state">No replies yet.</p>
