@@ -1,0 +1,39 @@
+{% extends "student/stu_base.html" %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'student_events.css' %}">
+{% endblock %}
+
+{% block student_content %}
+
+<div class="event-detail">
+    <h2>{{ event.title }}</h2>
+
+    <p class="meta">
+        {{ event.organizer }} |
+        {{ event.event_type }}
+    </p>
+
+    <p>
+        <strong>From:</strong>
+        {{ event.start_datetime|date:"d M Y, H:i" }} <br>
+        <strong>To:</strong>
+        {{ event.end_datetime|date:"d M Y, H:i" }}
+    </p>
+
+    <p><strong>Venue:</strong> {{ event.venue }}</p>
+
+    <p class="desc">
+        {{ event.description }}
+    </p>
+
+    <a href="{{ event.registration_link }}" target="_blank" class="btn btn-primary">
+        Register
+    </a>
+</div>
+
+{% endblock %}

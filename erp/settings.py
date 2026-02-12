@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'timetable',
     'doubts',
     'exams',
+    'events'
 ]
 
 MIDDLEWARE = [
@@ -83,9 +84,17 @@ WSGI_APPLICATION = 'erp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'erp_db',
+        'USER': 'postgres',
+        'PASSWORD': 'Deepika@30',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
+    # 'default': {
+    #    'ENGINE': 'django.db.backends.sqlite3',
+    #    'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
 
 

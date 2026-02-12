@@ -1,0 +1,70 @@
+/* Page heading */
+.student-page h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #222;
+}
+
+/* Event list layout */
+.event-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+/* Event card */
+.event-card {
+    background: #ffffff;
+    padding: 18px 20px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Past event appearance */
+.event-card.past {
+    opacity: 0.75;
+}
+
+/* Meta text */
+.meta {
+    margin: 8px 0 12px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    margin-right: 10px;
+    margin-top: 10px;
+    padding: 8px 14px;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 5px;
+    background-color: #e0e0e0;
+    color: #000;
+}
+
+.btn-primary {
+    background-color: #2f3e9e;   /* matches top bar */
+    color: #fff;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* Empty state */
+.empty {
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 6px;
+    border: 1px dashed #ccc;
+    color: #555;
+}
