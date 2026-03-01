@@ -25,11 +25,27 @@
             <strong>Date:</strong> {{ session.date }} |
             <strong>Time:</strong> {{ session.start_time }} – {{ session.end_time }}
         </p>
+        <p>
+            <strong>Status:</strong>
+            {% if session.status == "locked" %}
+            <span class="locked">LOCKED</span>
+            {% else %}
+            <span class="open">OPEN</span>
+            {% endif %}
+        </p>
     </div>
 
-    <div class="warning-box">
-        ⚠️ You are editing attendance. All changes will be logged.
+    {% if error %}
+    <div class="error-box">
+        {{ error }}
     </div>
+    {% endif %}
+
+    {% if session.status == "open" %}
+        <div class="warning-box">
+            You are editing an open attendance session. Changes will be reflected immediately.
+        </div>
+    {% end if %}
 
     <form method="POST">
         {% csrf_token %}
@@ -53,7 +69,8 @@
                             <input type="radio"
                                    name="status_{{ record.student.id }}"
                                    value="present"
-                                   {% if record.status == "present" %}checked{% endif %}>
+                                   {% if record.status == "present" %}checked{% endif %}
+                                   {% if session.status == "locked" %}disabled{% endif %}>
                             Present
                         </label>
 
@@ -61,21 +78,61 @@
                             <input type="radio"
                                    name="status_{{ record.student.id }}"
                                    value="absent"
-                                   {% if record.status == "absent" %}checked{% endif %}>
+                                   {% if record.status == "absent" %}checked{% endif %}
+                                   {% if session.status == "locked" %}disabled{% endif %}>
                             Absent
                         </label>
+
+                        <label>
+                            <input type="radio"
+                                   name="status_{{ record.student.id }}"
+                                   value="excused"
+                                   {% if record.status == "excused" %}checked{% endif %}
+                                   {% if session.status == "locked" %}disabled{% endif %}>
+                            Excused
+                        </label>
+
+                        <label>
+                            <input type="radio"
+                                   name="status_{{ record.student.id }}"
+                                   value="late"
+                                   {% if record.status == "late" %}checked{% endif %}
+                                   {% if session.status == "locked" %}disabled{% endif %}>
+                            Late
+                        </label>
+
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
+        {% if session.status == "open" %}
+        <div class="reason-box">
+            <label>Reason for Changes (optional)</label>
+            <textarea name="reason" rows="3"
+                      placeholder="Explain why attendance is being modified..."></textarea>
+        </div>
+
         <div class="action-bar">
-            <a href="{% url 'attendance_history' session.course_offering.id %}" class="btn outline">
+            <a href="{% url 'attendance_history' session.course_offering.id %}"
+               class="btn outline">
                 Cancel
             </a>
-            <button type="submit" class="btn primary">Save Changes</button>
+
+            <button type="submit" class="btn primary">
+                Save Changes
+            </button>
         </div>
+        {% else %}
+        <div class="action-bar">
+            <a href="{% url 'attendance_history' session.course_offering.id %}"
+               class="btn outline">
+                Back
+            </a>
+        </div>
+        {% endif %}
+
     </form>
 
 </div>

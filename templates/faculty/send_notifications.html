@@ -25,12 +25,23 @@
             <option value="CRITICAL">Critical</option>
         </select>
 
+        <label>Select Subject (Course Offering)</label>
+        <select name="course_offering_id" required>
+            {% for co in faculty_course_offerings %}
+                <option value="{{ co.id }}">
+                    {{ co.course.name }} |
+                    Semester {{ co.semester.number }} |
+                    Section {{ co.section }}
+                </option>
+            {% endfor %}
+        </select>
+
         <label>Send To</label>
-        <select name="recipient_type" required>
-            <option value="students">Students</option>
+        <select name="recipient_scope" required>
+            <option value="students">Students of this Subject</option>
 
             {% if is_hod %}
-            <option value="faculty">Faculty (My Department)</option>
+                <option value="department">Entire Department</option>
             {% endif %}
         </select>
 

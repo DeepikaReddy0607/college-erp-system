@@ -23,7 +23,7 @@
     <aside class="sidebar">
         <ul class="nav-list">
             <li><a href="{% url 'student_dashboard' %}" id="dashboard-active">Dashboard</a></li>
-            <li><a href="{% url 'student_attendance' %}" id="attendance-active">Attendance</a></li>
+            <li><a href="{% url 'attendance:student_attendance' %}" id="attendance-active">Attendance</a></li>
             <li><a href="#" id="grade-active">Grades</a></li>
             <li><a href="{% url 'student_timetable' %}" id="timetable-active">Timetable</a></li>
             <li><a href="{% url 'student_assignments' %}" id="assignments-active">Assignments</a></li>
@@ -31,15 +31,17 @@
             <li>
                 <a href="{% url 'student_notifications' %}" id="notifications-active"> 
                 Notifications
-                {% if unread_notifications_count %}
-                    <span class="badge">{{ unread_notifications_count }}</span>
+                {% if unread_notifications_count > 0 %}
+                    <span class="badge">
+                        {{ unread_notifications_count }}
+                    </span>
                 {% endif %}
                 </a>
             </li>
             <li><a href="{% url 'student_exam_schedule' %}">Exams</a></li>
             <li><a href="#">Holidays</a></li>
             <li><a href="{% url 'student_upcoming_events' %}">Events & Workshops</a></li>
-            <li><a href="#"> Profile</a></li>
+            <li><a href="{% url 'profile' %}"> Profile</a></li>
         </ul>
     </aside>
     {% endblock %}

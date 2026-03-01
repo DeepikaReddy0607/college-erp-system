@@ -32,6 +32,22 @@ class Notification(models.Model):
         default=INFO
     )
 
+    is_global = models.BooleanField(default=False)
+
+    target_role = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True
+    )
+
+    # Optional academic targeting (add only if Subject model exists)
+    course_offering = models.ForeignKey(
+        "academics.CourseOffering",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="notifications"
+    )
     link = models.URLField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -46,12 +62,12 @@ class NotificationRecipient(models.Model):
     notification = models.ForeignKey(
         Notification,
         on_delete=models.CASCADE,
-        related_name="recipients"
+        related_name="recipients_entries"
     )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="notifications"
+        related_name="received_notifications"
     )
 
     is_read = models.BooleanField(default=False)

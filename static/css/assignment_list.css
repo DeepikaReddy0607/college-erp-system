@@ -1,152 +1,85 @@
-/* ===== PAGE LAYOUT ===== */
-.student-page {
-    padding: 32px;
-    max-width: 1100px;
-    margin: 0 auto;
+/* Page Layout */
+.page-container {
+    padding: 40px;
+    margin-left: 20px;
 }
 
+/* Header */
 .page-header {
-    margin-bottom: 24px;
+    margin-bottom: 25px;
 }
 
 .page-header h2 {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 600;
-    color: #1f2937;
+    color: #1e293b;
 }
 
-/* ===== CARD ===== */
-.student-card {
-    max-width: 620px;
-    margin: 0 auto;
+/* Card */
+.card {
     background: #ffffff;
-    border-radius: 14px;
-    padding: 28px;
-    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.student-card h2 {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 14px;
-    color: #1f2937;
-}
-
-.student-card p {
-    font-size: 14px;
-    color: #374151;
-}
-
-/* ===== ASSIGNMENT META ===== */
-.assignment-meta {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.assignment-meta div {
-    background: #f9fafb;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #374151;
-}
-
-.assignment-meta strong {
-    color: #111827;
-}
-
-/* ===== FORM ===== */
-.form-group {
-    margin-top: 20px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 6px;
-    color: #1f2937;
-}
-
-/* File Upload Box */
-.file-input {
-    border: 2px dashed #c7d2fe;
-    background: #f8fafc;
-    padding: 16px;
-    border-radius: 10px;
-}
-
-.file-input input[type="file"] {
+/* Table */
+.data-table {
     width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table thead {
+    background: #f1f5f9;
+}
+
+.data-table th,
+.data-table td {
+    padding: 14px 16px;
+    text-align: left;
+}
+
+.data-table th {
+    font-weight: 600;
     font-size: 14px;
-    cursor: pointer;
+    color: #475569;
+    border-bottom: 1px solid #e2e8f0;
 }
 
-/* ===== ACTION BUTTONS ===== */
-.form-actions {
-    margin-top: 26px;
-    display: flex;
-    gap: 14px;
+.data-table td {
+    font-size: 14px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-/* Primary Button */
+/* Status */
+.status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status.active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status.closed {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* Buttons */
 .btn-primary {
-    background-color: #2563eb;
+    background: #2f3e8f;
     color: #ffffff;
-    padding: 10px 22px;
-    border-radius: 8px;
-    border: none;
-    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
     font-weight: 500;
-    cursor: pointer;
 }
 
 .btn-primary:hover {
-    background-color: #1d4ed8;
-}
-
-/* Secondary Button */
-.btn-secondary {
-    background-color: #e5e7eb;
-    color: #111827;
-    padding: 10px 22px;
-    border-radius: 8px;
-    font-size: 14px;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.btn-secondary:hover {
-    background-color: #d1d5db;
-}
-
-/* ===== EMPTY STATE ===== */
-.empty-state {
-    text-align: center;
-    padding: 36px 0;
-    font-size: 14px;
-    color: #6b7280;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 640px) {
-    .student-card {
-        padding: 22px;
-    }
-
-    .assignment-meta {
-        grid-template-columns: 1fr;
-    }
-
-    .form-actions {
-        flex-direction: column;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-        width: 100%;
-        text-align: center;
-    }
+    opacity: 0.9;
 }

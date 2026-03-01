@@ -1,0 +1,86 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2 class="mb-4">Faculty Profile</h2>
+
+    <div class="card shadow-sm p-4">
+
+        <div class="row">
+
+            <!-- Profile Picture Section -->
+            <div class="col-md-4 text-center">
+
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}"
+                         class="rounded-circle mb-3"
+                         width="160"
+                         height="160"
+                         style="object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'default_profile.png' %}"
+                         class="rounded-circle mb-3"
+                         width="160"
+                         height="160"
+                         style="object-fit: cover;">
+                {% endif %}
+
+                <h5>{{ user.get_full_name }}</h5>
+                <p class="text-muted">{{ profile.designation }}</p>
+
+                {% if profile.is_hod %}
+                    <span class="badge bg-success">Head of Department</span>
+                {% endif %}
+
+            </div>
+
+            <!-- Details Section -->
+            <div class="col-md-8">
+
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Username</th>
+                        <td>{{ user.username }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ user.email }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Department</th>
+                        <td>{{ profile.department }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Designation</th>
+                        <td>{{ profile.designation }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Role</th>
+                        <td>{{ user.role }}</td>
+                    </tr>
+                </table>
+
+                <div class="mt-3">
+                    <a href="{% url 'edit_profile' %}" class="btn btn-primary">
+                        Edit Profile
+                    </a>
+
+                    <a href="{% url 'change_password' %}" class="btn btn-secondary">
+                        Change Password
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

@@ -1,11 +1,9 @@
 from django.db import models
-from accounts.models import FacultyProfile, StudentProfile
-from academics.models import Course
+from accounts.models import StudentProfile
+from academics.models import CourseOffering
 
 class Assignment(models.Model):
-    subject = models.ForeignKey(Course, on_delete = models.CASCADE)
-    faculty = models.ForeignKey(FacultyProfile, on_delete=models.CASCADE)
-    
+    offering = models.ForeignKey(CourseOffering, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField()
     
@@ -28,7 +26,7 @@ class AssignmentSubmission(models.Model):
         on_delete=models.CASCADE,
         related_name="submissions"
     )
-    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE,related_name="assignment_submissions")
     file = models.FileField(upload_to="assignments/submissions/")
     submitted_at = models.DateTimeField(auto_now_add=True)
 

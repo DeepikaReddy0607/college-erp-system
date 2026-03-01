@@ -1,63 +1,164 @@
-/* Page container */
+/* ============================= */
+/* Page Container */
+/* ============================= */
+
 .attendance-container {
-    max-width: 1000px;
+    width: 100%;
+    max-width: 1100px;
     margin: 40px auto;
-    padding: 24px;
+    padding: 40px;
     background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
+/* ============================= */
 /* Heading */
+/* ============================= */
+
 .attendance-container h2 {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     color: #111827;
+    text-align: left;
 }
 
+/* ============================= */
 /* Table */
+/* ============================= */
+
 .attendance-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    table-layout: fixed;
 }
 
 /* Header */
+
 .attendance-table thead th {
     background: #eef2ff;
-    padding: 14px 16px;
+    padding: 16px;
     font-size: 14px;
     font-weight: 600;
     text-align: center;
     color: #1e3a8a;
+    border-bottom: 2px solid #dbeafe;
 }
 
 /* Body cells */
+
 .attendance-table tbody td {
-    padding: 14px 16px;
-    text-align: center;
+    padding: 16px;
     font-size: 14px;
-    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-/* Empty state */
-.attendance-table tbody tr.empty-row td {
+/* First column left aligned (course name) */
+
+.attendance-table tbody td:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+/* Row hover effect */
+
+.attendance-table tbody tr:hover {
+    background-color: #f9fafb;
+    transition: background 0.2s ease-in-out;
+}
+
+/* Zebra striping */
+
+.attendance-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+/* ============================= */
+/* Status Colors (Match Backend) */
+/* ============================= */
+
+/* SAFE */
+
+.status-safe td {
+    background-color: #ecfdf5 !important;
+}
+
+/* WARNING */
+
+.status-warning td {
+    background-color: #fffbeb !important;
+}
+
+/* SHORTAGE */
+
+.status-shortage td {
+    background-color: #fef2f2 !important;
+}
+
+/* ============================= */
+/* Empty Row */
+/* ============================= */
+
+.no-data {
     padding: 40px 16px;
     font-size: 14px;
     color: #6b7280;
     text-align: center;
 }
 
-/* Status colors */
-tr.safe td {
-    background: #f0fdf4;
+/* ============================= */
+/* Responsive */
+/* ============================= */
+
+@media (max-width: 768px) {
+    .attendance-container {
+        padding: 20px;
+    }
+
+    .attendance-table thead {
+        display: none;
+    }
+
+    .attendance-table,
+    .attendance-table tbody,
+    .attendance-table tr,
+    .attendance-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .attendance-table tr {
+        margin-bottom: 15px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .attendance-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    .attendance-table td::before {
+        position: absolute;
+        left: 16px;
+        top: 16px;
+        white-space: nowrap;
+        font-weight: 600;
+        text-align: left;
+    }
+
+    .attendance-table td:nth-of-type(1)::before { content: "Course"; }
+    .attendance-table td:nth-of-type(2)::before { content: "Present"; }
+    .attendance-table td:nth-of-type(3)::before { content: "Total"; }
+    .attendance-table td:nth-of-type(4)::before { content: "Percentage"; }
+    .attendance-table td:nth-of-type(5)::before { content: "Status"; }
 }
 
-tr.risk td {
-    background: #fffbeb;
-}
-
-tr.detention td {
-    background: #fef2f2;
+.status-no_data td {
+    background-color: #f3f4f6 !important;
 }

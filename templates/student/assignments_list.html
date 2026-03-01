@@ -1,41 +1,74 @@
 {% extends "student/stu_base.html" %}
 {% load static %}
 
-{% block title %}Submit Assignment{% endblock %}
-{% block extra_css%}
-<link rel = "stylesheet" href = "{% static 'css/assignment_list.css' %}">
+{% block title %}Assignments{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/assignment_list.css' %}">
 {% endblock %}
+
 {% block student_content %}
-<style>#assignments-active{
+<style>
+#assignments-active {
     background: #2f3e8f;
     color: #ffffff;
-}</style>
-<div class="student-page">
+}
+</style>
 
-    <div class="student-card" style="max-width:600px;">
-        <h2>{{ assignment.title }}</h2>
-        <div class="assignment-meta">
-            <div><strong>Course:</strong> {{ assignment.subject.course_code }}</div>
-            <div><strong>Due:</strong> {{ assignment.due_date|date:"d M Y, h:i A" }}</div>
-        </div>
+<div class="page-container">
 
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group file-input">
-                <label>Upload File (PDF / ZIP)</label>
-                <input type="file" name="file" required>
-            </div>
+    <div class="page-header">
+        <h2>Assignments</h2>
+    </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn-primary">
-                    Submit Assignment
-                </button>
-                <a href="{% url 'student_assignments' %}" class="btn-secondary">
-                    Cancel
-                </a>
-            </div>
-        </form>
+    <div class="card">
+
+        {% if assignment_data %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Section</th>
+                    <th>Title</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {% for item in assignment_data %}
+                <tr>
+                    <td>{{ item.assignment.offering.course.code }}</td>
+                    <td>{{ item.assignment.offering.section }}</td>
+                    <td>{{ item.assignment.title }}</td>
+                    <td>{{ item.assignment.due_date|date:"d M Y, h:i A" }}</td>
+
+                    <td>
+                        {% if item.submission %}
+                            <span class="status active">Submitted</span>
+                        {% else %}
+                            <span class="status closed">Pending</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if not item.submission %}
+                            <a href="{% url 'student_assignment_submit' item.assignment.id %}" class="btn-primary">
+                                Submit
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+        {% else %}
+            <p>No assignments available.</p>
+        {% endif %}
+
     </div>
 
 </div>
+
 {% endblock %}

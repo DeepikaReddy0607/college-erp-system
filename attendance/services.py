@@ -38,7 +38,7 @@ def get_course_attendance_stats(course_offering, student):
             "present": 0,
             "absent": 0,
             "percentage": 0.0,
-            "status": "SAFE",
+            "status": "NO_DATA",
         }
 
     # Count attendance by status
@@ -72,9 +72,9 @@ def get_attendance_status(percentage):
     Institutional attendance policy.
     """
 
-    if percentage >= 75:
+    if percentage >= 85:
         return "SAFE"
-    elif percentage >= 65:
+    elif percentage >= 75:
         return "RISK"
     return "DETENTION"
 def get_student_attendance_summary(student):
@@ -105,3 +105,21 @@ def get_student_attendance_summary(student):
         })
 
     return summary
+
+
+def get_students_below_threshold(course_offering):
+    risky_students = []
+
+    enrollments = Enrollment.objects.filter(
+        offering=course_offering
+    ).select_related("student")
+
+    for enrollment in enrollments:
+        stats = get_course_attendance_stats(
+            course_offering,
+            enrollment.student
+        )
+        if stats["status"] == "SHORTAGE":
+            risky_students.append(enrollment.student)
+
+    return risky_students

@@ -14,7 +14,9 @@
 
     <div class="student-card" style="max-width:600px;">
         <h2>{{ assignment.title }}</h2>
-        <p><strong>Course:</strong> {{ assignment.subject.course_code }}</p>
+        <p><strong>Course:</strong> {{ assignment.offering.course.code }}</p>
+        <p><strong>Section:</strong> {{ assignment.offering.section }}</p>
+        <p><strong>Semester:</strong> {{ assignment.offering.semester }}</p>
         <p><strong>Due:</strong> {{ assignment.due_date|date:"d M Y, h:i A" }}</p>
 
         <form method="post" enctype="multipart/form-data">

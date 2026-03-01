@@ -38,8 +38,12 @@
             <tbody>
                 {% for assignment in assignments %}
                 <tr>
-                    <td>{{ assignment.subject.course_code }}<br>
-                    <small>{{ assignment.subject.course_name }}</small>
+                    <td>
+                        {{ assignment.offering.course.code }}<br>
+                        <small>
+                            Semester {{ assignment.offering.semester }} |
+                            Section {{ assignment.offering.section }}
+                        </small>
                     </td>
                     <td>{{ assignment.title }}</td>
                     <td>{{ assignment.due_date|date:"d M Y, h:i A" }}</td>

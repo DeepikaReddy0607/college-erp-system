@@ -39,8 +39,9 @@
         </thead>
 
         <tbody>
-            {% for session in sessions %}
-            <tr class="{% if session.is_editable %}row-editable{% else %}row-locked{% endif %}">
+            {% for item in sessions %}
+            {% with session=item.obj editable=item.editable %}
+            <tr class="{% if editable %}row-editable{% else %}row-locked{% endif %}">
                 <td>{{ session.date }}</td>
                 <td>{{ session.start_time }} – {{ session.end_time }}</td>
 
@@ -53,7 +54,7 @@
                 </td>
 
                 <td>
-                    {% if session.is_editable %}
+                    {% if editable %}
                         <span class="badge badge-editable">Editable</span>
                     {% else %}
                         <span class="badge badge-expired">Expired</span>
@@ -61,9 +62,9 @@
                 </td>
 
                 <td>
-                    {% if session.is_editable %}
+                    {% if editable %}
                         <a href="{% url 'attendance:edit_attendance' session.id %}"
-                           class="btn btn-small">
+                        class="btn btn-small">
                             Edit
                         </a>
                     {% else %}
@@ -73,6 +74,7 @@
                     {% endif %}
                 </td>
             </tr>
+            {% endwith %}
             {% empty %}
             <tr>
                 <td colspan="5" class="empty">
@@ -80,6 +82,7 @@
                 </td>
             </tr>
             {% endfor %}
+
         </tbody>
     </table>
 
@@ -87,6 +90,6 @@
         Attendance can be edited only within the configured edit window.
         All modifications are logged for audit.
     </p>
-
+    
 </div>
 {% endblock %}

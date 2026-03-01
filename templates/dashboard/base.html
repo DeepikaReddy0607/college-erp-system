@@ -23,7 +23,7 @@
         <ul class="nav-list">
             <li><a href="{% url 'faculty_dashboard' %}" id="dashboard-active">Dashboard</a></li>
             <li><a href="{% url 'faculty_courses' %}" id="course-active">My Courses</a></li>
-            <li><a href="{% url 'faculty_attendance' %}" id="attendance-active">Attendance</a></li>
+            <li><a href="{% url 'attendance:faculty_attendance' %}" id="attendance-active">Attendance</a></li>
             <li><a href="{% url 'faculty_assignments' %}" id="assignment-active">Assignments</a></li>
             <li><a href="{% url 'faculty_doubts' %}" id="doubts-active">Doubts</a></li>
             <li><a href="{% url 'faculty_notifications' %}" id="notifications-active">Notifications</a></li>

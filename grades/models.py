@@ -4,10 +4,6 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
-# ============================
-# GRADE SYSTEM
-# ============================
 GRADE_POINTS = {
     "Ex": 10,
     "A": 9,

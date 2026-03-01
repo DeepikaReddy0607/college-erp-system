@@ -9,67 +9,78 @@ from django.http import HttpResponseForbidden
 
 @login_required
 def create_assignment(request):
-    faculty = FacultyProfile.objects.filter(user=request.user).first()
-    if not faculty:
-        return redirect("faculty_dashboard")
-    
+
+    # Ensure faculty only
+    if not hasattr(request.user, "facultyprofile"):
+        return redirect("student_dashboard")
+
+    # Get offerings assigned to this faculty
+    faculty_offerings = CourseOffering.objects.filter(
+        facultyassignment__faculty=request.user,
+        facultyassignment__is_active=True
+    ).distinct()
+
     if request.method == "POST":
         form = AssignmentForm(request.POST, request.FILES)
-        form.fields['subject'].queryset = Course.objects.all()
-        
+
+        # Restrict offering choices
+        form.fields["offering"].queryset = faculty_offerings
+
         if form.is_valid():
-            assignment = form.save(commit=False)
-            assignment.faculty = faculty
-            assignment.save()
-            return redirect('faculty_assignments')
+            assignment = form.save()
+            return redirect("faculty_assignments")
+
     else:
         form = AssignmentForm()
-        form.fields['subject'].queryset = Course.objects.all()
+        form.fields["offering"].queryset = faculty_offerings
 
-    return render(request, "faculty/create_assignment.html",{
-        "form": form
-    })
+    return render(
+        request,
+        "faculty/create_assignment.html",
+        {"form": form}
+    )
 
 @login_required
 def faculty_assignments(request):
-    faculty = FacultyProfile.objects.get(user=request.user)
-    assignments = Assignment.objects.filter(faculty=faculty)
-    return render(request, "faculty/assignment_list.html", {
-        "assignments": assignments
-    })
+    if not hasattr(request.user, "facultyprofile"):
+        return redirect("student_dashboard")
+    
+    assignments = Assignment.objects.filter(
+        offering__facultyassignment__faculty=request.user,
+        offering__facultyassignment__is_active=True
+    ).distinct()
+
+    return render(request, "faculty/assignment_list.html", {"assignments": assignments})
 
 @login_required
 def assignment_submissions(request, assignment_id):
     assignment = get_object_or_404(
         Assignment,
         id=assignment_id,
-        faculty__user=request.user
+        offering__facultyassignment__faculty=request.user,
+        offering__facultyassignment__is_active=True
     )
 
     submissions = AssignmentSubmission.objects.filter(
         assignment=assignment
-    ).select_related("student")
+    ).select_related("student__user")
 
     submitted_student_ids = submissions.values_list(
-        "student_id", flat=True
-    )
-
-    offerings = CourseOffering.objects.filter(
-        course=assignment.subject,
-        is_active=True
+        "student__user_id", flat=True
     )
 
     not_submitted = Enrollment.objects.filter(
-        offering__in=offerings,
+        offering=assignment.offering,
         is_active=True
     ).exclude(
         student_id__in=submitted_student_ids
     ).select_related("student")
 
     total_students = Enrollment.objects.filter(
-    offering__course=assignment.subject,
-    is_active=True
+        offering=assignment.offering,
+        is_active=True
     ).count()
+
 
     submitted_count = submissions.count()
     pending_count = total_students - submitted_count
@@ -98,12 +109,12 @@ def student_assignments(request):
         is_active=True
     ).select_related("offering__course")
 
-    courses = [e.offering.course for e in enrollments]
+    offerings = [e.offering for e in enrollments]
 
     assignments = Assignment.objects.filter(
-        subject__in=courses,
+        offering__in=offerings,
         is_active=True
-    ).select_related("subject", "faculty")
+    ).select_related("offering__course")
 
     submissions = AssignmentSubmission.objects.filter(student = student)
     submitted_map = {s.assignment_id: s for s in submissions}

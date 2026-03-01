@@ -1,7 +1,7 @@
 {% extends "dashboard/base.html" %}
 {% load static %}
 
-{% block title %}Attendance{% endblock %}
+{% block title %}Mark Attendance{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/faculty_attendance.css' %}">
@@ -15,75 +15,77 @@
     color: #ffffff;
     }
 </style>
+
 <div class="attendance-container">
 
     <!-- Header -->
     <div class="attendance-header">
-        <h2>CS2051 – Database Management Systems</h2>
-        <p>II Year • II Semester • CSE • Section A</p>
+        <h2>{{offering.course.course_code}} - {{offering.course.course_title}}</h2>
+        <p>
+            {{offering.semester }} • 
+            {{offering.course.department }} • 
+            Section {{offering.section }}
+        </p>
     </div>
 
-    <!-- Controls -->
-    <div class="attendance-controls">
-        <div class="control-group">
-            <label>Date</label>
-            <input type="date">
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="attendance-controls">
+
+            <div class="control-group">
+                <label>Date</label>
+                <input type="date" name="date" value="{{ today }}" required>
+            </div>
+
+            <div class="control-group">
+                <label>Start Time</label>
+                <input type="time" name="start_time" required>
+            </div>
+
+            <div class="control-group">
+                <label>End Time</label>
+                <input type="time" name="end_time" required>
+            </div>
+
+            <button type="submit" class="btn primary">Save Attendance  </button>
         </div>
 
-        <div class="control-group">
-            <label>Class Type</label>
-            <select>
-                <option>Theory Hour</option>
-                <option>Extra Class</option>
-                <option>Lab (3 Hours)</option>
-            </select>
+        <div class="attendance-table-wrapper">
+            <table class="attendance-table">
+                <thead></thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Student Name</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for enrollment in students %}
+                    <tr>
+                        <td>{{ enrollment.student.username }}</td>
+                        <td>{{ enrollment.student.get_full_name }} {{ enrollment.student.last_name }}</td>
+                        <td>
+                            <input type="radio"
+                             name="status_{{ enrollment.student.id }}" 
+                             value="present" 
+                             checked>
+                            </td>
+                        <td>
+                            <input type="radio" 
+                            name="status_{{ enrollment.student.id }}" 
+                            value="absent">
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="no-data">No students enrolled in this course.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-
-        <div class="control-group">
-            <label>Hour</label>
-            <select>
-                <option>Hour 1</option>
-                <option>Hour 2</option>
-                <option>Hour 3</option>
-            </select>
-        </div>
-
-        <button class="btn primary">Save Attendance</button>
-    </div>
-
-    <!-- Attendance Table -->
-    <div class="attendance-table-wrapper">
-        <table class="attendance-table">
-            <thead>
-                <tr>
-                    <th>Roll No</th>
-                    <th>Student Name</th>
-                    <th>Present</th>
-                    <th>Absent</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>424170</td>
-                    <td>Deepika Reddy</td>
-                    <td><input type="radio" name="s1" checked></td>
-                    <td><input type="radio" name="s1"></td>
-                </tr>
-                <tr>
-                    <td>424171</td>
-                    <td>Rahul Kumar</td>
-                    <td><input type="radio" name="s2" checked></td>
-                    <td><input type="radio" name="s2"></td>
-                </tr>
-                <tr>
-                    <td>424172</td>
-                    <td>Anjali Sharma</td>
-                    <td><input type="radio" name="s3"></td>
-                    <td><input type="radio" name="s3" checked></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+    </form>
 </div>
 {% endblock %}

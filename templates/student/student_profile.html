@@ -1,0 +1,21 @@
+{% extends "student/stu_base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>My Profile</h2>
+
+    <div class="card p-4 shadow-sm">
+        <p><strong>Full Name:</strong> {{ user.get_full_name }}</p>
+        <p><strong>Username (Roll No):</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Department:</strong> {{ profile.department }}</p>
+        <p><strong>Year:</strong> {{ profile.year }}</p>
+        <p><strong>Section:</strong> {{ profile.section }}</p>
+    </div>
+
+    <div class="mt-3">
+        <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+        <a href="{% url 'change_password' %}" class="btn btn-secondary">Change Password</a>
+    </div>
+</div>
+{% endblock %}
