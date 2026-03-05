@@ -25,7 +25,11 @@ class StudentProfile(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     year = models.IntegerField()
     section = models.CharField(max_length=1)
-
+    profile_picture = models.ImageField(
+        upload_to='profile_pics/',
+        null=True,
+        blank=True
+    )
     def __str__(self):
         return self.user.username
     
@@ -35,6 +39,11 @@ class FacultyProfile(models.Model):
     designation = models.CharField(max_length=100)
 
     is_hod = models.BooleanField(default=False)
+    profile_picture = models.ImageField(
+        upload_to='profile_pics/',
+        null=True,
+        blank=True
+    )
     def __str__(self):
         return self.user.username
 

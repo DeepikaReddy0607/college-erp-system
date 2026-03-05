@@ -1,0 +1,37 @@
+{% extends "student/stu_base.html" %}
+{% block content %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'student_events.css' %}">
+{% endblock %}
+
+<h2>My Registered Events</h2>
+
+{% if registrations %}
+    {% for reg in registrations %}
+        <div style="border:1px solid #ddd; padding:15px; margin-bottom:15px; border-radius:8px;">
+            <h4>
+                <a href="{% url 'events:student_event_detail' reg.event.pk %}">
+                    {{ reg.event.title }}
+                </a>
+            </h4>
+
+            <p>
+                {{ reg.event.date }} |
+                Status: {{ reg.event.status|capfirst }}
+            </p>
+
+            {% if reg.attendance.attended %}
+                <p style="color:green;">Attended</p>
+            {% endif %}
+
+            {% if reg.certificate %}
+                <a href="{{ reg.certificate.certificate_file.url }}">Download Certificate</a>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>You have not registered for any events.</p>
+{% endif %}
+
+{% endblock %}

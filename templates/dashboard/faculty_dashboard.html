@@ -12,30 +12,134 @@
 <style>
 #dashboard-active{
     background: #2f3e8f;
-    color: #ffffff;}
+    color: #ffffff;
+}
+
+.dashboard-section {
+    margin-top: 40px;
+}
+
+.dashboard-section h3 {
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.dashboard-list {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.dashboard-list ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.dashboard-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.dashboard-list li:last-child {
+    border-bottom: none;
+}
 </style>
+
+<!-- ================= Stats ================= -->
 <div class="stats-wrapper">
     <div class="stats-grid">
 
         <div class="stat-card">
             <div class="stat-title">Courses Handling</div>
-            <div class="stat-value">4</div>
+            <div class="stat-value">{{ courses_count|default:0 }}</div>
         </div>
 
         <div class="stat-card">
             <div class="stat-title">Today’s Classes</div>
-            <div class="stat-value">3</div>
+            <div class="stat-value">{{ todays_classes_count|default:0 }}</div>
         </div>
 
         <div class="stat-card">
             <div class="stat-title">Pending Attendance</div>
-            <div class="stat-value">2</div>
+            <div class="stat-value">{{ pending_attendance_count|default:0 }}</div>
         </div>
 
         <div class="stat-card">
             <div class="stat-title">Active Assignments</div>
-            <div class="stat-value">5</div>
+            <div class="stat-value">{{ active_assignments_count|default:0 }}</div>
         </div>
+
     </div>
 </div>
+
+<!-- ================= Today's Classes ================= -->
+<div class="dashboard-section">
+    <h3>Today’s Classes</h3>
+    <div class="dashboard-list">
+        <ul>
+            {% for cls in todays_classes %}
+                <li>
+                    <strong>{{ cls.offering.course.course_title }}</strong><br>
+                    {{ cls.timeslot.start_time }} - {{ cls.timeslot.end_time }}
+                    {% if cls.room %} | Room: {{ cls.room }} {% endif %}
+                </li>
+            {% empty %}
+                <li>No classes scheduled for today.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- ================= Open Attendance ================= -->
+<div class="dashboard-section">
+    <h3>Open Attendance Sessions</h3>
+    <div class="dashboard-list">
+        <ul>
+            {% for session in open_sessions %}
+                <li>
+                    {{ session.course_offering.course.course_title }}
+                    | {{ session.date }}
+                    | {{ session.start_time }}
+                </li>
+            {% empty %}
+                <li>No open attendance sessions.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- ================= Recent Assignments ================= -->
+<div class="dashboard-section">
+    <h3>Recent Assignments</h3>
+    <div class="dashboard-list">
+        <ul>
+            {% for assignment in active_assignments %}
+                <li>
+                    {{ assignment.title }}
+                    ({{ assignment.offering.course.course_title }})
+                    | Due: {{ assignment.due_date }}
+                </li>
+            {% empty %}
+                <li>No active assignments.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- ================= Notifications ================= -->
+<div class="dashboard-section">
+    <h3>Recent Notifications</h3>
+    <div class="dashboard-list">
+        <ul>
+            {% for note in notifications %}
+                <li>{{ note.title }}</li>
+            {% empty %}
+                <li>No recent notifications.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
 {% endblock %}

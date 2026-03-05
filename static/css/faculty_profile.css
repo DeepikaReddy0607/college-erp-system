@@ -1,0 +1,140 @@
+/* ================================ */
+/*        FACULTY PROFILE CSS       */
+/* ================================ */
+
+body {
+    background-color: #f4f6f9;
+}
+
+/* Main content container */
+.faculty-profile-wrapper {
+    padding: 60px 40px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Profile Card */
+.faculty-profile-card {
+    width: 950px;
+    max-width: 100%;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    padding: 45px;
+    display: flex;
+    gap: 60px;
+}
+
+/* Left Section */
+.faculty-left {
+    flex: 1;
+    text-align: center;
+    border-right: 1px solid #e9ecef;
+    padding-right: 40px;
+}
+
+.faculty-img {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 6px solid #f1f3f5;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+}
+
+.faculty-left h3 {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.faculty-designation {
+    color: #777;
+    font-size: 14px;
+}
+
+/* Right Section */
+.faculty-right {
+    flex: 2;
+}
+
+/* Info rows */
+.faculty-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 15px;
+}
+
+.faculty-info-row span:first-child {
+    font-weight: 600;
+    color: #444;
+}
+
+.faculty-info-row span:last-child {
+    color: #666;
+}
+
+/* Buttons */
+.faculty-actions {
+    margin-top: 35px;
+}
+
+.faculty-btn-primary {
+    text-decoration: none;
+    background: #3b4a9f;
+    color: #ffffff;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-right: 12px;
+    transition: 0.3s ease;
+}
+
+.faculty-btn-primary:hover {
+    background: #2f3d85;
+}
+
+.faculty-btn-secondary {
+    text-decoration: none;
+    background: #6c757d;
+    color: #ffffff;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.3s ease;
+}
+
+.faculty-btn-secondary:hover {
+    background: #5a6268;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .faculty-profile-card {
+        flex-direction: column;
+        gap: 30px;
+        padding: 30px;
+    }
+
+    .faculty-left {
+        border-right: none;
+        border-bottom: 1px solid #e9ecef;
+        padding-right: 0;
+        padding-bottom: 25px;
+    }
+
+    .faculty-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .faculty-info-row span:last-child {
+        margin-top: 6px;
+    }
+}
+.photo-label {
+    cursor: pointer;
+}

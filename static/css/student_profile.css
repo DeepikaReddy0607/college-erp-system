@@ -1,0 +1,124 @@
+/* ================================ */
+/*        STUDENT PROFILE CSS       */
+/* ================================ */
+
+body {
+    background-color: #f4f6f9;
+}
+
+/* Wrapper */
+.student-profile-wrapper {
+    padding: 60px 40px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Main Card */
+.student-profile-card {
+    width: 750px;
+    max-width: 100%;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+}
+
+/* Profile Header Section */
+.student-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.student-img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #f1f3f5;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    margin-bottom: 15px;
+}
+
+.student-header h3 {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.student-role {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Info Rows */
+.student-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 15px;
+}
+
+.student-info-row span:first-child {
+    font-weight: 600;
+    color: #444;
+}
+
+.student-info-row span:last-child {
+    color: #666;
+}
+
+/* Buttons */
+.student-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.student-btn-primary {
+    text-decoration: none;
+    background: #3b4a9f;
+    color: #ffffff;
+    padding: 9px 22px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-right: 12px;
+    transition: 0.3s ease;
+}
+
+.student-btn-primary:hover {
+    background: #2f3d85;
+}
+
+.student-btn-secondary {
+    text-decoration: none;
+    background: #6c757d;
+    color: #ffffff;
+    padding: 9px 22px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.3s ease;
+}
+
+.student-btn-secondary:hover {
+    background: #5a6268;
+}
+
+.photo-label{
+    cursor: pointer;
+}
+/* Responsive */
+@media (max-width: 768px) {
+
+    .student-profile-card {
+        padding: 25px;
+    }
+
+    .student-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .student-info-row span:last-child {
+        margin-top: 5px;
+    }
+}

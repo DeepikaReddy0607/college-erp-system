@@ -1,81 +1,76 @@
 {% extends "dashboard/base.html" %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faculty_profile.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
+<div class="faculty-profile-wrapper">
 
-    <h2 class="mb-4">Faculty Profile</h2>
+    <div class="faculty-profile-card">
 
-    <div class="card shadow-sm p-4">
+        <!-- PHOTO UPLOAD FORM -->
+        <form method="POST" action="{% url 'upload_photo' %}" enctype="multipart/form-data">
+            {% csrf_token %}
 
-        <div class="row">
+            <div class="faculty-left">
 
-            <!-- Profile Picture Section -->
-            <div class="col-md-4 text-center">
+                <label for="faculty-photo-input" class="photo-label">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" class="faculty-img">
+                    {% else %}
+                        <img src="{% static 'default_profile.png' %}" class="faculty-img">
+                    {% endif %}
+                </label>
 
-                {% if profile.profile_picture %}
-                    <img src="{{ profile.profile_picture.url }}"
-                         class="rounded-circle mb-3"
-                         width="160"
-                         height="160"
-                         style="object-fit: cover;">
-                {% else %}
-                    <img src="{% static 'default_profile.png' %}"
-                         class="rounded-circle mb-3"
-                         width="160"
-                         height="160"
-                         style="object-fit: cover;">
-                {% endif %}
+                <input 
+                    type="file"
+                    name="profile_picture"
+                    id="faculty-photo-input"
+                    hidden
+                    onchange="this.form.submit()"
+                >
 
-                <h5>{{ user.get_full_name }}</h5>
-                <p class="text-muted">{{ profile.designation }}</p>
+                <h3>{{ user.get_full_name|default:user.username }}</h3>
+                <p class="faculty-designation">{{ profile.designation }}</p>
 
                 {% if profile.is_hod %}
-                    <span class="badge bg-success">Head of Department</span>
+                    <span class="hod-badge">Head of Department</span>
                 {% endif %}
 
+                <small style="color:#777;">Click photo to change</small>
+
+            </div>
+        </form>
+
+        <!-- RIGHT SIDE INFO -->
+        <div class="faculty-right">
+
+            <div class="faculty-info-row">
+                <span>Username</span>
+                <span>{{ user.username }}</span>
             </div>
 
-            <!-- Details Section -->
-            <div class="col-md-8">
+            <div class="faculty-info-row">
+                <span>Email</span>
+                <span>{{ user.email }}</span>
+            </div>
 
-                <table class="table table-bordered">
-                    <tr>
-                        <th>Username</th>
-                        <td>{{ user.username }}</td>
-                    </tr>
+            <div class="faculty-info-row">
+                <span>Department</span>
+                <span>{{ profile.department }}</span>
+            </div>
 
-                    <tr>
-                        <th>Email</th>
-                        <td>{{ user.email }}</td>
-                    </tr>
+            <div class="faculty-info-row">
+                <span>Role</span>
+                <span>{{ user.role }}</span>
+            </div>
 
-                    <tr>
-                        <th>Department</th>
-                        <td>{{ profile.department }}</td>
-                    </tr>
-
-                    <tr>
-                        <th>Designation</th>
-                        <td>{{ profile.designation }}</td>
-                    </tr>
-
-                    <tr>
-                        <th>Role</th>
-                        <td>{{ user.role }}</td>
-                    </tr>
-                </table>
-
-                <div class="mt-3">
-                    <a href="{% url 'edit_profile' %}" class="btn btn-primary">
-                        Edit Profile
-                    </a>
-
-                    <a href="{% url 'change_password' %}" class="btn btn-secondary">
-                        Change Password
-                    </a>
-                </div>
-
+            <div class="faculty-actions">
+                <a href="{% url 'change_password' %}" class="faculty-btn-secondary">
+                    Change Password
+                </a>
             </div>
 
         </div>

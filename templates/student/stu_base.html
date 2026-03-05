@@ -24,10 +24,10 @@
         <ul class="nav-list">
             <li><a href="{% url 'student_dashboard' %}" id="dashboard-active">Dashboard</a></li>
             <li><a href="{% url 'attendance:student_attendance' %}" id="attendance-active">Attendance</a></li>
-            <li><a href="#" id="grade-active">Grades</a></li>
+            <li><a href="{% url 'grades:student_view_grades' %}" id="grade-active">Grades</a></li>
             <li><a href="{% url 'student_timetable' %}" id="timetable-active">Timetable</a></li>
             <li><a href="{% url 'student_assignments' %}" id="assignments-active">Assignments</a></li>
-            <li><a href="{% url 'student_doubts' %}">Doubts Forum</a></li>
+            <li><a href="{% url 'student_doubts' %}" id="doubts-active">Doubts Forum</a></li>
             <li>
                 <a href="{% url 'student_notifications' %}" id="notifications-active"> 
                 Notifications
@@ -38,10 +38,10 @@
                 {% endif %}
                 </a>
             </li>
-            <li><a href="{% url 'student_exam_schedule' %}">Exams</a></li>
+            <li><a href="{% url 'student_exam_schedule' %}" id="exams-active">Exams</a></li>
             <li><a href="#">Holidays</a></li>
-            <li><a href="{% url 'student_upcoming_events' %}">Events & Workshops</a></li>
-            <li><a href="{% url 'profile' %}"> Profile</a></li>
+            <li><a href="{% url 'student_upcoming_events' %}" id="events-active">Events & Workshops</a></li>
+            <li><a href="{% url 'profile' %}" id="profile-active"> Profile</a></li>
         </ul>
     </aside>
     {% endblock %}

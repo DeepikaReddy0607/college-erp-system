@@ -22,7 +22,6 @@
                 <th>Minor 2</th>
                 <th>Mid</th>
                 <th>End</th>
-                <th>Total</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -40,8 +39,8 @@
                         {{ s.minor1 }}
                     {% else %}
                         <input type="number" step="0.01"
-                            name="minor1_{{ student.id }}"
-                            value="{{ s.minor1|default:'' }}" required>
+                               name="minor1_{{ student.id }}"
+                               value="{{ s.minor1|default:'' }}">
                     {% endif %}
                 </td>
 
@@ -51,8 +50,8 @@
                         {{ s.minor2 }}
                     {% else %}
                         <input type="number" step="0.01"
-                            name="minor2_{{ student.id }}"
-                            value="{{ s.minor2|default:'' }}" required>
+                               name="minor2_{{ student.id }}"
+                               value="{{ s.minor2|default:'' }}">
                     {% endif %}
                 </td>
 
@@ -62,8 +61,8 @@
                         {{ s.mid }}
                     {% else %}
                         <input type="number" step="0.01"
-                            name="mid_{{ student.id }}"
-                            value="{{ s.mid|default:'' }}" required>
+                               name="mid_{{ student.id }}"
+                               value="{{ s.mid|default:'' }}">
                     {% endif %}
                 </td>
 
@@ -73,17 +72,8 @@
                         {{ s.end }}
                     {% else %}
                         <input type="number" step="0.01"
-                            name="end_{{ student.id }}"
-                            value="{{ s.end|default:'' }}" required>
-                    {% endif %}
-                </td>
-
-                <!-- Total -->
-                <td>
-                    {% if s %}
-                        {{ s.total_marks }}
-                    {% else %}
-                        —
+                               name="end_{{ student.id }}"
+                               value="{{ s.end|default:'' }}">
                     {% endif %}
                 </td>
 
@@ -104,11 +94,17 @@
 
     </table>
 
-    <button type="submit" class="btn primary">Save Draft</button>
-    <button type="submit" name="final_submit" class="btn danger"
-            onclick="return confirm('Marks will be locked permanently. Continue?');">
-        Final Submit & Lock
-    </button>
+    <div style="margin-top: 20px;">
+        <button type="submit" class="btn primary">
+            Save Draft
+        </button>
+
+        <button type="submit" name="lock_marks" class="btn danger"
+                onclick="return confirm('Marks will be locked permanently. Continue?');">
+            Final Submit & Lock
+        </button>
+    </div>
+
 </form>
 
 {% endblock %}

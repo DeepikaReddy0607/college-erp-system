@@ -1,0 +1,40 @@
+{% extends "student/stu_base.html" %}
+{% block content %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'student_events.css' %}">
+{% endblock %}
+
+<h2>{{ event.title }}</h2>
+
+<hr>
+
+<p><strong>Club:</strong> {{ event.club }}</p>
+<p><strong>Type:</strong> {{ event.event_type }}</p>
+<p><strong>Date & Time:</strong> {{ event.date }} at {{ event.time }}</p>
+<p><strong>Venue:</strong> {{ event.venue|default:"Online / TBA" }}</p>
+<p><strong>Status:</strong> {{ event.status|capfirst }}</p>
+
+<p><strong>Seats Remaining:</strong> {{ event.seats_remaining }}</p>
+
+<hr>
+
+<p>{{ event.description }}</p>
+
+<hr>
+
+{% if is_registered %}
+    <p style="color:green;"><strong>You are registered for this event.</strong></p>
+    <a href="{% url 'events:cancel_registration' event.pk %}">Cancel Registration</a>
+
+{% else %}
+    {% if event.is_registration_open %}
+        <a href="{% url 'events:register_event' event.pk %}">
+            <button>Register</button>
+        </a>
+    {% else %}
+        <p style="color:red;"><strong>Registration Closed</strong></p>
+    {% endif %}
+{% endif %}
+
+{% endblock %}

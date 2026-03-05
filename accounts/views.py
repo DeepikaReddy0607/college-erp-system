@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, login, authenticate, logout, update_session_auth_hash
 from django.utils.crypto import get_random_string
@@ -5,8 +7,12 @@ from django.core.mail import send_mail
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-from academics.models import FacultyAssignment
-from accounts.forms import ProfileUpdateForm
+from academics.models import CourseOffering, FacultyAssignment
+from accounts.forms import ProfileUpdateForm, StudentProfileImageForm
+from assignments.models import Assignment, AssignmentSubmission
+from timetable.models import TimetableEntry
+from django.db.models import Q
+from attendance.models import AttendanceRecord, AttendanceSession
 from .models import Department, StudentProfile, FacultyProfile, OTPVerification
 from django.contrib import messages
 from notifications.models import Notification, NotificationRecipient
@@ -195,13 +201,73 @@ def set_password_view(request):
 
 @login_required
 def faculty_dashboard_view(request):
+
     if request.user.role != "FACULTY":
         return redirect("dashboard")
-    return render(request, "dashboard/faculty_dashboard.html")
 
-from academics.models import FacultyAssignment
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+    faculty = request.user
+
+    # ----------------------------------
+    # Faculty Offerings
+    # ----------------------------------
+    faculty_assignments = FacultyAssignment.objects.filter(
+        faculty=faculty
+    )
+
+    offerings = CourseOffering.objects.filter(
+        id__in=faculty_assignments.values_list("offering_id", flat=True)
+    ).select_related("course")
+
+    # ----------------------------------
+    # Stats Counts
+    # ----------------------------------
+    courses_count = offerings.count()
+
+    today_code = date.today().strftime("%a").upper()[:3]
+
+    todays_classes = TimetableEntry.objects.filter(
+        offering__in=offerings,
+        day=today_code
+    ).select_related(
+        "offering__course",
+        "timeslot"
+    ).order_by("timeslot__start_time")
+
+    todays_classes_count = todays_classes.count()
+
+    open_sessions = AttendanceSession.objects.filter(
+        faculty=faculty,
+        date=date.today(),
+        status=AttendanceSession.STATUS_OPEN
+    ).select_related("course_offering__course")
+
+    pending_attendance_count = open_sessions.count()
+
+    active_assignments = Assignment.objects.filter(
+        offering__in=offerings,
+        due_date__gte=date.today()
+    ).select_related("offering__course").order_by("-created_at")[:5]
+
+    active_assignments_count = active_assignments.count()
+
+    notifications = Notification.objects.filter(
+        Q(is_global=True) |
+        Q(target_role="FACULTY") |
+        Q(course_offering__in=offerings)
+    ).order_by("-created_at")[:5]
+
+    context = {
+        "courses_count": courses_count,
+        "todays_classes_count": todays_classes_count,
+        "pending_attendance_count": pending_attendance_count,
+        "active_assignments_count": active_assignments_count,
+        "todays_classes": todays_classes,
+        "open_sessions": open_sessions,
+        "active_assignments": active_assignments,
+        "notifications": notifications,
+    }
+
+    return render(request, "dashboard/faculty_dashboard.html", context)
 
 @login_required
 def faculty_courses_view(request):
@@ -284,14 +350,124 @@ def forgot_password_view(request):
 
 @login_required
 def student_dashboard_view(request):
-    unread_notifications_count = NotificationRecipient.objects.filter(
-        user=request.user,
-        is_read=False
+    user = request.user
+    student = user.studentprofile
+
+    # ------------------------------------------------
+    # Get Active Course Offerings for This Student
+    # ------------------------------------------------
+    offerings = CourseOffering.objects.filter(
+        department=student.department,
+        year=student.year,
+        section=student.section,
+        is_active=True
+    ).select_related("course")
+
+    # ------------------------------------------------
+    # Attendance Summary
+    # ------------------------------------------------
+    attendance_records = AttendanceRecord.objects.filter(
+        student=user,
+        session__course_offering__in=offerings
+    ).select_related(
+        "session__course_offering__course"
+    )
+
+    total_classes = attendance_records.count()
+
+    present_count = attendance_records.filter(
+        status=AttendanceRecord.STATUS_PRESENT
     ).count()
 
+    overall_percentage = 0
+    if total_classes > 0:
+        overall_percentage = round(
+            (present_count / total_classes) * 100, 2
+        )
+
+    if overall_percentage >= 75:
+        status = "Safe"
+        status_class = "safe"
+    elif overall_percentage >= 65:
+        status = "Warning"
+        status_class = "warning"
+    else:
+        status = "Shortage"
+        status_class = "danger"
+
+    # ------------------------------------------------
+    # Course-wise Attendance
+    # ------------------------------------------------
+    subject_attendance = []
+
+    for offering in offerings:
+        records = attendance_records.filter(
+            session__course_offering=offering
+        )
+
+        total = records.count()
+        present = records.filter(
+            status=AttendanceRecord.STATUS_PRESENT
+        ).count()
+
+        percentage = 0
+        if total > 0:
+            percentage = round((present / total) * 100, 2)
+
+        subject_attendance.append({
+            "subject": offering.course.course_title,
+            "percentage": percentage
+        })
+
+    # ------------------------------------------------
+    # Today's Classes
+    # ------------------------------------------------
+    today_code = date.today().strftime("%a").upper()[:3]
+    # MON, TUE, WED, etc.
+
+    todays_classes = TimetableEntry.objects.filter(
+        offering__in=offerings,
+        day=today_code
+    ).select_related(
+        "offering__course",
+        "timeslot"
+    ).order_by("timeslot__start_time")
+
+    # ------------------------------------------------
+    # Pending Assignments
+    # ------------------------------------------------
+    assignments = Assignment.objects.filter(
+        offering__in=offerings,
+        due_date__gte=date.today()
+    )
+
+    submitted_ids = AssignmentSubmission.objects.filter(
+        student=student
+    ).values_list("assignment_id", flat=True)
+
+    pending_assignments = assignments.exclude(
+        id__in=submitted_ids
+    )
+
+    # ------------------------------------------------
+    # Notifications
+    # ------------------------------------------------
+    notifications = Notification.objects.filter(
+        Q(is_global=True) |
+        Q(target_role="STUDENT") |
+        Q(course_offering__in=offerings)
+    ).order_by("-created_at")[:5]
+
     context = {
-        "unread_notifications_count": unread_notifications_count,
+        "overall_percentage": overall_percentage,
+        "status": status,
+        "status_class": status_class,
+        "subject_attendance": subject_attendance,
+        "todays_classes": todays_classes,
+        "pending_assignments": pending_assignments,
+        "notifications": notifications,
     }
+
     return render(request, "student/dashboard.html", context)
 
 @login_required
@@ -328,25 +504,63 @@ def profile_view(request):
 
 @login_required
 def edit_profile(request):
-    if request.method == "POST":
-        form = ProfileUpdateForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect("profile")
-    else:
-        form = ProfileUpdateForm(instance=request.user)
+    user = request.user
 
-    return render(request, "accounts/edit_profile.html", {"form": form})
+    if user.role == "STUDENT":
+        profile = StudentProfile.objects.get(user=user)
+
+        if request.method == "POST":
+            user_form = ProfileUpdateForm(request.POST, instance=user)
+            image_form = StudentProfileImageForm(
+                request.POST,
+                request.FILES,
+                instance=profile
+            )
+
+            if user_form.is_valid() and image_form.is_valid():
+                user_form.save()
+                image_form.save()
+                return redirect("profile")
+
+        else:
+            user_form = ProfileUpdateForm(instance=user)
+            image_form = StudentProfileImageForm(instance=profile)
+
+        return render(request, "accounts/edit_profile.html", {
+            "user_form": user_form,
+            "image_form": image_form
+        })
 
 @login_required
 def change_password(request):
-    if request.method == "POST":
-        form = PasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)
-            return redirect("profile")
-    else:
-        form = PasswordChangeForm(request.user)
+    form = PasswordChangeForm(request.user, request.POST or None)
 
-    return render(request, "accounts/change_password.html", {"form": form})
+    if request.method == "POST" and form.is_valid():
+        user = form.save()
+        update_session_auth_hash(request, user)
+        return redirect("profile")
+
+    if request.user.role == "FACULTY":
+        template_name = "faculty/change_password.html"
+    else:
+        template_name = "student/change_password.html"
+
+    return render(request, template_name, {"form": form}) 
+@login_required
+def upload_photo(request):
+    if request.method == "POST":
+
+        if request.user.role == "STUDENT":
+            profile = StudentProfile.objects.get(user=request.user)
+
+        elif request.user.role == "FACULTY":
+            profile = FacultyProfile.objects.get(user=request.user)
+
+        else:
+            return redirect("profile")
+
+        if request.FILES.get("profile_picture"):
+            profile.profile_picture = request.FILES["profile_picture"]
+            profile.save()
+
+    return redirect("profile")

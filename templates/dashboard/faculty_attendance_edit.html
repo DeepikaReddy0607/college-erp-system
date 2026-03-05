@@ -45,7 +45,7 @@
         <div class="warning-box">
             You are editing an open attendance session. Changes will be reflected immediately.
         </div>
-    {% end if %}
+    {% endif %}
 
     <form method="POST">
         {% csrf_token %}
@@ -115,7 +115,7 @@
         </div>
 
         <div class="action-bar">
-            <a href="{% url 'attendance_history' session.course_offering.id %}"
+            <a href="{% url 'attendance:attendance_history' session.course_offering.id %}"
                class="btn outline">
                 Cancel
             </a>

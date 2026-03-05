@@ -1,4 +1,5 @@
 import csv
+from urllib import request
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -39,13 +40,15 @@ def mark_attendance(request, offering_id):
     ).select_related("student")
 
     if request.method == "POST":
+
         session_date = request.POST["date"]
+        start_time = request.POST["start_time"]
+        end_time = request.POST["end_time"]
 
         if session_date > str(timezone.now().date()):
             messages.error(request, "Cannot mark attendance for future dates.")
             return redirect("attendance:faculty_attendance")
 
-        # Prevent marking if no students enrolled
         if not students.exists():
             return render(request, "dashboard/faculty_attendance.html", {
                 "offering": offering,
@@ -54,38 +57,22 @@ def mark_attendance(request, offering_id):
                 "today": timezone.now().date()
             })
 
-        existing_session = AttendanceSession.objects.filter(
-        course_offering=offering,
-        date=request.POST["date"],
-        start_time=request.POST["start_time"]
-        ).exists()
-
-        if existing_session:
-            messages.error(request, "Session already exists for this time.")
-            return redirect("attendance:attendance_history", offering_id=offering.id)
-
         session, created = AttendanceSession.objects.get_or_create(
             course_offering=offering,
             faculty=request.user,
-            date=request.POST["date"],
-            start_time=request.POST["start_time"],
-            defaults={
-                "end_time": request.POST["end_time"]
-            }
+            date=session_date,
+            start_time=start_time,
+            defaults={"end_time": end_time}
         )
 
-        # 🔒 If session exists AND records already exist → block duplicate marking
         if AttendanceRecord.objects.filter(session=session).exists():
-            return render(request, "dashboard/faculty_attendance.html", {
-                "offering": offering,
-                "students": students,
-                "error": "Attendance already marked for this session.",
-                "today": timezone.now().date()
-            })
+            messages.error(request, "Attendance already marked for this session.")
+            return redirect("attendance:attendance_history", offering_id=offering.id)
 
-        # Prepare records
         records = []
+
         for enrollment in students:
+
             status = request.POST.get(
                 f"status_{enrollment.student.id}",
                 AttendanceRecord.STATUS_ABSENT
@@ -99,16 +86,15 @@ def mark_attendance(request, offering_id):
                 )
             )
 
-        if students.count() == 0 or len(records) != students.count():
-            messages.error(request, "Attendance data mismatch.")
-            return redirect("attendance:faculty_attendance")
-        
-        # Atomic write to prevent partial saves
         with transaction.atomic():
             AttendanceRecord.objects.bulk_create(records)
 
         messages.success(request, "Attendance marked successfully.")
-        return redirect("attendance:attendance_history", offering_id=offering.id)
+
+        return redirect(
+            "attendance:attendance_history",
+            offering_id=offering.id
+        )
 
     return render(request, "dashboard/faculty_attendance.html", {
         "offering": offering,
@@ -119,29 +105,40 @@ def mark_attendance(request, offering_id):
 @faculty_required
 def attendance_history(request, offering_id):
     faculty = request.user
+
     offering = get_object_or_404(
         CourseOffering,
         id=offering_id,
         facultyassignment__faculty=faculty
     )
 
-    auto_lock_expired_sessions(offering)
-
     sessions = AttendanceSession.objects.filter(
         course_offering=offering
-    ).select_related("course_offering").order_by("-date", "-start_time")
+    ).order_by("-date", "-start_time")
 
     session_data = []
+
     for session in sessions:
+
+        # auto lock expired sessions
+        if not session.is_editable() and session.status != AttendanceSession.STATUS_LOCKED:
+            session.lock()
+
         session_data.append({
             "obj": session,
             "editable": session.is_editable()
         })
 
-    return render(request, "dashboard/faculty_attendance_history.html", {
-        "offering": offering,
-        "sessions": session_data   
-    })
+    return render(
+        request,
+        "dashboard/faculty_attendance_history.html",
+        {
+            "offering": offering,
+            "sessions": session_data
+        }
+    )
+
+
 
 @faculty_required
 def edit_attendance(request, session_id):

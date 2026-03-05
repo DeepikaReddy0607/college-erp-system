@@ -1,0 +1,54 @@
+{% extends "student/stu_base.html" %}
+{% block content %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'student_events.css' %}">
+{% endblock %}
+
+<h2>Events & Workshops</h2>
+<style>
+#events-active {
+    background: #2f3e8f;
+    color: #ffffff;
+}
+</style>
+
+{% if events %}
+    {% for event in events %}
+        <div class="event-card" style="border:1px solid #ddd; padding:15px; margin-bottom:15px; border-radius:8px;">
+
+            <h3>
+                <a href="{% url 'events:student_event_detail' event.pk %}">
+                    {{ event.title }}
+                </a>
+            </h3>
+
+            <p>
+                <strong>Club:</strong> {{ event.club }} |
+                <strong>Date:</strong> {{ event.date }} |
+                <strong>Status:</strong>
+                <span>
+                    {% if event.status == "open" %}
+                        🟢 Open
+                    {% elif event.status == "closed" %}
+                        🟡 Closed
+                    {% elif event.status == "completed" %}
+                        🔵 Completed
+                    {% else %}
+                        ⚪ {{ event.status }}
+                    {% endif %}
+                </span>
+            </p>
+
+            <p>
+                Seats Remaining:
+                <strong>{{ event.seats_remaining }}</strong>
+            </p>
+
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No events available.</p>
+{% endif %}
+
+{% endblock %}

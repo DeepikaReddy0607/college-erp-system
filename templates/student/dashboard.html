@@ -1,68 +1,121 @@
 {% extends "student/stu_base.html" %}
 {% load static %}
 {% block title %}Student Dashboard{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/student_dashboard.css' %}">
 {% endblock %}
 
 {% block student_content %}
-<style>#dashboard-active{background: #2f3e8f;
-    color: #ffffff;}</style>
+
+<style>
+#dashboard-active {
+    background: #2f3e8f;
+    color: #ffffff;
+}
+</style>
+
+<!-- ================= Attendance ================= -->
 <div class="student-card">
     <h2>Attendance Summary</h2>
-    <p>Overall Attendance: <strong>86%</strong></p>
+
+    <p>
+        Overall Attendance:
+        <strong>{{ overall_percentage|default:"0" }}%</strong>
+    </p>
 
     <div class="progress-bar">
-        <div class="progress" style="width: 86%;"></div>
+        <div class="progress"
+             style="width: {{ overall_percentage|default:'0' }}%;">
+        </div>
     </div>
 
-    <p class="status safe">Status: Safe</p>
+    <p class="status {{ status_class|default:'danger' }}">
+        Status: {{ status|default:"No Data" }}
+    </p>
 
     <ul class="student-list">
-        <li>Data Structures – 90%</li>
-        <li>Operating Systems – 82%</li>
-        <li>DBMS – 88%</li>
+        {% if subject_attendance %}
+            {% for item in subject_attendance %}
+                <li>{{ item.subject }} – {{ item.percentage }}%</li>
+            {% endfor %}
+        {% else %}
+            <li>No attendance records available</li>
+        {% endif %}
     </ul>
 </div>
 
+<!-- ================= Classes + Assignments ================= -->
 <div class="student-grid">
 
+    <!-- Today’s Classes -->
     <div class="student-card">
-        <h2>Today’s Classes</h2>
+        <h2>Today’s Classes ({{ todays_classes|length }})</h2>
         <ul class="student-list">
-            <li>09:00 – Data Structures</li>
-            <li>10:15 – Operating Systems</li>
-            <li>14:00 – DBMS Lab</li>
+            {% if todays_classes %}
+                {% for class in todays_classes %}
+                    <li>
+                        {{ class.start_time }} –
+                        {{ class.subject.name }}
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li>No classes today</li>
+            {% endif %}
         </ul>
     </div>
 
+    <!-- Pending Assignments -->
     <div class="student-card">
-        <h2>Pending Assignments</h2>
+        <h2>
+            Pending Assignments ({{ pending_assignments|length }})
+        </h2>
+
         <ul class="student-list">
-            <li>DBMS – Assignment 3</li>
-            <li>OS – Lab Report</li>
+            {% if pending_assignments %}
+                {% for assignment in pending_assignments %}
+                    <li>
+                        {{ assignment.subject.name }} –
+                        {{ assignment.title }}
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li>No pending assignments</li>
+            {% endif %}
         </ul>
     </div>
 
 </div>
 
+<!-- ================= Notifications ================= -->
 <div class="student-grid">
 
     <div class="student-card">
-        <h2>Notifications</h2>
+        <h2>Recent Notifications</h2>
         <ul class="student-list">
-            <li>Mid-sem exams from 25 Sep</li>
-            <li>DBMS deadline extended</li>
+            {% if notifications %}
+                {% for note in notifications %}
+                    <li>{{ note.title }}</li>
+                {% endfor %}
+            {% else %}
+                <li>No recent notifications</li>
+            {% endif %}
         </ul>
     </div>
 
+    <!-- Events (Only if implemented) -->
+    {% if events %}
     <div class="student-card">
-        <h2>Events</h2>
+        <h2>Upcoming Events</h2>
         <ul class="student-list">
-            <li>CSEA Hackathon – 22 Sep</li>
-            <li>Web Dev Workshop – 28 Sep</li>
+            {% for event in events %}
+                <li>
+                    {{ event.title }} – {{ event.event_date }}
+                </li>
+            {% endfor %}
         </ul>
     </div>
+    {% endif %}
 
 </div>
 

@@ -1,0 +1,41 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+<h2>{{ offering.course.name }} - Upload Final Grades</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Student</th>
+            <th>Minor1</th>
+            <th>Minor2</th>
+            <th>Mid</th>
+            <th>End</th>
+            <th>Final Grade</th>
+        </tr>
+
+        {% for submission in submissions %}
+        <tr>
+            <td>{{ submission.student.get_full_name }}</td>
+            <td>{{ submission.minor1 }}</td>
+            <td>{{ submission.minor2 }}</td>
+            <td>{{ submission.mid }}</td>
+            <td>{{ submission.end }}</td>
+
+            <td>
+                <input type="text"
+                       name="grade_{{ submission.student.id }}"
+                       maxlength="2">
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <button type="submit">Save Final Grades</button>
+
+</form>
+
+{% endblock %}

@@ -1,10 +1,18 @@
-{% extends "dashboard/base.html" %}
+{% extends "student/stu_base.html" %}
 {% load static %}
-
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/stu_grades.css' %}">
+{% endblock %}
 {% block content %}
-<h2>My Grades</h2>
+<style>
+#grade-active {
+    background: #2f3e8f;
+    color: #ffffff;
+}
+</style>
+<h2 class="page-title">My Grades</h2>
 
-<form method="get" style="margin-bottom: 20px;">
+<form method="get" class="filter-bar">
     <label for="semester">Semester:</label>
     <select name="semester" id="semester" onchange="this.form.submit()">
         <option value="">All</option>
@@ -27,7 +35,6 @@
             <th>Course Name</th>
             <th>Credits</th>
             <th>Grade</th>
-            <th>Grade Point</th>
         </tr>
     </thead>
 
@@ -37,27 +44,27 @@
             <td>{{ g.course_offering.course.course_code }}</td>
             <td>{{ g.course_offering.course.course_name }}</td>
             <td>{{ g.course_offering.course.credits }}</td>
-            <td><strong>{{ g.final_grade }}</strong></td>
-            <td>{{ g.grade_point }}</td>
+            <td><span class="grade-badge grade-{{g.grade_letter }}">{{ g.grade_letter }}</span></td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="5" style="text-align:center; color:#6b7280;">
-                No grades available.
+            <td colspan="4" class="empty-state">
+                Results not published yet.
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
-{% if grades %}
-<div style="margin-top: 20px;">
-    <p><strong>SGPA:</strong> {{ sgpa|default:"-" }}</p>
-    <p><strong>CGPA:</strong> {{ cgpa|default:"-" }}</p>
+{% if semester_result %}
+<div class="result-summary">
+    <p><strong>SGPA:</strong> {{ semester_result.sgpa|default:"-" }}</p>
+    <p><strong>CGPA:</strong> {{ semester_result.cgpa|default:"-" }}</p>
 </div>
 {% endif %}
 
-<p style="margin-top: 15px; color: #6b7280;">
-    Note: Only finalized and frozen grades are displayed.
+<p class="note-text">
+    Note: Only frozen results are displayed.
 </p>
+
 {% endblock %}

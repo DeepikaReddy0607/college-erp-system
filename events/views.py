@@ -1,72 +1,60 @@
-from pyexpat.errors import messages
-from django.contrib.auth.decorators import login_required
 from django.forms import ValidationError
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.utils import timezone
-from django.db.models import Q
 from django.http import HttpResponseForbidden
 
-from events.models import Event
-from accounts.models import StudentProfile   # adjust app name if needed
+from .models import Event, EventRegistration
 
 @login_required
 def student_upcoming_events(request):
-    student_profile = request.user.studentprofile
-    student_year = student_profile.year
-    now = timezone.now()
+    today = timezone.now().date()
 
     events = Event.objects.filter(
-        is_active=True,
-        start_datetime__gte=now
-    ).filter(
-        Q(is_common=True) |
-        Q(year=student_year)
-    ).order_by('start_datetime')
+        date__gte=today,
+        status__in=["open", "closed"]
+    ).order_by("date")
 
     return render(
         request,
-        'student/events/student_upcoming_events.html',
-        {'events': events}
+        "student/events/event_list.html",
+        {"events": events}
     )
 
 @login_required
 def student_past_events(request):
-    student_profile = request.user.studentprofile
-    student_year = student_profile.year
-    now = timezone.now()
+    today = timezone.now().date()
 
     events = Event.objects.filter(
-        is_active=True,
-        end_datetime__lt=now
-    ).filter(
-        Q(is_common=True) |
-        Q(year=student_year)
-    ).order_by('-end_datetime')
+        date__lt=today,
+        status__in=["completed", "archived"]
+    ).order_by("-date")
 
     return render(
         request,
-        'student/events/student_past_events.html',
-        {'events': events}
+        "student/events/event_list.html",
+        {"events": events}
     )
 
 @login_required
-def student_event_detail(request, event_id):
-    student_profile = request.user.studentprofile
-    student_year = student_profile.year
+def student_event_detail(request, pk):
+    event = get_object_or_404(Event, pk=pk)
 
-    event = get_object_or_404(
-        Event,
-        event_id=event_id,
-        is_active=True
-    )
+    is_registered = EventRegistration.objects.filter(
+        event=event,
+        student=request.user
+    ).exists()
 
-    if not (event.is_common or event.year == student_year):
-        return HttpResponseForbidden("You are not allowed to view this event.")
+    context = {
+        "event": event,
+        "is_registered": is_registered,
+    }
 
     return render(
         request,
-        'student/events/student_event_detail.html',
-        {'event': event}
+        "student/events/event_detail.html",
+        context
     )
 
 @login_required
@@ -83,11 +71,15 @@ def faculty_events(request):
 
 @login_required
 def admin_event_list(request):
-    events = Event.objects.all().order_by('-created_at')
+    if not request.user.is_staff:
+        return HttpResponseForbidden("Not allowed.")
+
+    events = Event.objects.all().order_by("-created_at")
+
     return render(
         request,
-        'events/admin_event_list.html',
-        {'events': events}
+        "events/admin/event_list.html",
+        {"events": events}
     )
 
 @login_required
@@ -149,3 +141,50 @@ def admin_create_event(request):
             messages.error(request, e.message_dict if hasattr(e, 'message_dict') else e)
 
     return render(request, 'events/admin_create_event.html')
+
+@login_required
+def register_event(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+
+    if not event.is_registration_open():
+        messages.error(request, "Registration is closed.")
+        return redirect("events:student_event_detail", pk=pk)
+
+    if EventRegistration.objects.filter(event=event, student=request.user).exists():
+        messages.warning(request, "You are already registered.")
+        return redirect("events:student_event_detail", pk=pk)
+
+    EventRegistration.objects.create(
+        event=event,
+        student=request.user
+    )
+
+    messages.success(request, "Successfully registered.")
+    return redirect("events:student_event_detail", pk=pk)
+
+@login_required
+def cancel_registration(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+
+    registration = EventRegistration.objects.filter(
+        event=event,
+        student=request.user
+    ).first()
+
+    if registration:
+        registration.delete()
+        messages.success(request, "Registration cancelled.")
+
+    return redirect("events:student_event_detail", pk=pk)
+
+@login_required
+def my_events(request):
+    registrations = EventRegistration.objects.filter(
+        student=request.user
+    ).select_related("event").order_by("-registered_at")
+
+    return render(
+        request,
+        "student/events/my_events.html",
+        {"registrations": registrations}
+    )

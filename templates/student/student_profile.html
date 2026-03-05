@@ -1,21 +1,82 @@
 {% extends "student/stu_base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/student_profile.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>My Profile</h2>
+<style>
+#profile-active {
+    background: #2f3e8f;
+    color: #ffffff;
+}
+</style>
+<div class="student-profile-wrapper">
 
-    <div class="card p-4 shadow-sm">
-        <p><strong>Full Name:</strong> {{ user.get_full_name }}</p>
-        <p><strong>Username (Roll No):</strong> {{ user.username }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Department:</strong> {{ profile.department }}</p>
-        <p><strong>Year:</strong> {{ profile.year }}</p>
-        <p><strong>Section:</strong> {{ profile.section }}</p>
+    <div class="student-profile-card">
+
+        <!-- PHOTO UPLOAD FORM -->
+        <form method="POST" action="{% url 'upload_photo' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="student-header">
+
+                <label for="photo-input" class="photo-label">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" class="student-img">
+                    {% else %}
+                        <img src="{% static 'default_profile.png' %}" class="student-img">
+                    {% endif %}
+                </label>
+
+                <input 
+                    type="file" 
+                    name="profile_picture" 
+                    id="photo-input" 
+                    hidden 
+                    onchange="this.form.submit()">
+
+                <h3>{{ user.get_full_name|default:user.username }}</h3>
+                <p class="student-role">Student</p>
+                <small style="color:#777;">Click photo to change</small>
+            </div>
+        </form>
+
+        <!-- INFO SECTION -->
+        <div class="student-info-row">
+            <span>Username</span>
+            <span>{{ user.username }}</span>
+        </div>
+
+        <div class="student-info-row">
+            <span>Email</span>
+            <span>{{ user.email }}</span>
+        </div>
+
+        <div class="student-info-row">
+            <span>Department</span>
+            <span>{{ profile.department }}</span>
+        </div>
+
+        <div class="student-info-row">
+            <span>Year</span>
+            <span>{{ profile.year }}</span>
+        </div>
+
+        <div class="student-info-row">
+            <span>Section</span>
+            <span>{{ profile.section }}</span>
+        </div>
+
+        <!-- ACTION BUTTON -->
+        <div class="student-actions">
+            <a href="{% url 'change_password' %}" class="student-btn-secondary">
+                Change Password
+            </a>
+        </div>
+
     </div>
 
-    <div class="mt-3">
-        <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
-        <a href="{% url 'change_password' %}" class="btn btn-secondary">Change Password</a>
-    </div>
 </div>
 {% endblock %}
