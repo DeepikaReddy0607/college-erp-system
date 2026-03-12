@@ -83,3 +83,108 @@
 .btn-primary:hover {
     opacity: 0.9;
 }
+/* ===== Page Layout ===== */
+
+.student-page{
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:60px 20px;
+}
+
+
+/* ===== Card ===== */
+
+.student-card{
+    width:420px;
+    background:#ffffff;
+    border-radius:12px;
+    padding:28px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+
+/* ===== Title ===== */
+
+.student-card h2{
+    font-size:22px;
+    font-weight:600;
+    margin-bottom:18px;
+    color:#1e293b;
+}
+
+
+/* ===== Assignment Details ===== */
+
+.student-card p{
+    font-size:14px;
+    margin-bottom:8px;
+    color:#475569;
+}
+
+
+/* ===== Form ===== */
+
+.form-group{
+    margin-top:20px;
+}
+
+.form-group label{
+    display:block;
+    font-size:14px;
+    font-weight:500;
+    margin-bottom:6px;
+    color:#374151;
+}
+
+.form-group input[type="file"]{
+    width:100%;
+    padding:8px;
+    border:1px solid #d1d5db;
+    border-radius:6px;
+    background:#f9fafb;
+}
+
+
+/* ===== Buttons ===== */
+
+.form-actions{
+    margin-top:22px;
+    display:flex;
+    gap:12px;
+}
+
+
+/* Primary button */
+
+.btn-primary{
+    background:#2f3e8f;
+    color:#ffffff;
+    padding:9px 16px;
+    border-radius:6px;
+    border:none;
+    font-size:13px;
+    font-weight:500;
+    cursor:pointer;
+}
+
+.btn-primary:hover{
+    opacity:0.9;
+}
+
+
+/* Secondary button */
+
+.btn-secondary{
+    background:#e2e8f0;
+    color:#1e293b;
+    padding:9px 16px;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:500;
+}
+
+.btn-secondary:hover{
+    background:#cbd5f5;
+}

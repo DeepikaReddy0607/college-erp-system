@@ -174,11 +174,84 @@
     display: flex;
     gap: 12px;
 }
-.counter-box {
-    display: flex;
-    gap: 30px;
+/* ===== Counters ===== */
+
+.counter-card{
+    padding:18px;
 }
 
-.counter-box div {
-    text-align: center;
+.counter-box{
+    display:flex;
+    gap:40px;
+    align-items:center;
+}
+
+.counter{
+    text-align:center;
+}
+
+.counter p{
+    margin-top:6px;
+    font-size:13px;
+    color:#6b7280;
+}
+
+/* ===== Marks Form ===== */
+
+.grade-form{
+    display:flex;
+    gap:6px;
+    align-items:center;
+}
+
+.marks-input{
+    width:70px;
+    padding:6px;
+    border:1px solid #d1d5db;
+    border-radius:6px;
+}
+
+/* ===== Table Improvements ===== */
+
+.data-table td{
+    vertical-align:middle;
+}
+
+/* ===== Header Improvements ===== */
+
+.page-header h2{
+    font-size:20px;
+    font-weight:600;
+}
+
+/* ===== Counter Badge Fix ===== */
+
+.status{
+    padding:5px 14px;
+    border-radius:16px;
+    font-size:13px;
+}
+/* ===== Marks column alignment ===== */
+
+.marks-cell{
+    text-align:center;
+}
+
+.marks-form{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:6px;
+}
+
+.marks-input{
+    width:60px;
+    padding:4px;
+    border:1px solid #d1d5db;
+    border-radius:5px;
+}
+
+.btn-save{
+    padding:4px 10px;
+    font-size:13px;
 }

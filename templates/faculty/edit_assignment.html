@@ -1,7 +1,7 @@
 {% extends "dashboard/base.html" %}
 {% load static %}
 
-{% block title %}Create Assignment{% endblock %}
+{% block title %}Edit Assignment{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/faculty_assignments.css' %}">
@@ -18,10 +18,12 @@
 
 <div class="page-container">
 
+    <!-- PAGE HEADER -->
     <div class="page-header">
-        <h2>Create Assignment</h2>
+        <h2>Edit Assignment</h2>
     </div>
 
+    <!-- FORM -->
     <div class="card form-card">
 
         <form method="post" enctype="multipart/form-data">
@@ -42,7 +44,6 @@
                 {{ form.description }}
             </div>
 
-            <!-- NEW FIELD -->
             <div class="form-group">
                 <label>Max Marks</label>
                 {{ form.max_marks }}
@@ -51,24 +52,32 @@
             <div class="form-group">
                 <label>Due Date</label>
                 {{ form.due_date }}
-                <small class="text-muted">
-                    Students cannot submit after this time.
-                </small>
             </div>
 
             <div class="form-group">
                 <label>Attachment (PDF / ZIP)</label>
                 {{ form.attachment }}
+
+                {% if form.instance.attachment %}
+                <p style="margin-top:6px;">
+                    Current File:
+                    <a href="{{ form.instance.attachment.url }}" target="_blank">
+                        Download
+                    </a>
+                </p>
+                {% endif %}
             </div>
 
             <div class="form-actions">
+
                 <button type="submit" class="btn-primary">
-                    Create Assignment
+                    Update Assignment
                 </button>
 
                 <a href="{% url 'faculty_assignments' %}" class="btn-secondary">
                     Cancel
                 </a>
+
             </div>
 
         </form>

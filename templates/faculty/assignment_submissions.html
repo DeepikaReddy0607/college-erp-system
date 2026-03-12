@@ -6,85 +6,162 @@
 {% endblock %}
 
 {% block content %}
+
 <style>
 #assignment-active{
-    background: #2f3e8f;
-    color: #ffffff;
-    }
+    background:#2f3e8f;
+    color:#fff;
+}
 </style>
+
 <div class="page-container">
 
     <!-- PAGE HEADER -->
     <div class="page-header">
-        <h2>{{ assignment.title }} — Submissions</h2>
+
+        <h2>
+            {{ assignment.offering.course.code }} —
+            {{ assignment.title }} Submissions
+        </h2>
+
+        <a href="{% url 'download_all_submissions' assignment.id %}"
+           class="btn-primary">
+           Download All
+        </a>
+
     </div>
 
-    <!-- SUBMISSION COUNTERS -->
-    <div class="card">
-        <div style="display:flex; gap:40px;">
-            <div style="text-align:center;">
+
+    <!-- COUNTERS -->
+    <div class="card counter-card">
+
+        <div class="counter-box">
+
+            <div class="counter">
                 <span class="status active">{{ submitted_count }}</span>
-                <p style="margin-top:8px; font-size:13px;">Submitted</p>
+                <p>Submitted</p>
             </div>
 
-            <div style="text-align:center;">
+            <div class="counter">
                 <span class="status closed">{{ pending_count }}</span>
-                <p style="margin-top:8px; font-size:13px;">Pending</p>
+                <p>Pending</p>
             </div>
 
-            <div style="text-align:center;">
+            <div class="counter">
                 <span class="status">{{ total_students }}</span>
-                <p style="margin-top:8px; font-size:13px;">Total Students</p>
+                <p>Total Students</p>
             </div>
+
         </div>
+
     </div>
+
 
     <!-- SUBMITTED STUDENTS -->
     <div class="card">
+
         <div class="card-header">
             <h3>Submitted Students</h3>
         </div>
 
         {% if submissions %}
+
         <table class="data-table">
+
             <thead>
                 <tr>
                     <th>Roll No</th>
                     <th>Name</th>
                     <th>Submitted At</th>
+                    <th>Status</th>
                     <th>File</th>
+                    <th>Marks / {{ assignment.max_marks }}</th>
                 </tr>
             </thead>
+
             <tbody>
-                {% for sub in submissions %}
-                <tr>
-                    <td>{{ sub.student.roll_no }}</td>
-                    <td>{{ sub.student.user.get_full_name }}</td>
-                    <td>{{ sub.submitted_at|date:"d M Y, h:i A" }}</td>
-                    <td>
-                        <a href="{{ sub.file.url }}" class="btn-secondary" target="_blank">
-                            Download
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
+
+            {% for sub in submissions %}
+
+            <tr>
+
+                <td>{{ sub.student.user.username }}</td>
+
+                <td>{{ sub.student.user.get_full_name }}</td>
+
+                <td>{{ sub.submitted_at|date:"d M Y, h:i A" }}</td>
+
+                <td>
+                    {% if sub.is_late %}
+                        <span class="status closed">Late</span>
+                    {% else %}
+                        <span class="status active">On Time</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a href="{{ sub.file.url }}"
+                       class="btn-secondary"
+                       target="_blank">
+                       Download
+                    </a>
+                </td>
+
+                <td class="marks-cell">
+
+                    <form method="post"
+                        action="{% url 'grade_submission' sub.id %}"
+                        class="marks-form">
+
+                    {% csrf_token %}
+
+                    <input
+                        type="number"
+                        name="marks"
+                        min="0"
+                        max="{{ assignment.max_marks }}"
+                        step="0.1"
+                        value="{{ sub.marks }}"
+                        class="marks-input">
+
+                    <button type="submit" class="btn-save">
+                        Save
+                    </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
             </tbody>
+
         </table>
+
         {% else %}
+
         <div class="empty-state">
             No submissions yet
         </div>
+
         {% endif %}
+
     </div>
 
-    <!-- NOT SUBMITTED STUDENTS -->
+
+    <!-- NOT SUBMITTED -->
     <div class="card not-submitted-card">
+
         <div class="card-header">
             <h3>Not Submitted Yet</h3>
         </div>
 
         {% if not_submitted %}
+
         <table class="data-table">
+
             <thead>
                 <tr>
                     <th>Roll No</th>
@@ -92,22 +169,37 @@
                     <th>Section</th>
                 </tr>
             </thead>
+
             <tbody>
-                {% for enroll in not_submitted %}
-                <tr>
-                    <td>{{ enroll.student.studentprofile.roll_no }}</td>
-                    <td>{{ enroll.student.get_full_name }}</td>
-                    <td>{{ enroll.offering.section }}</td>
-                </tr>
-                {% endfor %}
+
+            {% for enroll in not_submitted %}
+
+            <tr>
+
+                <td>{{ enroll.student.studentprofile.roll_no }}</td>
+
+                <td>{{ enroll.student.get_full_name }}</td>
+
+                <td>{{ enroll.offering.section }}</td>
+
+            </tr>
+
+            {% endfor %}
+
             </tbody>
+
         </table>
+
         {% else %}
+
         <div class="empty-state">
             All students have submitted 🎉
         </div>
+
         {% endif %}
+
     </div>
 
 </div>
+
 {% endblock %}

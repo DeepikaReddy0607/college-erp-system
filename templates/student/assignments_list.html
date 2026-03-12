@@ -53,7 +53,7 @@
 
                     <td>
                         {% if not item.submission %}
-                            <a href="{% url 'student_assignment_submit' item.assignment.id %}" class="btn-primary">
+                            <a href="{% url 'submit_assignment' item.assignment.id %}" class="btn-primary">
                                 Submit
                             </a>
                         {% endif %}

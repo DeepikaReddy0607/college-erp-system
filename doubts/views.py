@@ -10,19 +10,20 @@ from academics.models import CourseOffering, FacultyAssignment
 
 @login_required
 def student_doubts(request):
+
     if not hasattr(request.user, "studentprofile"):
         return HttpResponseForbidden("Not allowed")
 
-    student = request.user.studentprofile
+    sp = request.user.studentprofile
 
     doubts = Doubt.objects.filter(
-        offering__department=student.department,
-        offering__year=student.year,
-        offering__section=student.section
+        offering__department=sp.department,
+        offering__year=sp.year,
+        offering__section=sp.section
     ).filter(
         Q(doubt_type="SECTION") |
         Q(doubt_type="FACULTY", author=request.user)
-    ).order_by("-created_at")
+    ).select_related("offering").order_by("-created_at")
 
     return render(
         request,
@@ -30,48 +31,43 @@ def student_doubts(request):
         {"doubts": doubts}
     )
 
-
 @login_required
 def ask_doubt(request):
+
     if not hasattr(request.user, "studentprofile"):
         return HttpResponseForbidden("Not allowed")
 
-    student = request.user.studentprofile
+    sp = request.user.studentprofile
 
     offerings = CourseOffering.objects.filter(
-        department=student.department,
-        year=student.year,
-        section=student.section,
+        department=sp.department,
+        year=sp.year,
+        section=sp.section,
         is_active=True
     )
 
     if request.method == "POST":
-        course = request.POST.get("course")
+
         offering = request.POST.get("offering")
         doubt_type = request.POST.get("doubt_type")
         title = request.POST.get("title", "").strip()
         description = request.POST.get("description", "").strip()
-        print("POST KEYS:", request.POST.keys())
-        print("OFFERING VALUE:", request.POST.get("offering"))
 
-        if not all([course, offering, doubt_type, title, description]):
+        if not all([offering, doubt_type, title, description]):
             return render(
                 request,
                 "student/ask_doubt.html",
-                {
-                    "offerings": offerings,
-                    "error": "All fields are required"
-                }
+                {"offerings": offerings, "error": "All fields required"}
             )
 
         Doubt.objects.create(
             author=request.user,
-            course_id=course,
             offering_id=offering,
             doubt_type=doubt_type,
             title=title,
-            description=description,
+            description=description
         )
+
         return redirect("student_doubts")
 
     return render(
@@ -80,17 +76,17 @@ def ask_doubt(request):
         {"offerings": offerings}
     )
 
-
 @login_required
 def doubt_detail(request, doubt_id):
+
     doubt = get_object_or_404(Doubt, id=doubt_id)
     user = request.user
 
-    # ===== STUDENT VISIBILITY =====
+    # ===== STUDENT =====
     if hasattr(user, "studentprofile"):
+
         sp = user.studentprofile
 
-        # Section mismatch
         if (
             doubt.offering.department != sp.department or
             doubt.offering.year != sp.year or
@@ -98,14 +94,11 @@ def doubt_detail(request, doubt_id):
         ):
             return HttpResponseForbidden("Not allowed")
 
-        # Private faculty doubt → only author allowed
         if doubt.doubt_type == "FACULTY" and doubt.author != user:
             return HttpResponseForbidden("Not allowed")
 
-    # ===== FACULTY VISIBILITY =====
+    # ===== FACULTY =====
     elif hasattr(user, "facultyprofile"):
-        if doubt.doubt_type != "FACULTY":
-            return HttpResponseForbidden("Not allowed")
 
         if not FacultyAssignment.objects.filter(
             faculty=user,
@@ -118,8 +111,9 @@ def doubt_detail(request, doubt_id):
         return HttpResponseForbidden("Not allowed")
 
     if request.method == "POST":
+
         if doubt.is_resolved:
-            return HttpResponseForbidden("Doubt already resolved")
+            return HttpResponseForbidden("Doubt resolved")
 
         DoubtAnswer.objects.create(
             doubt=doubt,
@@ -133,14 +127,22 @@ def doubt_detail(request, doubt_id):
                 message=f"New reply on your doubt: {doubt.title}"
             )
 
-        return redirect("student_doubt_detail", doubt_id=doubt.id)
+        return redirect("doubt_detail", doubt_id=doubt.id)
 
-    return render(
-        request,
-        "faculty/doubt_detail.html",
-        {"doubt": doubt}
-    )
+    answers = doubt.answers.all().order_by("-is_accepted", "-created_at")
 
+    context = {
+        "doubt": doubt,
+        "answers": answers
+    }
+
+    # Use correct template depending on role
+    if hasattr(user, "facultyprofile"):
+        template = "faculty/doubt_detail.html"
+    else:
+        template = "student/doubt_detail.html"
+
+    return render(request, template, context)
 
 @login_required
 def accept_answer(request, answer_id):
@@ -180,9 +182,9 @@ def accept_answer(request, answer_id):
 
     return redirect("doubt_detail", doubt_id=doubt.id)
 
-
 @login_required
 def faculty_doubts(request):
+
     if not hasattr(request.user, "facultyprofile"):
         return HttpResponseForbidden("Not allowed")
 
@@ -192,10 +194,7 @@ def faculty_doubts(request):
     )
 
     doubts = Doubt.objects.filter(
-        offering__course__in=assignments.values_list(
-            "offering__course", flat=True
-        ),
-        doubt_type="FACULTY"
+        offering__in=assignments.values_list("offering", flat=True)
     ).order_by("-created_at")
 
     return render(
@@ -203,6 +202,7 @@ def faculty_doubts(request):
         "faculty/doubts_list.html",
         {"doubts": doubts}
     )
+
 
 @login_required
 def toggle_upvote(request, answer_id):

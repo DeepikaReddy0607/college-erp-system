@@ -1,6 +1,6 @@
 from datetime import date
 
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import get_user_model, login, authenticate, logout, update_session_auth_hash
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
@@ -52,24 +52,59 @@ def redirect_by_role(user):
     return redirect("/admin/")
 
 def register_view(request):
+    departments = Department.objects.all()
+
     if request.method == "POST":
-        role = request.POST.get("role").upper()
-        fullname = request.POST.get("fullname")
-        username = request.POST.get("username").strip()
-        email = request.POST.get("email").strip().lower()
+        print(request.POST)
+        role = request.POST.get("role")
+        fullname = request.POST.get("fullname", "").strip()
+        username = request.POST.get("username", "").strip()
+        email = request.POST.get("email", "").strip().lower()
         year = request.POST.get("year")
         sec = request.POST.get("section")
+        dept_id = request.POST.get("department")
+        print("DEPT ID:", dept_id)
+        department = Department.objects.filter(id=dept_id).first()
+        print("DEPARTMENT:", department)
+        # ----- Basic validation -----
+
+        if not role:
+            return render(request, "auth/register.html", {
+                "error": "Please select a role.",
+                "departments": departments
+            })
+
+        role = role.upper()
+
+        if not username or not email:
+            return render(request, "auth/register.html", {
+                "error": "Username and email are required.",
+                "departments": departments
+            })
 
         if User.objects.filter(username=username).exists():
             return render(request, "auth/register.html", {
-                "error": "Username already exists. Please choose another."
+                "error": "Username already exists.",
+                "departments": departments
             })
 
+        if not dept_id:
+            return render(request, "auth/register.html", {
+                "error": "Please select a department.",
+                "departments": departments
+            })
+
+        department = get_object_or_404(Department, id=dept_id)
+
+        # ----- Create / reuse user -----
+
         user = User.objects.filter(email=email).first()
+
         if user:
             if user.is_verified:
                 return render(request, "auth/register.html", {
-                    "error": "Email already registered. Please login."
+                    "error": "Email already registered. Please login.",
+                    "departments": departments
                 })
         else:
             user = User.objects.create_user(
@@ -78,28 +113,41 @@ def register_view(request):
                 first_name=fullname,
                 role=role,
                 is_active=False,
-                is_verified=False
+                is_verified=False,
             )
 
-        cse, _ = Department.objects.get_or_create(name="CSE")
+        # ----- Student profile -----
 
         if role == "STUDENT":
-            StudentProfile.objects.get_or_create(
+
+            if not year or not sec:
+                return render(request, "auth/register.html", {
+                    "error": "Year and section are required.",
+                    "departments": departments
+                })
+
+            StudentProfile.objects.update_or_create(
                 user=user,
                 defaults={
-                    "department": cse,
-                    "year": year,
+                    "department": department,
+                    "year": int(year),
                     "section": sec
                 }
             )
+
+        # ----- Faculty profile -----
+
         elif role == "FACULTY":
-            FacultyProfile.objects.get_or_create(
+
+            FacultyProfile.objects.update_or_create(
                 user=user,
                 defaults={
-                    "department": cse,
+                    "department": department,
                     "designation": "Faculty"
                 }
             )
+
+        # ----- OTP generation -----
 
         OTPVerification.objects.filter(
             email=email,
@@ -107,7 +155,11 @@ def register_view(request):
         ).update(is_used=True)
 
         otp = get_random_string(length=4, allowed_chars="0123456789")
-        OTPVerification.objects.create(email=email, otp=otp)
+
+        OTPVerification.objects.create(
+            email=email,
+            otp=otp
+        )
 
         send_mail(
             subject="Your ERP OTP Verification",
@@ -121,8 +173,9 @@ def register_view(request):
 
         return redirect("otp")
 
-    return render(request, "auth/register.html")
-
+    return render(request, "auth/register.html", {
+        "departments": departments
+    })
 def otp_view(request):
     if "email" not in request.session and "reset_email" not in request.session:
         return redirect("login")

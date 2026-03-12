@@ -75,7 +75,7 @@
             {% if pending_assignments %}
                 {% for assignment in pending_assignments %}
                     <li>
-                        {{ assignment.subject.name }} –
+                        {{ assignment.offering.course.course_title }} –
                         {{ assignment.title }}
                     </li>
                 {% endfor %}

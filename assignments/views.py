@@ -5,8 +5,9 @@ from assignments.models import Assignment, AssignmentSubmission
 from accounts.models import FacultyProfile
 from academics.models import Course, Enrollment, CourseOffering
 from django.utils import timezone
-from django.http import HttpResponseForbidden
-
+from django.http import HttpResponseForbidden, HttpResponse
+import zipfile
+import os
 @login_required
 def create_assignment(request):
 
@@ -44,13 +45,39 @@ def create_assignment(request):
 def faculty_assignments(request):
     if not hasattr(request.user, "facultyprofile"):
         return redirect("student_dashboard")
-    
+
     assignments = Assignment.objects.filter(
         offering__facultyassignment__faculty=request.user,
         offering__facultyassignment__is_active=True
-    ).distinct()
+    ).select_related("offering__course").distinct()
 
-    return render(request, "faculty/assignment_list.html", {"assignments": assignments})
+    assignment_data = []
+
+    for a in assignments:
+
+        total_students = Enrollment.objects.filter(
+            offering=a.offering,
+            is_active=True
+        ).count()
+
+        submitted = AssignmentSubmission.objects.filter(
+            assignment=a
+        ).count()
+
+        assignment_data.append({
+            "assignment": a,
+            "submitted": submitted,
+            "total": total_students
+        })
+
+    return render(
+        request,
+        "faculty/assignment_list.html",
+        {
+            "assignment_data": assignment_data,
+            "now": timezone.now()
+        }
+    )
 
 @login_required
 def assignment_submissions(request, assignment_id):
@@ -151,10 +178,12 @@ def submit_assignment(request, assignment_id):
     if request.method == "POST":
         file = request.FILES.get("file")
         if file:
+            is_late = timezone.now() > assignment.due_date
             AssignmentSubmission.objects.create(
                 assignment=assignment,
                 student=student,
-                file=file
+                file=file,
+                is_late=is_late
             )
             return redirect("student_assignments")
 
@@ -163,3 +192,101 @@ def submit_assignment(request, assignment_id):
         "student/assignments_submit.html",
         {"assignment": assignment}
     )
+
+@login_required
+def grade_submission(request, submission_id):
+
+    submission = get_object_or_404(
+        AssignmentSubmission,
+        id=submission_id,
+        assignment__offering__facultyassignment__faculty=request.user,
+        assignment__offering__facultyassignment__is_active=True
+    )
+
+    if request.method == "POST":
+        marks = request.POST.get("marks")
+
+        if marks:
+            submission.marks = marks
+            submission.graded_at = timezone.now()
+            submission.save()
+
+        return redirect(
+            "assignment_submissions",
+            assignment_id=submission.assignment.id
+        )
+
+@login_required
+def edit_assignment(request, assignment_id):
+
+    assignment = get_object_or_404(
+        Assignment,
+        id=assignment_id,
+        offering__facultyassignment__faculty=request.user
+    )
+
+    if request.method == "POST":
+        form = AssignmentForm(request.POST, request.FILES, instance=assignment)
+
+        if form.is_valid():
+            form.save()
+            return redirect("faculty_assignments")
+
+    else:
+        form = AssignmentForm(instance=assignment)
+
+    return render(request, "faculty/edit_assignment.html", {"form": form})
+
+@login_required
+def close_assignment(request, assignment_id):
+
+    assignment = get_object_or_404(
+        Assignment,
+        id=assignment_id,
+        offering__facultyassignment__faculty=request.user
+    )
+
+    assignment.is_active = False
+    assignment.save()
+
+    return redirect("faculty_assignments")
+
+@login_required
+def delete_assignment(request, assignment_id):
+
+    assignment = get_object_or_404(
+        Assignment,
+        id=assignment_id,
+        offering__facultyassignment__faculty=request.user
+    )
+
+    assignment.delete()
+
+    return redirect("faculty_assignments")
+
+@login_required
+def download_all_submissions(request, assignment_id):
+
+    assignment = get_object_or_404(
+        Assignment,
+        id=assignment_id,
+        offering__facultyassignment__faculty=request.user
+    )
+
+    submissions = AssignmentSubmission.objects.filter(assignment=assignment)
+
+    response = HttpResponse(content_type="application/zip")
+    response["Content-Disposition"] = f'attachment; filename="{assignment.title}.zip"'
+
+    zip_file = zipfile.ZipFile(response, "w")
+
+    for submission in submissions:
+        if submission.file:
+            zip_file.write(
+                submission.file.path,
+                os.path.basename(submission.file.path)
+            )
+
+    zip_file.close()
+
+    return response

@@ -6,24 +6,22 @@ User = settings.AUTH_USER_MODEL
 
 
 class Doubt(models.Model):
+
     DOUBT_TYPE_CHOICES = [
-        ("SECTION", "Section Doubt"),
-        ("FACULTY", "Faculty Doubt"),
+        ("SECTION", "Ask Section"),
+        ("FACULTY", "Ask Faculty Privately"),
     ]
 
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
         related_name="asked_doubts"
     )
 
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-
     offering = models.ForeignKey(
         CourseOffering,
         on_delete=models.CASCADE,
-        null=True,
-        blank=True
+        related_name="doubts"
     )
 
     doubt_type = models.CharField(
@@ -42,6 +40,7 @@ class Doubt(models.Model):
         return self.title
 
 class DoubtAnswer(models.Model):
+
     doubt = models.ForeignKey(
         Doubt,
         on_delete=models.CASCADE,
@@ -49,7 +48,7 @@ class DoubtAnswer(models.Model):
     )
 
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE
     )
 
@@ -60,18 +59,22 @@ class DoubtAnswer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class AnswerUpvote(models.Model):
+
     answer = models.ForeignKey(
         DoubtAnswer,
         on_delete=models.CASCADE,
         related_name="upvotes"
     )
+
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE
     )
+
     created_at = models.DateTimeField(auto_now_add=True)
+
     class Meta:
         unique_together = ("answer", "user")
 
     def __str__(self):
-        return f"{self.user} upvored {self.answer.id}"
+        return f"{self.user} upvoted {self.answer.id}"

@@ -1,4 +1,3 @@
-<h1 style="color:red">DEBUG ASK DOUBT TEMPLATE</h1>
 {% extends "student/stu_base.html" %}
 {% load static %}
 
@@ -9,7 +8,9 @@
 {% block title %}Ask Doubt{% endblock %}
 
 {% block student_content %}
+
 <div class="student-page">
+
     <div class="student-card">
 
         <h2>Ask a Doubt</h2>
@@ -17,36 +18,39 @@
         <form method="post">
             {% csrf_token %}
 
+            <!-- Course Offering -->
             <label>Course</label>
-            <select name="course" required>
-                {% for o in offerings %}
-                    <option value="{{ o.course.id }}">{{ o.course.course_code }}</option>
-                {% endfor %}
-            </select>
-
-            <label>Offering</label>
             <select name="offering" required>
                 {% for o in offerings %}
-                    <option value="{{ o.id }}">
-                        {{ o.course.course_code }} - {{ o.faculty.user.username }}
-                    </option>
+                <option value="{{ o.id }}">
+                    {{ o.course.code }} — Section {{ o.section }} - {{ o.faculty.user.username }}
+                </option>
                 {% endfor %}
             </select>
 
+            <!-- Doubt Visibility -->
             <label>Doubt Type</label>
-            <select name="doubt_type">
-                <option value="SECTION">Ask Section</option>
-                <option value="FACULTY">Ask Faculty</option>
+            <select name="doubt_type" required>
+                <option value="SECTION">Ask Section (Faculty + Students)</option>
+                <option value="FACULTY">Ask Faculty Privately</option>
             </select>
 
+            <!-- Title -->
             <label>Title</label>
             <input type="text" name="title" required>
 
+            <!-- Description -->
             <label>Description</label>
-            <textarea name="description" required></textarea>
+            <textarea name="description" rows="5" required></textarea>
 
-            <button type="submit" class="btn-primary">Post Doubt</button>
+            <button type="submit" class="btn-primary">
+                Post Doubt
+            </button>
+
         </form>
+
     </div>
+
 </div>
+
 {% endblock %}

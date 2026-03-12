@@ -11,42 +11,13 @@ def notify_assignment_created(sender, instance, created, **kwargs):
     if not created:
         return
 
-    # Create notification
-    notification = Notification.objects.create(
-        title=f"New Assignment: {instance.title}",
-        message=f"A new assignment has been posted for {instance.offering.course.name}.",
-        notification_type="INFO",
-        sender=instance.created_by,
-        course_offering=instance.offering
-    )
-
-    # Get enrolled students
-    students = Enrollment.objects.filter(
-        offering=instance.offering,
-        is_active=True
-    ).values_list("student", flat=True)
-
-    # Create recipient entries
-    NotificationRecipient.objects.bulk_create([
-        NotificationRecipient(
-            notification=notification,
-            user_id=student_id
-        )
-        for student_id in students
-    ])
-
-@receiver(post_save, sender=Assignment)
-def auto_notify_assignment_created(sender, instance, created, **kwargs):
-
-    if not created:
-        return
+    course = instance.offering.course
 
     # Create notification
     notification = Notification.objects.create(
         title=f"New Assignment: {instance.title}",
-        message=f"A new assignment has been posted.",
+        message=f"A new assignment has been posted for {course.course_title}.",
         notification_type="INFO",
-        sender=instance.created_by,
         course_offering=instance.offering
     )
 
@@ -56,7 +27,7 @@ def auto_notify_assignment_created(sender, instance, created, **kwargs):
         is_active=True
     ).values_list("student_id", flat=True)
 
-    # Bulk create delivery rows
+    # Create notification recipients
     NotificationRecipient.objects.bulk_create([
         NotificationRecipient(
             notification=notification,

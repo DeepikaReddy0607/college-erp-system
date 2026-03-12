@@ -1,5 +1,6 @@
 {% extends "student/stu_base.html" %}
 {% load static %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/student_doubts.css' %}">
 {% endblock %}
@@ -9,10 +10,11 @@
 {% block student_content %}
 <style>
 #doubts-active {
-    background: #2f3e8f;
-    color: #ffffff;
+    background:#2f3e8f;
+    color:#ffffff;
 }
 </style>
+
 <div class="student-page">
 
     <div class="page-header doubts-header">
@@ -24,38 +26,42 @@
 
     {% if doubts %}
         {% for doubt in doubts %}
-            <div class="doubt-card">
-                <div class="doubt-header">
-                    <h4>{{ doubt.title }}</h4>
+        <div class="doubt-card">
 
-                    {% if doubt.is_resolved %}
-                        <span class="status resolved">Resolved</span>
-                    {% else %}
-                        <span class="status open">Open</span>
-                    {% endif %}
-                </div>
+            <div class="doubt-header">
+                <h4>{{ doubt.title }}</h4>
 
-                <p class="doubt-desc">
-                    {{ doubt.description|truncatechars:140 }}
-                </p>
-
-                <div class="doubt-meta">
-                    <span>{{ doubt.course.course_code }}</span>
-                    <span>{{ doubt.created_at|date:"d M Y, h:i A" }}</span>
-                </div>
-
-                <a href="{% url 'student_doubt_detail' doubt.id %}" class="btn-secondary">
-                    View Discussion
-                </a>
+                {% if doubt.is_resolved %}
+                    <span class="status resolved">Resolved</span>
+                {% else %}
+                    <span class="status open">Open</span>
+                {% endif %}
             </div>
+
+            <p class="doubt-desc">
+                {{ doubt.description|truncatechars:140 }}
+            </p>
+
+            <div class="doubt-meta">
+                <span>{{ doubt.offering.course.code }}</span>
+                <span>{{ doubt.created_at|date:"d M Y, h:i A" }}</span>
+            </div>
+
+            <a href="{% url 'doubt_detail' doubt.id %}" class="btn-secondary">
+                View Discussion
+            </a>
+
+        </div>
         {% endfor %}
     {% else %}
-        <div class="empty-state-wrapper">
-            <p class="empty-state">
-                No doubts posted yet.<br>
-                <span>Ask your first doubt to get help from classmates or faculty.</span>
-            </p>
-        </div>
+
+    <div class="empty-state-wrapper">
+        <p class="empty-state">
+            No doubts posted yet.<br>
+            <span>Ask your first doubt to get help from classmates or faculty.</span>
+        </p>
+    </div>
+
     {% endif %}
 
 </div>

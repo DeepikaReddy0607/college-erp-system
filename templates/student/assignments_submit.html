@@ -13,8 +13,7 @@
 <div class="student-page">
 
     <div class="student-card" style="max-width:600px;">
-        <h2>{{ assignment.title }}</h2>
-        <p><strong>Course:</strong> {{ assignment.offering.course.code }}</p>
+        <h2>{{ assignment.offering.course.course_code }} - {{ assignment.title }}</h2>
         <p><strong>Section:</strong> {{ assignment.offering.section }}</p>
         <p><strong>Semester:</strong> {{ assignment.offering.semester }}</p>
         <p><strong>Due:</strong> {{ assignment.due_date|date:"d M Y, h:i A" }}</p>

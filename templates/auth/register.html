@@ -34,7 +34,15 @@
                         <label for = "email">Institute E-Mail</label>
                         <input type = "email" placeholder = "Mail-ID" name = "email" id = "email"required>
                     </div>
-
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <select name="department" id="department" required>
+                            <option value="">Select</option>
+                            {% for dept in departments %}
+                                <option value="{{ dept.id }}">{{ dept.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     <div class = "student-fields" style="display: none">
                         <div class = "form-group">
                             <label for = "year">Current year</label>
