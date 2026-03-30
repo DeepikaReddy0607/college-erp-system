@@ -1,0 +1,132 @@
+{% extends "exam/base.html" %}
+
+{% block content %}
+
+<h2>Upload Final Grades</h2>
+<p style="color:orange;">
+⚠ Uploading again will overwrite existing grades (only allowed before freezing)
+</p>
+
+<p>
+<b>Course:</b> {{ offering.course }} <br>
+<b>Semester:</b> {{ offering.semester }}
+</p>
+
+<hr>
+
+<!-- ========================= -->
+<!-- 📥 UPLOAD + PREVIEW -->
+<!-- ========================= -->
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <input type="file" name="file" accept=".xlsx" required>
+
+    <br><br>
+
+    <button type="submit" name="preview">
+        Preview Data
+    </button>
+
+    <button type="submit" name="confirm">
+        Submit Grades
+    </button>
+</form>
+
+<br>
+
+<a href="{% url 'grades:download_final_grades_template' offering.id %}">
+    Download Final Grades Template
+</a>
+
+<hr>
+
+<!-- ========================= -->
+<!-- ❌ ERRORS -->
+<!-- ========================= -->
+
+{% if errors %}
+<div style="color:red; margin-top:10px;">
+    <b>Errors:</b>
+    {% for error in errors %}
+        <p>{{ error }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- ========================= -->
+<!-- 👀 PREVIEW TABLE -->
+<!-- ========================= -->
+
+{% if preview_data %}
+
+<h3>Preview</h3>
+
+<table border="1" cellpadding="8" cellspacing="0" style="margin-top:10px;">
+
+<tr>
+    <th>Roll No</th>
+    <th>Name</th>
+    <th>Grade</th>
+</tr>
+
+{% for row in preview_data %}
+<tr>
+    <td>{{ row.roll_no }}</td>
+    <td>{{ row.name }}</td>
+    <td>{{ row.grade }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<br>
+
+<!-- IMPORTANT: Re-upload required for confirm -->
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <p style="color:orange;">
+        ⚠ Re-upload the same file to confirm submission
+    </p>
+
+    <input type="file" name="file" accept=".xlsx" required>
+
+    <br><br>
+
+    <button type="submit" name="confirm" style="background-color:green; color:white;">
+        Confirm & Save
+    </button>
+
+</form>
+
+<hr>
+
+{% endif %}
+
+<!-- ========================= -->
+<!-- 🔒 FREEZE -->
+<!-- ========================= -->
+
+<form method="POST" action="{% url 'grades:exam_freeze_results' offering.id %}">
+    {% csrf_token %}
+    <button type="submit" style="background-color:red; color:white;">
+        Freeze Results
+    </button>
+</form>
+
+<br>
+
+<!-- ========================= -->
+<!-- 📢 RELEASE -->
+<!-- ========================= -->
+
+<form method="POST" action="{% url 'grades:exam_release_results' offering.id %}">
+    {% csrf_token %}
+    <button type="submit" style="background-color:blue; color:white;">
+        Release Results
+    </button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Exam Section | NIT-ANP ERP{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="topbar-left">
+        <h1 class="portal-title">NIT-ANP ERP</h1>
+    </div>
+
+    <div class="topbar-right">
+        <span class="user-role">Exam Section</span>
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    </div>
+
+</header>
+
+<div class="layout">
+
+    <!-- Exam Section Sidebar -->
+    <aside class="sidebar">
+
+        <ul class="nav-list">
+
+            <li>
+                <a href="{% url 'exam_dashboard' %}">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'profile' %}">
+                    Profile
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'doubts',
     'exams',
     'events',
+    'examsection',
 ]
 
 MIDDLEWARE = [

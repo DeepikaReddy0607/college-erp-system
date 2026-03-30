@@ -28,4 +28,4 @@ def is_exam_section(user):
     Only if you later add ExamSectionProfile.
     For now, exam section is implicit.
     """
-    return hasattr(user, "examsectionprofile")
+    return user.role == "EXAM_SECTION"

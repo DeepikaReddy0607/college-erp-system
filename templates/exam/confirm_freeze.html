@@ -1,0 +1,36 @@
+{% extends "exam/base.html" %}
+
+{% block title %}Freeze Results{% endblock %}
+
+{% block content %}
+
+<h2>Freeze Results</h2>
+
+<p>
+You are about to freeze results for:
+</p>
+
+<ul>
+<li>Course: {{ offering.course.name }}</li>
+<li>Semester: {{ offering.semester.name }}</li>
+</ul>
+
+<p style="color:red;">
+Once frozen, grades cannot be edited.
+</p>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<button type="submit" class="freeze-btn">
+Confirm Freeze
+</button>
+
+<a href="{% url 'exam_dashboard' %}">
+<button type="button">Cancel</button>
+</a>
+
+</form>
+
+{% endblock %}

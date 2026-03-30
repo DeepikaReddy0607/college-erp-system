@@ -1,6 +1,6 @@
 {% extends "dashboard/base.html" %}
-{% load static custom_filters %}
-
+{% load static %}
+{% load custom_filters %}
 {% block title %}Submit Marks{% endblock %}
 
 {% block content %}
@@ -10,101 +10,81 @@
     (Year {{ offering.year }} • Section {{ offering.section }})
 </h2>
 
-<form method="post">
+<hr>
+
+<h3>Upload Marks via Excel</h3>
+
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Roll No</th>
-                <th>Name</th>
-                <th>Minor 1</th>
-                <th>Minor 2</th>
-                <th>Mid</th>
-                <th>End</th>
-                <th>Status</th>
-            </tr>
-        </thead>
+    <input type="file" name="file" accept=".xlsx" required>
 
-        <tbody>
-            {% for student in students %}
-            {% with s=submissions|get_item:student.id %}
-            <tr>
-                <td>{{ student.username }}</td>
-                <td>{{ student.get_full_name|default:"-" }}</td>
+    <button type="submit" class="btn secondary">
+        Upload Excel
+    </button>
 
-                <!-- Minor 1 -->
-                <td>
-                    {% if s and s.is_locked %}
-                        {{ s.minor1 }}
-                    {% else %}
-                        <input type="number" step="0.01"
-                               name="minor1_{{ student.id }}"
-                               value="{{ s.minor1|default:'' }}">
-                    {% endif %}
-                </td>
-
-                <!-- Minor 2 -->
-                <td>
-                    {% if s and s.is_locked %}
-                        {{ s.minor2 }}
-                    {% else %}
-                        <input type="number" step="0.01"
-                               name="minor2_{{ student.id }}"
-                               value="{{ s.minor2|default:'' }}">
-                    {% endif %}
-                </td>
-
-                <!-- Mid -->
-                <td>
-                    {% if s and s.is_locked %}
-                        {{ s.mid }}
-                    {% else %}
-                        <input type="number" step="0.01"
-                               name="mid_{{ student.id }}"
-                               value="{{ s.mid|default:'' }}">
-                    {% endif %}
-                </td>
-
-                <!-- End -->
-                <td>
-                    {% if s and s.is_locked %}
-                        {{ s.end }}
-                    {% else %}
-                        <input type="number" step="0.01"
-                               name="end_{{ student.id }}"
-                               value="{{ s.end|default:'' }}">
-                    {% endif %}
-                </td>
-
-                <!-- Status -->
-                <td>
-                    {% if s and s.is_locked %}
-                        <span class="badge success">Locked</span>
-                    {% elif s %}
-                        <span class="badge warning">Draft</span>
-                    {% else %}
-                        <span class="badge neutral">Not Entered</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endwith %}
-            {% endfor %}
-        </tbody>
-
-    </table>
-
-    <div style="margin-top: 20px;">
-        <button type="submit" class="btn primary">
-            Save Draft
-        </button>
-
-        <button type="submit" name="lock_marks" class="btn danger"
-                onclick="return confirm('Marks will be locked permanently. Continue?');">
-            Final Submit & Lock
-        </button>
-    </div>
-
+    <button type="submit" name="lock_marks" class="btn danger"
+        onclick="return confirm('Marks will be locked permanently. Continue?');">
+        Final Submit & Lock
+    </button>
 </form>
+
+<br>
+<p>Offering ID: {{ offering.id }}</p>
+<a href="{% url 'grades:download_grades_template' offering.id %}">
+    Download Excel Template
+</a>
+
+<hr>
+
+<h3>Current Submissions</h3>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Minor 1</th>
+            <th>Minor 2</th>
+            <th>Mid</th>
+            <th>End</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for student in students %}
+        {% with s=submissions|get_item:student.id %}
+        <tr>
+            <td>{{ student.username }}</td>
+            <td>{{ student.get_full_name|default:"-" }}</td>
+
+            <td>{{ s.minor1|default:"-" }}</td>
+            <td>{{ s.minor2|default:"-" }}</td>
+            <td>{{ s.mid|default:"-" }}</td>
+            <td>{{ s.end|default:"-" }}</td>
+
+            <td>
+                {% if s and s.is_locked %}
+                    <span class="badge success">Locked</span>
+                {% elif s %}
+                    <span class="badge warning">Draft</span>
+                {% else %}
+                    <span class="badge neutral">Not Uploaded</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if errors %}
+<div style="color:red; margin-top:10px;">
+    {% for error in errors %}
+        <p>{{ error }}</p>
+    {% endfor %}
+</div>
+{% endif %}
 
 {% endblock %}

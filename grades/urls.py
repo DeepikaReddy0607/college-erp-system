@@ -43,4 +43,24 @@ urlpatterns = [
         views.student_view_grades,
         name="student_view_grades"
     ),
+    path(
+        "download-template/<int:offering_id>/",
+        views.download_grades_template,
+        name="download_grades_template"
+    ),
+    path(
+    "download-final-template/<int:offering_id>/",
+    views.download_final_grades_template,
+    name="download_final_grades_template"
+    ),
+    path(
+    "exam/offering/<int:offering_id>/release/",
+    views.exam_release_results,
+    name="exam_release_results"
+    ),
+    path(
+    "release-semester/<int:semester_id>/",
+    views.exam_release_semester_results,
+    name="exam_release_semester_results"
+),
 ]

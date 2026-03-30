@@ -1,0 +1,85 @@
+{% extends "exam/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/exam_profile.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<style>
+#profile-active {
+    background: #2f3e8f;
+    color: #ffffff;
+}
+</style>
+
+<div class="exam-profile-wrapper">
+
+    <div class="exam-profile-card">
+
+        <!-- HEADER -->
+        <div class="exam-header">
+
+            <form method="POST" action="{% url 'upload_photo' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <label for="photo-input">
+                    {% if profile and profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" class="exam-img">
+                    {% else %}
+                        <img src="{% static 'images/default_user.png' %}" class="exam-img">
+                    {% endif %}
+                </label>
+
+                <input type="file" name="profile_picture" id="photo-input" hidden onchange="this.form.submit()">
+            </form>
+
+            <h3>{{ user.username }}</h3>
+            <p class="exam-role">Exam Section</p>
+        </div>
+
+        <!-- INFO -->
+        <div class="exam-info-group">
+            <h4>Account Information</h4>
+
+            <div class="exam-info-row">
+                <span>Username</span>
+                <span>{{ user.username }}</span>
+            </div>
+
+            <div class="exam-info-row">
+                <span>Email</span>
+                <span>{{ user.email }}</span>
+            </div>
+
+            <div class="exam-info-row">
+                <span>Role</span>
+                <span>{{ user.role }}</span>
+            </div>
+        </div>
+
+        <!-- RESPONSIBILITIES -->
+        <div class="exam-info-group">
+            <h4>Responsibilities</h4>
+
+            <ul class="exam-list">
+                <li>Manage final grades</li>
+                <li>Freeze results</li>
+                <li>Release semester results</li>
+                <li>Maintain academic records</li>
+            </ul>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="exam-actions">
+            <a href="{% url 'change_password' %}" class="exam-btn-secondary">
+                Change Password
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

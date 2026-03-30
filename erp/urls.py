@@ -31,6 +31,7 @@ urlpatterns = [
     path("doubts/", include("doubts.urls")),
     path("exams/", include("exams.urls")),
     path("events/", include("events.urls")),
+    path("exam/",include("examsection.urls")),
 ]
 
 if settings.DEBUG:

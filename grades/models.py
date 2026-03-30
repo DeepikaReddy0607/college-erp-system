@@ -2,6 +2,8 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
+from academics.models import Course
+
 User = get_user_model()
 
 
@@ -57,7 +59,7 @@ class FinalGrade(models.Model):
         on_delete=models.CASCADE,
         related_name="final_grades"
     )
-
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     course_offering = models.ForeignKey(
         "academics.CourseOffering",
         on_delete=models.CASCADE,
@@ -65,19 +67,21 @@ class FinalGrade(models.Model):
     )
 
     grade_letter = models.CharField(max_length=2)
-
+    attempt_number = models.IntegerField(default=1)
+    is_backlog = models.BooleanField(default=False)
     published_by = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
         related_name="grades_published"
     )
 
+    is_published = models.BooleanField(default=False)
     published_at = models.DateTimeField(auto_now_add=True)
 
     is_frozen = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ("student", "course_offering")
+        unique_together = ["student", "course", "attempt_number"]
 
     def save(self, *args, **kwargs):
         if self.pk:

@@ -1,0 +1,57 @@
+{% extends "student/stu_base.html" %}
+
+{% block content %}
+
+<h2>My Grades</h2>
+
+<!-- SEMESTER RESULTS -->
+<h3>Semester Summary</h3>
+
+{% if semester_results %}
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Semester</th>
+        <th>SGPA</th>
+    </tr>
+
+    {% for s in semester_results %}
+    <tr>
+        <td>{{ s.semester }}</td>
+        <td>{{ s.sgpa }}</td>
+       
+    </tr>
+    {% endfor %}
+
+</table>
+<p><b>CGPA: {{ cgpa }}</b></p>
+{% else %}
+<p>No semester results available.</p>
+{% endif %}
+
+<br><br>
+
+<!-- SUBJECT GRADES -->
+<h3>Course Grades</h3>
+
+{% if grades %}
+<table border="1" cellpadding="8">
+
+<tr>
+    <th>Course</th>
+    <th>Grade</th>
+</tr>
+
+{% for g in grades %}
+<tr>
+    <td>{{ g.course_offering.course.course_title }}</td>
+    <td>{{ g.grade_letter }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% else %}
+<p>No grades published yet.</p>
+{% endif %}
+
+{% endblock %}

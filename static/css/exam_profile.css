@@ -1,0 +1,90 @@
+/* Wrapper */
+.exam-profile-wrapper {
+    padding: 60px 40px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Card */
+.exam-profile-card {
+    width: 750px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+}
+
+/* Header */
+.exam-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.exam-img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 5px solid #f1f3f5;
+    margin-bottom: 15px;
+}
+
+.exam-role {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Info Groups */
+.exam-info-group {
+    margin-top: 25px;
+}
+
+.exam-info-group h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Rows */
+.exam-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.exam-info-row span:first-child {
+    font-weight: 600;
+    color: #444;
+}
+
+.exam-info-row span:last-child {
+    color: #666;
+}
+
+/* List */
+.exam-list {
+    padding-left: 18px;
+    color: #444;
+}
+
+.exam-list li {
+    margin-bottom: 6px;
+}
+
+/* Actions */
+.exam-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.exam-btn-secondary {
+    text-decoration: none;
+    background: #6c757d;
+    color: white;
+    padding: 9px 22px;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.exam-btn-secondary:hover {
+    background: #5a6268;
+}

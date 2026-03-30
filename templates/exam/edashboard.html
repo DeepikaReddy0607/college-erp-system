@@ -1,0 +1,165 @@
+{% extends "exam/base.html" %}
+{% load static %}
+
+{% block title %}Exam Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/exam_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title">Exam Section Dashboard</h2>
+
+<!-- SUMMARY -->
+<div class="dashboard-cards">
+
+    <div class="card">
+        <h3>Total Courses</h3>
+        <p>{{ total_courses }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Marks Locked</h3>
+        <p>{{ locked_courses }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Grades Completed</h3>
+        <p>{{ uploaded_grades }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Results Frozen</h3>
+        <p>{{ frozen_results }}</p>
+    </div>
+
+</div>
+
+<h3 class="section-title">Course Result Status</h3>
+
+<table class="dashboard-table">
+
+<tr>
+    <th>Course</th>
+    <th>Semester</th>
+    <th>Students</th>
+    <th>Status</th>
+    <th>Actions</th>
+    <th>Finalize</th>
+</tr>
+
+{% for item in dashboard_data %}
+
+<tr>
+
+    <td>{{ item.offering.course.course_title }}</td>
+    <td>{{ item.offering.semester.semester }}</td>
+    <td>{{ item.total_students }}</td>
+
+    <!-- STATUS -->
+    <td>
+
+        {% if item.total_students == 0 %}
+            <span class="status waiting">No Data</span>
+
+        {% elif item.locked_marks < item.total_students %}
+            <span class="status warning">Marks Pending</span>
+
+        {% elif item.grades_uploaded < item.total_students %}
+            <span class="status pending">Grades Pending</span>
+
+        {% elif item.published_results == item.total_students %}
+            <span class="status success">Published</span>
+
+        {% elif item.frozen_results == item.total_students %}
+            <span class="status frozen">Frozen</span>
+
+        {% else %}
+            <span class="status ready">Ready</span>
+        {% endif %}
+
+    </td>
+
+    <!-- ACTIONS -->
+    <td>
+
+        <a href="{% url 'download_marks' item.offering.id %}">
+            <button class="action-btn">Download</button>
+        </a>
+
+        {% if item.frozen_results == 0 %}
+
+                <a href="{% url 'exam_upload_final_grades' item.offering.id %}">
+                    <button class="action-btn warning-btn">
+
+                        {% if item.grades_uploaded > 0 %}
+                            Update Grades   <!-- 🔥 FIX -->
+                        {% else %}
+                            Upload Grades
+                        {% endif %}
+
+                    </button>
+                </a>
+
+            {% else %}
+                {% if item.frozen_results == item.total_students %}
+                    <span class="badge success">Locked</span>
+                {% else %}
+                    <span class="badge warning">Editable</span>
+                {% endif %}
+            {% endif %}
+
+    </td>
+
+    <!-- FINALIZE -->
+    <td>
+
+        {% if item.total_students > 0 and item.grades_uploaded == item.total_students %}
+
+            {% if item.frozen_results == 0 %}
+                <form method="POST" action="{% url 'grades:exam_freeze_results' item.offering.id %}">
+                    {% csrf_token %}
+                    <button class="freeze-btn">Freeze</button>
+                </form>
+
+            {% elif item.published_results == 0 %}
+                <form method="POST" action="{% url 'exam_release_semester_results' item.offering.semester.id %}">
+                    {% csrf_token %}
+                    <button class="release-btn">Release</button>
+                </form>
+
+            {% else %}
+                <span class="status success">Published</span>
+            {% endif %}
+
+        {% else %}
+            <button disabled class="freeze-btn">Incomplete</button>
+        {% endif %}
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+<div style="text-align:right; margin:15px 0;">
+
+    {% if sem.ready %}
+
+        <form method="POST" action="{% url 'exam_release_semester_results' sem.semester.id %}">
+            {% csrf_token %}
+            <button class="release-btn">
+                Release Semester Results
+            </button>
+        </form>
+
+    {% else %}
+        <button class="release-btn disabled" disabled>
+            Not Ready for Release
+        </button>
+    {% endif %}
+
+</div>
+{% endblock %}

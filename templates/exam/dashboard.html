@@ -1,0 +1,46 @@
+{% extends "exam/base.html" %}
+{% load static %}
+
+{% block title %}Exam Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/exam_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title">Exam Section Dashboard</h2>
+
+<div class="dashboard-cards">
+
+    <div class="card">
+        <h3>Year 1</h3>
+        <a href="{% url 'year_semester_view' 1 %}">
+            <button class="action-btn">Manage Results</button>
+        </a>
+    </div>
+
+    <div class="card">
+        <h3>Year 2</h3>
+        <a href="{% url 'year_semester_view' 2 %}">
+            <button class="action-btn">Manage Results</button>
+        </a>
+    </div>
+
+    <div class="card">
+        <h3>Year 3</h3>
+        <a href="{% url 'year_semester_view' 3 %}">
+            <button class="action-btn">Manage Results</button>
+        </a>
+    </div>
+
+    <div class="card">
+        <h3>Year 4</h3>
+        <a href="{% url 'year_semester_view' 4 %}">
+            <button class="action-btn">Manage Results</button>
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

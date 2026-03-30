@@ -10,6 +10,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from academics.models import CourseOffering, FacultyAssignment
 from accounts.forms import ProfileUpdateForm, StudentProfileImageForm
 from assignments.models import Assignment, AssignmentSubmission
+from examsection.models import ExamProfile
 from timetable.models import TimetableEntry
 from django.db.models import Q
 from attendance.models import AttendanceRecord, AttendanceSession
@@ -49,6 +50,8 @@ def redirect_by_role(user):
         return redirect("faculty_dashboard")
     elif user.role == "STUDENT":
         return redirect("dashboard")
+    elif user.role == "EXAM_SECTION":
+        return redirect("exam_dashboard")
     return redirect("/admin/")
 
 def register_view(request):
@@ -551,7 +554,9 @@ def profile_view(request):
     elif user.role == "FACULTY":
         context["profile"] = FacultyProfile.objects.get(user=user)
         return render(request, "faculty/faculty_profile.html", context)
-
+    elif user.role == "EXAM_SECTION":
+        context["profile"] = ExamProfile.objects.filter(user=user).first()
+        return render(request, "exam/exam_profile.html", context)
     elif user.role == "ADMIN":
         return render(request, "admin_profile.html", context)
 
@@ -591,29 +596,61 @@ def change_password(request):
     if request.method == "POST" and form.is_valid():
         user = form.save()
         update_session_auth_hash(request, user)
+
+        # 🔥 role-based redirect
+        if request.user.role == "STUDENT":
+            return redirect("student_dashboard")
+        elif request.user.role == "FACULTY":
+            return redirect("faculty_dashboard")
+        elif request.user.role == "EXAM_SECTION":
+            return redirect("exam_dashboard")
+        elif request.user.role == "ADMIN":
+            return redirect("admin_dashboard")
+
         return redirect("profile")
 
-    if request.user.role == "FACULTY":
-        template_name = "faculty/change_password.html"
-    else:
-        template_name = "student/change_password.html"
+    # 🔥 role-based template
+    role_templates = {
+        "STUDENT": "student/change_password.html",
+        "FACULTY": "faculty/change_password.html",
+        "EXAM_SECTION": "exam/change_password.html",
+        "ADMIN": "admin/change_password.html",
+    }
 
-    return render(request, template_name, {"form": form}) 
+    template_name = role_templates.get(
+        request.user.role,
+        "common/change_password.html"
+    )
+
+    return render(request, template_name, {"form": form})
+
 @login_required
 def upload_photo(request):
-    if request.method == "POST":
 
+    if request.method == "POST":
+        print("FILES:", request.FILES)
+        profile = None
+
+        # 🔥 Handle roles properly
         if request.user.role == "STUDENT":
-            profile = StudentProfile.objects.get(user=request.user)
+            profile = StudentProfile.objects.filter(user=request.user).first()
 
         elif request.user.role == "FACULTY":
-            profile = FacultyProfile.objects.get(user=request.user)
+            profile = FacultyProfile.objects.filter(user=request.user).first()
 
-        else:
+        elif request.user.role == "EXAM_SECTION":
+            profile = ExamProfile.objects.filter(user=request.user).first()
+
+        # ❌ If no profile exists
+        if not profile:
             return redirect("profile")
 
-        if request.FILES.get("profile_picture"):
-            profile.profile_picture = request.FILES["profile_picture"]
+        # 🔥 Handle file upload
+        file = request.FILES.get("profile_picture")
+        print("FILE:", file) 
+        if profile and file:
+            profile.profile_picture = file
             profile.save()
+            print("SAVED SUCCESS")
 
     return redirect("profile")

@@ -1,0 +1,30 @@
+<h2>My Results</h2>
+
+<h3>CGPA: {{ cgpa }}</h3>
+
+<h3>Semester-wise SGPA</h3>
+
+<table>
+<tr>
+    <th>Semester</th>
+    <th>SGPA</th>
+</tr>
+
+{% for sem in semester_results %}
+<tr>
+    <td>{{ sem.semester.semester }}</td>
+    <td>{{ sem.sgpa }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<h3>Backlogs</h3>
+
+<ul>
+{% for b in backlogs %}
+    <li>{{ b.course.course_title }}</li>
+{% empty %}
+    <li>No backlogs</li>
+{% endfor %}
+</ul>
