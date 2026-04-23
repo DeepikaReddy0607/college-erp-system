@@ -1,5 +1,7 @@
 from datetime import date
-
+import logging
+logger = logging.getLogger(__name__)
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import get_user_model, login, authenticate, logout, update_session_auth_hash
 from django.utils.crypto import get_random_string
@@ -54,11 +56,22 @@ def redirect_by_role(user):
         return redirect("exam_dashboard")
     return redirect("/admin/")
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import get_user_model
+from django.utils.crypto import get_random_string
+from .models import Department, OTPVerification
+from accounts.tasks import send_verification_email_task
+
+User = get_user_model()
+
+
+from django.utils.crypto import get_random_string
+from django.utils import timezone
+
 def register_view(request):
     departments = Department.objects.all()
 
     if request.method == "POST":
-        print(request.POST)
         role = request.POST.get("role")
         fullname = request.POST.get("fullname", "").strip()
         username = request.POST.get("username", "").strip()
@@ -66,128 +79,61 @@ def register_view(request):
         year = request.POST.get("year")
         sec = request.POST.get("section")
         dept_id = request.POST.get("department")
-        print("DEPT ID:", dept_id)
-        department = Department.objects.filter(id=dept_id).first()
-        print("DEPARTMENT:", department)
-        # ----- Basic validation -----
 
-        if not role:
+        if not role or not username or not email:
             return render(request, "auth/register.html", {
-                "error": "Please select a role.",
-                "departments": departments
-            })
-
-        role = role.upper()
-
-        if not username or not email:
-            return render(request, "auth/register.html", {
-                "error": "Username and email are required.",
-                "departments": departments
+                "error": "All fields required", "departments": departments
             })
 
         if User.objects.filter(username=username).exists():
             return render(request, "auth/register.html", {
-                "error": "Username already exists.",
-                "departments": departments
+                "error": "Username exists", "departments": departments
             })
 
-        if not dept_id:
+        existing = User.objects.filter(email=email).first()
+        if existing and existing.is_verified:
             return render(request, "auth/register.html", {
-                "error": "Please select a department.",
-                "departments": departments
+                "error": "Email already registered", "departments": departments
             })
-
-        department = get_object_or_404(Department, id=dept_id)
-
-        # ----- Create / reuse user -----
-
-        user = User.objects.filter(email=email).first()
-
-        if user:
-            if user.is_verified:
-                return render(request, "auth/register.html", {
-                    "error": "Email already registered. Please login.",
-                    "departments": departments
-                })
-        else:
-            user = User.objects.create_user(
-                username=username,
-                email=email,
-                first_name=fullname,
-                role=role,
-                is_active=False,
-                is_verified=False,
-            )
-
-        # ----- Student profile -----
-
-        if role == "STUDENT":
-
-            if not year or not sec:
-                return render(request, "auth/register.html", {
-                    "error": "Year and section are required.",
-                    "departments": departments
-                })
-
-            StudentProfile.objects.update_or_create(
-                user=user,
-                defaults={
-                    "department": department,
-                    "year": int(year),
-                    "section": sec
-                }
-            )
-
-        # ----- Faculty profile -----
-
-        elif role == "FACULTY":
-
-            FacultyProfile.objects.update_or_create(
-                user=user,
-                defaults={
-                    "department": department,
-                    "designation": "Faculty"
-                }
-            )
-
-        # ----- OTP generation -----
-
-        OTPVerification.objects.filter(
-            email=email,
-            is_used=False
-        ).update(is_used=True)
 
         otp = get_random_string(length=4, allowed_chars="0123456789")
 
-        OTPVerification.objects.create(
-            email=email,
-            otp=otp
-        )
+        OTPVerification.objects.filter(email=email).delete()
+        OTPVerification.objects.create(email=email, otp=otp, purpose="register")
 
-        send_mail(
-            subject="Your ERP OTP Verification",
-            message=f"Your OTP is {otp}",
-            from_email="noreply@erp.com",
-            recipient_list=[email],
-        )
+        request.session["register_data"] = {
+            "username": username,
+            "email": email,
+            "fullname": fullname,
+            "role": role.upper(),
+            "year": year,
+            "section": sec,
+            "department_id": dept_id
+        }
 
         request.session["email"] = email
         request.session["otp_purpose"] = "register"
 
+        send_verification_email_task(
+            "OTP Verification",
+            "email/otp_email.html",
+            {"otp": otp, "user": {"username": username}},
+            email
+        )
+
         return redirect("otp")
 
-    return render(request, "auth/register.html", {
-        "departments": departments
-    })
+    return render(request, "auth/register.html", {"departments": departments})
+
+
 def otp_view(request):
-    if "email" not in request.session and "reset_email" not in request.session:
+    if "email" not in request.session:
         return redirect("login")
     return render(request, "auth/otp.html")
 
-
 @require_POST
 def otp_verify_view(request):
-    email = request.session.get("email") or request.session.get("reset_email")
+    email = request.session.get("email")
     purpose = request.session.get("otp_purpose")
 
     if not email or not purpose:
@@ -200,32 +146,56 @@ def otp_verify_view(request):
         request.POST.get("otp4", "")
     )
 
-    try:
-        otp = OTPVerification.objects.get(
-            email=email,
-            otp=otp_entered,
-            is_used=False
-        )
-    except OTPVerification.DoesNotExist:
+    otp = OTPVerification.objects.filter(
+        email=email,
+        otp=otp_entered,
+        is_used=False,
+        purpose=purpose
+    ).first()
+
+    if not otp:
         return render(request, "auth/otp.html", {"error": "Invalid OTP"})
+
+    if (timezone.now() - otp.created_at).seconds > 600:
+        return render(request, "auth/otp.html", {"error": "OTP expired"})
 
     otp.is_used = True
     otp.save()
 
+    request.session["otp_verified"] = True
+
+    # 🔥 CREATE USER ONLY HERE (NOT in password view)
     if purpose == "register":
-        return redirect("password")
+        data = request.session.get("register_data")
 
-    if purpose == "reset":
-        return redirect("password")
+        if not data:
+            return redirect("register")
 
-    return redirect("login")
+        user, created = User.objects.get_or_create(
+            email=data["email"],
+            defaults={
+                "username": data["username"],
+                "first_name": data["fullname"],
+                "role": data["role"],
+                "is_active": True,
+                "is_verified": True,
+            }
+        )
 
+        if not created:
+            user.username = data["username"]
+            user.is_verified = True
+            user.save()
+
+    return redirect("password")
 
 def set_password_view(request):
-    email = request.session.get("email") or request.session.get("reset_email")
+    email = request.session.get("email")
+    purpose = request.session.get("otp_purpose")
+    otp_verified = request.session.get("otp_verified")
 
-    if not email:
-        return redirect("register")
+    if not otp_verified or not purpose:
+        return redirect("login")
 
     if request.method == "POST":
         password = request.POST.get("password")
@@ -237,23 +207,95 @@ def set_password_view(request):
             })
 
         user = User.objects.get(email=email)
+
+        # 🔥 ONLY SET PASSWORD (NO USER CREATION HERE)
         user.set_password(password)
-        user.is_active = True
+        user.is_verified = True
         user.save()
 
-        login(request, user)
-        request.session.pop("email", None)
-        request.session.pop("reset_email", None)
-        request.session.pop("otp_purpose", None)
+        # -------- CREATE PROFILE ONLY FOR REGISTER --------
+        if purpose == "register":
+            data = request.session.get("register_data")
+            department = get_object_or_404(Department, id=data["department_id"])
 
-        if user.role == "STUDENT":
-            return redirect("dashboard")
-        elif user.role == "FACULTY":
-            return redirect("faculty_dashboard")
-        else:
-            return redirect("/admin/")
+            if user.role == "STUDENT":
+                StudentProfile.objects.get_or_create(
+                    user=user,
+                    defaults={
+                        "department": department,
+                        "year": int(data["year"]),
+                        "section": data["section"]
+                    }
+                )
+
+            elif user.role == "FACULTY":
+                FacultyProfile.objects.get_or_create(
+                    user=user,
+                    defaults={
+                        "department": department,
+                        "designation": "Faculty"
+                    }
+                )
+
+        OTPVerification.objects.filter(email=email).delete()
+        request.session.flush()
+
+        login(request, user)
+        return redirect_by_role(user)
 
     return render(request, "auth/password.html")
+
+def resend_otp_view(request):
+    email = request.session.get("email")
+    purpose = request.session.get("otp_purpose")
+
+    if not email or not purpose:
+        return redirect("login")
+
+    otp = get_random_string(length=4, allowed_chars="0123456789")
+
+    OTPVerification.objects.filter(email=email).update(is_used=True)
+
+    OTPVerification.objects.create(email=email, otp=otp, purpose=purpose)
+
+    send_verification_email_task(
+        "Resend OTP",
+        "email/otp_email.html",
+        {"otp": otp, "user": {"username": email}},
+        email
+    )
+
+    return redirect("otp")
+
+def forgot_password_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return render(request, "auth/forgot_password.html", {
+                "error": "No account found"
+            })
+
+        otp = get_random_string(length=4, allowed_chars="0123456789")
+
+        OTPVerification.objects.filter(email=email).update(is_used=True)
+        OTPVerification.objects.create(email=email, otp=otp, purpose="reset")
+
+        request.session["email"] = email
+        request.session["otp_purpose"] = "reset"
+
+        send_verification_email_task(
+            "Password Reset OTP",
+            "email/otp_email.html",
+            {"otp": otp, "user": {"username": user.username}},
+            email
+        )
+
+        return redirect("otp")
+
+    return render(request, "auth/forgot_password.html")
 
 @login_required
 def faculty_dashboard_view(request):
@@ -375,34 +417,6 @@ def faculty_attendance_history_view(request):
 @login_required
 def faculty_attendance_edit_view(request):
     return render(request, "dashboard/faculty_attendance_edit.html")
-
-def forgot_password_view(request):
-    if request.method == "POST":
-        email = request.POST.get("email")
-
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return render(request, "auth/forgot_password.html", {
-                "error": "No account found with this email"
-            })
-
-        otp = get_random_string(length=4, allowed_chars="0123456789")
-        OTPVerification.objects.filter(email=email).update(is_used=True)
-        OTPVerification.objects.create(email=email, otp=otp)
-
-        send_mail(
-            subject="ERP Password Reset OTP",
-            message=f"Your OTP is {otp}",
-            from_email="noreply@erp.com",
-            recipient_list=[email],
-        )
-
-        request.session["reset_email"] = email
-        request.session["otp_purpose"] = "reset"
-        return redirect("otp")  
-
-    return render(request, "auth/forgot_password.html")
 
 @login_required
 def student_dashboard_view(request):

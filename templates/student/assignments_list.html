@@ -38,7 +38,7 @@
 
             {% for item in assignment_data %}
                 <tr>
-                    <td>{{ item.assignment.offering.course.code }}</td>
+                    <td>{{ item.assignment.offering.course.course_code }}</td>
                     <td>{{ item.assignment.offering.section }}</td>
                     <td>{{ item.assignment.title }}</td>
                     <td>{{ item.assignment.due_date|date:"d M Y, h:i A" }}</td>

@@ -39,8 +39,7 @@
                 </a>
             </li>
             <li><a href="{% url 'student_exam_schedule' %}" id="exams-active">Exams</a></li>
-            <li><a href="#">Holidays</a></li>
-            <li><a href="{% url 'student_upcoming_events' %}" id="events-active">Events & Workshops</a></li>
+            <li><a href="{% url 'events:student_upcoming_events' %}" id="events-active">Events & Workshops</a></li>
             <li><a href="{% url 'profile' %}" id="profile-active"> Profile</a></li>
         </ul>
     </aside>

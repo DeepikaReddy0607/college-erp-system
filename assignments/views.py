@@ -26,9 +26,12 @@ def create_assignment(request):
 
         # Restrict offering choices
         form.fields["offering"].queryset = faculty_offerings
-
+        print("POST DATA:", request.POST)
+        print("FILES:", request.FILES)
+        print("FORM ERRORS:", form.errors)
         if form.is_valid():
-            assignment = form.save()
+            assignment = form.save(commit=False)
+            assignment.save()
             return redirect("faculty_assignments")
 
     else:

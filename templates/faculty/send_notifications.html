@@ -5,6 +5,12 @@
 <link rel = "stylesheet" href="{% static 'css/notifications.css' %}">
 {% endblock %}
 {% block content %}
+<style>
+#send-notifications-active{
+    background: #2f3e8f;
+    color: #ffffff;
+}
+</style>
 <div class="faculty-page">
 
     <h2>Send Notification</h2>
@@ -29,7 +35,7 @@
         <select name="course_offering_id" required>
             {% for co in faculty_course_offerings %}
                 <option value="{{ co.id }}">
-                    {{ co.course.name }} |
+                    {{ co.course.course_title }} |
                     Semester {{ co.semester.number }} |
                     Section {{ co.section }}
                 </option>

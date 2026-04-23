@@ -23,7 +23,7 @@
             <select name="offering" required>
                 {% for o in offerings %}
                 <option value="{{ o.id }}">
-                    {{ o.course.code }} — Section {{ o.section }} - {{ o.faculty.user.username }}
+                    {{ o.course.course_code }} — Section {{ o.section }}
                 </option>
                 {% endfor %}
             </select>

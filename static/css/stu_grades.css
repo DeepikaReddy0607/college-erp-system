@@ -153,3 +153,7 @@
     color: #6b7280;
     font-size: 13px;
 }
+#grade-active {
+    background: #2f3e8f;
+    color: #ffffff;
+}

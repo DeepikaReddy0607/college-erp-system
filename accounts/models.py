@@ -53,6 +53,6 @@ class OTPVerification(models.Model):
     otp = models.CharField(max_length=6)
     created_at = models.DateTimeField(auto_now_add=True)
     is_used = models.BooleanField(default=False)
-
+    purpose = models.CharField(max_length=20)
     def __str__(self):
         return self.email

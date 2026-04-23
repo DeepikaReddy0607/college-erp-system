@@ -703,10 +703,10 @@ def exam_release_semester_results(request, semester_id):
         print("Frozen:", frozen)
 
         if total != graded:
-            return HttpResponseForbidden(f"{o.course.name} → not fully graded")
+            return HttpResponseForbidden(f"{o.course.course_title} → not fully graded")
 
         if not frozen:
-            return HttpResponseForbidden(f"{o.course.name} → not frozen")
+            return HttpResponseForbidden(f"{o.course.course_title} → not frozen")
     if not is_exam_section(request.user):
         return HttpResponseForbidden()
 
