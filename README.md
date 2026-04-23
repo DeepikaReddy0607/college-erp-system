@@ -122,7 +122,7 @@ Student → View Final Results
 
 ```bash
 git clone https://github.com/DeepikaReddy0607/college-erp-system.git
-cd your-repo
+cd college-erp-system
 
 python -m venv venv
 source venv/bin/activate   # Windows: venv\Scripts\activate
